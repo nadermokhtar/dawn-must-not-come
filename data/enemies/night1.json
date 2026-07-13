@@ -1,0 +1,28 @@
+[
+  {
+    "id": "drunken_dockhand",
+    "name": "Drunken Dockhand",
+    "night": 1,
+    "tier": "minor",
+    "hp": 14,
+    "resist": [],
+    "weak": [],
+    "deck": ["dockhand_bottle_swing", "dockhand_hiccup", "dockhand_bottle_swing", "dockhand_wild_haymaker"],
+    "ai": { "mode": "sequential" },
+    "first_move": false,
+    "art_ref": "enemies/dockhand.png"
+  },
+  {
+    "id": "rat_of_the_hold",
+    "name": "Rat of the Hold",
+    "night": 1,
+    "tier": "minor",
+    "hp": 10,
+    "resist": ["steel"],
+    "weak": ["ifrit_flame"],
+    "deck": ["rat_gnaw"],
+    "ai": { "mode": "sequential" },
+    "first_move": false,
+    "art_ref": "enemies/rat_of_the_hold.png"
+  }
+]

@@ -1,0 +1,14 @@
+/* DESIGN.md §8.2 palette */
+:root {
+  --lapis: #1b3b6f;
+  --indigo: #101a3c;
+  --parchment: #e8dcc0;
+  --gold: #c9a227;
+  --coral: #d96c4a;
+  --turquoise: #3fa9a5;
+  --copper-green: #4e6e58;
+  --madder: #7a2e2e;
+
+  --parchment-dim: #d6c7a5;
+  --ink: #2a2118;
+}

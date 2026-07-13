@@ -1,0 +1,42 @@
+[
+  {
+    "id": "dockhand_bottle_swing",
+    "name": "Bottle Swing",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 5, "dtype": "steel" },
+    "flavor": "A wild swing, more glass than aim."
+  },
+  {
+    "id": "dockhand_wild_haymaker",
+    "name": "Wild Haymaker",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 8, "dtype": "steel" },
+    "flavor": "He puts his whole soused weight behind it."
+  },
+  {
+    "id": "dockhand_hiccup",
+    "name": "Hiccup",
+    "type": "spell",
+    "cost": { "ap": 0, "mana": 0 },
+    "flavor": "A pause in the brawl. Nothing happens."
+  },
+  {
+    "id": "dockhand_stagger",
+    "name": "Stagger",
+    "type": "spell",
+    "cost": { "ap": 0, "mana": 0 },
+    "effects": [{ "apply": "dizzy", "stacks": 1, "target": "self" }],
+    "flavor": "He overbalances and nearly falls."
+  },
+  {
+    "id": "rat_gnaw",
+    "name": "Gnaw",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 3, "dtype": "steel" },
+    "tags": ["bite"],
+    "flavor": "Small teeth, sharp enough."
+  }
+]

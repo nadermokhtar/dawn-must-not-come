@@ -1,0 +1,71 @@
+[
+  {
+    "id": "armor",
+    "name": "Armor",
+    "kind": "buff",
+    "max_stacks": 99,
+    "remove_at_zero": true,
+    "modifiers": [
+      { "pipeline": "incoming_damage", "op": "absorb_stacks", "ignore_dtypes": ["true_strike"] }
+    ]
+  },
+  {
+    "id": "venom",
+    "name": "Serpent Venom",
+    "kind": "debuff",
+    "max_stacks": 99,
+    "remove_at_zero": true,
+    "hooks": [
+      {
+        "on": "turn_end",
+        "who": "owner",
+        "do": [
+          { "op": "deal_damage", "amount": "$stacks", "dtype": "serpent_venom", "to": "self" },
+          { "op": "change_stacks", "delta": -1 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "burn",
+    "name": "Ifrit Flame",
+    "kind": "debuff",
+    "max_stacks": 99,
+    "remove_at_zero": true,
+    "hooks": [
+      {
+        "on": "turn_start",
+        "who": "owner",
+        "do": [
+          { "op": "deal_damage", "amount": "$stacks", "dtype": "ifrit_flame", "to": "self" },
+          { "op": "remove_effect", "id": "burn", "target": "self" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "clinging",
+    "name": "Clinging",
+    "kind": "debuff",
+    "permanent": true,
+    "hooks": [
+      {
+        "on": "turn_start",
+        "who": "opponent",
+        "do": [
+          { "op": "modify_resource", "resource": "ap", "delta": -1, "target": "opponent" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dizzy",
+    "name": "Dizzy",
+    "kind": "debuff",
+    "max_stacks": 1,
+    "remove_at_zero": true,
+    "modifiers": [
+      { "pipeline": "outgoing_damage", "op": "add_flat", "value": -2 }
+    ]
+  }
+]

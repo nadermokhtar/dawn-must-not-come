@@ -1,0 +1,78 @@
+[
+  {
+    "id": "sinbad_cutlass_strike",
+    "class": "sinbad",
+    "name": "Cutlass Strike",
+    "type": "attack",
+    "cost": { "ap": 1, "mana": 0 },
+    "damage": { "amount": 6, "dtype": "steel" },
+    "stars": 0,
+    "rarity": "common",
+    "flavor": "A sailor's first lesson: steel answers steel.",
+    "art_ref": "ui/card_cutlass_strike.png"
+  },
+  {
+    "id": "sinbad_raise_shield",
+    "class": "sinbad",
+    "name": "Raise Shield",
+    "type": "spell",
+    "cost": { "ap": 1, "mana": 0 },
+    "effects": [{ "apply": "armor", "stacks": 5, "target": "self" }],
+    "stars": 0,
+    "rarity": "common",
+    "flavor": "The deck heaves. Sinbad braces.",
+    "art_ref": "ui/card_raise_shield.png"
+  },
+  {
+    "id": "sinbad_rigging_grab",
+    "class": "sinbad",
+    "name": "Rigging Grab",
+    "type": "spell",
+    "cost": { "ap": 1, "mana": 0 },
+    "draw": 1,
+    "stars": 0,
+    "rarity": "common",
+    "flavor": "A hand finds rope, and rope finds an idea.",
+    "art_ref": "ui/card_rigging_grab.png"
+  },
+  {
+    "id": "sinbad_captains_rally",
+    "class": "sinbad",
+    "name": "Captain's Rally",
+    "type": "spell",
+    "cost": { "ap": 0, "mana": 1 },
+    "effects": [{ "op": "modify_resource", "resource": "ap", "delta": 2, "target": "self" }],
+    "stars": 0,
+    "rarity": "uncommon",
+    "flavor": "\"To the last plank, wallahi!\"",
+    "art_ref": "ui/card_captains_rally.png"
+  },
+  {
+    "id": "sinbad_boarding_action",
+    "class": "sinbad",
+    "name": "Boarding Action",
+    "type": "attack",
+    "cost": { "ap": 2, "mana": 0 },
+    "damage": { "amount": 10, "dtype": "steel" },
+    "stars": 0,
+    "rarity": "uncommon",
+    "flavor": "The finishing leap, blade first.",
+    "art_ref": "ui/card_boarding_action.png"
+  },
+  {
+    "id": "sinbad_parry",
+    "class": "sinbad",
+    "name": "Parry",
+    "type": "counter",
+    "cost": { "ap": 1, "mana": 0 },
+    "counter": {
+      "match": { "action_type": "attack" },
+      "negate": true,
+      "effects": [{ "op": "deal_damage", "amount": 4, "dtype": "steel", "to": "opponent" }]
+    },
+    "stars": 0,
+    "rarity": "uncommon",
+    "flavor": "Set low, sprung sharp.",
+    "art_ref": "ui/card_parry.png"
+  }
+]

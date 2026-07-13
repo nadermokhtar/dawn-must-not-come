@@ -1,0 +1,24 @@
+{
+  "classes": {
+    "sinbad": {
+      "hp": 30,
+      "ap_base": 2,
+      "mana": 0,
+      "mana_max": 2,
+      "hand_size": 5,
+      "dinars": 30,
+      "starting_deck": [
+        "sinbad_cutlass_strike",
+        "sinbad_cutlass_strike",
+        "sinbad_cutlass_strike",
+        "sinbad_cutlass_strike",
+        "sinbad_raise_shield",
+        "sinbad_raise_shield",
+        "sinbad_rigging_grab",
+        "sinbad_rigging_grab",
+        "sinbad_captains_rally",
+        "sinbad_boarding_action"
+      ]
+    }
+  }
+}
