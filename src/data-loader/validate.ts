@@ -1,10 +1,11 @@
-import type { CardDef, EffectDef, EnemyDef } from '../engine/types'
+import type { BlessingDef, CardDef, EffectDef, EnemyDef, VerseDef } from '../engine/types'
 
 export class ValidationError extends Error {}
 
 const CARD_TYPES = ['attack', 'spell', 'counter', 'equipment', 'curse', 'item']
 const DTYPES = ['steel', 'true_strike', 'ifrit_flame', 'tide', 'storm', 'serpent_venom']
 const EFFECT_KINDS = ['buff', 'debuff', 'neutral']
+const VERSE_KINDS = ['battle', 'shop', 'upgrade', 'remove', 'blessing', 'chest', 'event', 'bank', 'boss']
 
 function assert(cond: unknown, ctx: string, msg: string): asserts cond {
   if (!cond) throw new ValidationError(`${ctx}: ${msg}`)
@@ -89,4 +90,47 @@ export function validateEffect(raw: unknown, ctx: string): EffectDef {
   if (r.modifiers !== undefined) assert(Array.isArray(r.modifiers), ctx, 'modifiers must be an array')
 
   return r as unknown as EffectDef
+}
+
+export function validateVerse(raw: unknown, ctx: string): VerseDef {
+  assert(typeof raw === 'object' && raw !== null, ctx, 'expected an object')
+  const r = raw as Record<string, unknown>
+  assert(typeof r.id === 'string' && r.id.length > 0, ctx, 'id must be a non-empty string')
+  ctx = `${ctx} (${r.id})`
+  assert(typeof r.name === 'string', ctx, 'name must be a string')
+  assert(typeof r.narration === 'string', ctx, 'narration must be a string')
+  assert(typeof r.kind === 'string' && VERSE_KINDS.includes(r.kind), ctx, `kind must be one of ${VERSE_KINDS.join('|')}`)
+  assert(
+    Array.isArray(r.night) && r.night.every((n) => typeof n === 'number'),
+    ctx,
+    'night must be an array of numbers',
+  )
+  if (r.weight !== undefined) assert(typeof r.weight === 'number', ctx, 'weight must be a number')
+  if (r.mustCrossOut !== undefined) assert(typeof r.mustCrossOut === 'boolean', ctx, 'mustCrossOut must be a boolean')
+  if (r.reshuffle !== undefined) assert(typeof r.reshuffle === 'boolean', ctx, 'reshuffle must be a boolean')
+  if (r.enemyPool !== undefined) {
+    assert(
+      Array.isArray(r.enemyPool) && r.enemyPool.every((e) => typeof e === 'string'),
+      ctx,
+      'enemyPool must be an array of strings',
+    )
+  }
+
+  return r as unknown as VerseDef
+}
+
+export function validateBlessing(raw: unknown, ctx: string): BlessingDef {
+  assert(typeof raw === 'object' && raw !== null, ctx, 'expected an object')
+  const r = raw as Record<string, unknown>
+  assert(typeof r.id === 'string' && r.id.length > 0, ctx, 'id must be a non-empty string')
+  ctx = `${ctx} (${r.id})`
+  assert(typeof r.name === 'string', ctx, 'name must be a string')
+  assert(typeof r.narration === 'string', ctx, 'narration must be a string')
+  assert(typeof r.effectId === 'string' && r.effectId.length > 0, ctx, 'effectId must be a non-empty string')
+  assert(typeof r.stacks === 'number', ctx, 'stacks must be a number')
+  if (r.art_ref !== undefined) {
+    assert(typeof r.art_ref === 'string' && r.art_ref.length > 0, ctx, 'art_ref must be a non-empty string')
+  }
+
+  return r as unknown as BlessingDef
 }

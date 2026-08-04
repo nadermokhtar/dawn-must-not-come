@@ -1,16 +1,27 @@
 import { loadContent } from '../../data-loader/loadContent'
-import { startBattle, playCard, endTurn } from '../../engine/battle'
+import { startBattle, playCard, endTurn, type PlayerStats } from '../../engine/battle'
 import { pileCounts } from '../../engine/deck'
-import type { BattleState, CardInstance, Content } from '../../engine/types'
+import type { BattleState, CardInstance, Content, EffectInstance } from '../../engine/types'
 import type { BattleEvent } from '../../engine/events'
 import { createCardElement } from '../cardView'
 import { createArtElement } from '../artUrl'
 import { onHold, onTap } from '../touch'
 import { statBar, pipRow, fillMeter, statusBadge, iconBadge, bottomSheet, flashMessage } from '../components'
-import progression from '../../../data/progression.json'
 
-const ENEMY_ID = 'drunken_dockhand'
 const LOG_CAP = 100
+
+export interface BattleOutcome {
+  outcome: 'win' | 'loss'
+  hpRemaining: number
+}
+
+export interface BattleScreenOptions {
+  enemyId: string
+  playerStats: PlayerStats
+  deck: string[]
+  initialPlayerEffects?: EffectInstance[]
+  onExit: (result: BattleOutcome) => void
+}
 
 // win/loss/damage/heal/effect changes matter more than draws/shuffles when
 // picking the single line shown in the compact #recentLog readout.
@@ -88,9 +99,8 @@ function describeEvent(ev: BattleEvent, content: Content, enemyName: string): st
   }
 }
 
-export function mountBattleScreen(root: HTMLElement): void {
+export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions): () => void {
   const content = loadContent()
-  const sinbad = progression.classes.sinbad
 
   let state: BattleState
   let selectedUid: number | null = null
@@ -133,19 +143,14 @@ export function mountBattleScreen(root: HTMLElement): void {
     if (best) describeRecent(best.text)
   }
 
-  function restart(): void {
+  function begin(): void {
     const result = startBattle({
-      playerStats: {
-        hp: sinbad.hp,
-        apBase: sinbad.ap_base,
-        mana: sinbad.mana,
-        manaMax: sinbad.mana_max,
-        handSize: sinbad.hand_size,
-      },
-      deck: sinbad.starting_deck,
-      enemyId: ENEMY_ID,
+      playerStats: opts.playerStats,
+      deck: opts.deck,
+      enemyId: opts.enemyId,
       content,
       seed: Math.floor(Date.now() % 1_000_000) + 1,
+      initialPlayerEffects: opts.initialPlayerEffects,
     })
     state = result.state
     selectedUid = null
@@ -375,13 +380,14 @@ export function mountBattleScreen(root: HTMLElement): void {
     if (existing) existing.remove()
     if (state.phase !== 'over') return
 
+    const won = state.result === 'win'
     const banner = document.createElement('div')
     banner.className = 'end-banner'
-    banner.innerHTML = `<h2>${state.result === 'win' ? 'Victory' : 'Defeat'}</h2>`
+    banner.innerHTML = `<h2>${won ? 'Victory' : 'Defeat'}</h2>`
     const btn = document.createElement('button')
-    btn.textContent = 'Fight Again'
+    btn.textContent = won ? 'Continue' : 'Return to the Manuscript'
     banner.appendChild(btn)
-    onTap(btn, restart)
+    onTap(btn, () => opts.onExit({ outcome: won ? 'win' : 'loss', hpRemaining: state.player.hp }))
     root.querySelector('.battle-screen')!.appendChild(banner)
   }
 
@@ -393,5 +399,10 @@ export function mountBattleScreen(root: HTMLElement): void {
     renderEndBanner()
   }
 
-  restart()
+  begin()
+
+  return function dispose(): void {
+    root.innerHTML = ''
+    document.querySelectorAll('.zoom-overlay, .sheet-overlay').forEach((el) => el.remove())
+  }
 }

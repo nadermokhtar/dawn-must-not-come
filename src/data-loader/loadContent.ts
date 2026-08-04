@@ -1,5 +1,5 @@
-import type { CardDef, Content, EffectDef, EnemyDef } from '../engine/types'
-import { ValidationError, validateCard, validateEffect, validateEnemy } from './validate'
+import type { BlessingDef, CardDef, Content, EffectDef, EnemyDef, VerseDef } from '../engine/types'
+import { ValidationError, validateBlessing, validateCard, validateEffect, validateEnemy, validateVerse } from './validate'
 
 interface JsonModule {
   default: unknown
@@ -8,6 +8,8 @@ interface JsonModule {
 const cardModules = import.meta.glob('/data/cards/**/*.json', { eager: true }) as Record<string, JsonModule>
 const enemyModules = import.meta.glob('/data/enemies/**/*.json', { eager: true }) as Record<string, JsonModule>
 const effectModules = import.meta.glob('/data/effects/**/*.json', { eager: true }) as Record<string, JsonModule>
+const verseModules = import.meta.glob('/data/verses/**/*.json', { eager: true }) as Record<string, JsonModule>
+const blessingModules = import.meta.glob('/data/blessings/**/*.json', { eager: true }) as Record<string, JsonModule>
 
 function loadArray<T>(
   modules: Record<string, JsonModule>,
@@ -45,7 +47,7 @@ function collectEffectRefs(rawOps: unknown[] | undefined): string[] {
 // Exported separately from loadContent so tests can exercise it against
 // hand-built Content maps without going through import.meta.glob.
 export function validateCrossReferences(content: Content): void {
-  const { cards, enemies, effects } = content
+  const { cards, enemies, effects, verses, blessings } = content
 
   for (const enemy of enemies.values()) {
     for (const cardId of enemy.deck) {
@@ -75,14 +77,30 @@ export function validateCrossReferences(content: Content): void {
       }
     }
   }
+
+  for (const verse of verses.values()) {
+    for (const enemyId of verse.enemyPool ?? []) {
+      if (!enemies.has(enemyId)) {
+        throw new ValidationError(`verse "${verse.id}": enemyPool references unknown enemy "${enemyId}"`)
+      }
+    }
+  }
+
+  for (const blessing of blessings.values()) {
+    if (!effects.has(blessing.effectId)) {
+      throw new ValidationError(`blessing "${blessing.id}": effectId references unknown effect "${blessing.effectId}"`)
+    }
+  }
 }
 
 export function loadContent(): Content {
   const cards = loadArray<CardDef>(cardModules, validateCard, (c) => c.id)
   const effects = loadArray<EffectDef>(effectModules, validateEffect, (e) => e.id)
   const enemies = loadArray<EnemyDef>(enemyModules, validateEnemy, (e) => e.id)
+  const verses = loadArray<VerseDef>(verseModules, validateVerse, (v) => v.id)
+  const blessings = loadArray<BlessingDef>(blessingModules, validateBlessing, (b) => b.id)
 
-  const content: Content = { cards, enemies, effects }
+  const content: Content = { cards, enemies, effects, verses, blessings }
   validateCrossReferences(content)
   return content
 }

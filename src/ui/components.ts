@@ -108,7 +108,11 @@ export function iconBadge(label: string, count?: number, opts: { onTap?: () => v
 
 // Generic bottom-sheet overlay. `build` receives the (empty) body element to
 // fill in; caller owns the content, this owns the overlay/backdrop/dismiss.
-export function bottomSheet(title: string, itemCount: number | undefined, build: (body: HTMLElement) => void): void {
+export function bottomSheet(
+  title: string,
+  itemCount: number | undefined,
+  build: (body: HTMLElement, close: () => void) => void,
+): void {
   const overlay = document.createElement('div')
   overlay.className = 'sheet-overlay'
 
@@ -121,12 +125,13 @@ export function bottomSheet(title: string, itemCount: number | undefined, build:
 
   const body = document.createElement('div')
   sheet.appendChild(body)
-  build(body)
+  const close = () => overlay.remove()
+  build(body, close)
 
   overlay.appendChild(sheet)
   document.body.appendChild(overlay)
   onTap(overlay, (ev) => {
-    if (ev.target === overlay) overlay.remove()
+    if (ev.target === overlay) close()
   })
 }
 

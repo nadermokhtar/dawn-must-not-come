@@ -38,5 +38,236 @@
     "damage": { "amount": 3, "dtype": "steel" },
     "tags": ["bite"],
     "flavor": "Small teeth, sharp enough."
+  },
+  {
+    "id": "customs_officer_baton_strike",
+    "name": "Baton Strike",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 6, "dtype": "steel" },
+    "flavor": "The baton comes down before you can produce papers."
+  },
+  {
+    "id": "customs_officer_shakedown",
+    "name": "Shakedown",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 4, "dtype": "steel" },
+    "flavor": "He pats you down for anything worth declaring."
+  },
+  {
+    "id": "customs_officer_confiscation",
+    "name": "Confiscation",
+    "type": "spell",
+    "cost": { "ap": 0, "mana": 0 },
+    "effects": [{ "apply": "dizzy", "stacks": 1, "target": "opponent" }],
+    "flavor": "\"This is now property of the harbor,\" he says, and your footing goes with it."
+  },
+  {
+    "id": "pickpocket_of_the_souk_quick_slash",
+    "name": "Quick Slash",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 4, "dtype": "true_strike" },
+    "flavor": "The blade finds your purse before you feel the cut."
+  },
+  {
+    "id": "pickpocket_of_the_souk_purse_cut",
+    "name": "Purse Cut",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 3, "dtype": "true_strike" },
+    "flavor": "Gone before the ache tells you it's missing."
+  },
+  {
+    "id": "angry_pelican_wing_buffet",
+    "name": "Wing Buffet",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 6, "dtype": "storm" },
+    "flavor": "Its wings crack the air like a loosed sail."
+  },
+  {
+    "id": "angry_pelican_dive_peck",
+    "name": "Dive Peck",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 4, "dtype": "storm" },
+    "flavor": "It stoops from nowhere and stabs with its bill."
+  },
+  {
+    "id": "pearl_diver_undertow_grab",
+    "name": "Undertow Grab",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 5, "dtype": "tide" },
+    "flavor": "A hand rises from the swell and drags you under."
+  },
+  {
+    "id": "pearl_diver_shell_fling",
+    "name": "Shell Fling",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 4, "dtype": "tide" },
+    "flavor": "A fistful of broken shell, thrown hard."
+  },
+  {
+    "id": "ships_cook_pan_sear",
+    "name": "Pan Sear",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 5, "dtype": "ifrit_flame" },
+    "effects": [{ "apply": "burn", "stacks": 1, "target": "opponent" }],
+    "flavor": "The pan comes off the fire still burning."
+  },
+  {
+    "id": "ships_cook_ladle_smack",
+    "name": "Ladle Smack",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 4, "dtype": "steel" },
+    "flavor": "A ladle to the skull, seasoned with contempt."
+  },
+  {
+    "id": "sleepless_watchman_halberd_sweep",
+    "name": "Halberd Sweep",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 7, "dtype": "steel" },
+    "flavor": "He has not slept in three nights, and the halberd shows it."
+  },
+  {
+    "id": "sleepless_watchman_thrust",
+    "name": "Thrust",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 5, "dtype": "steel" },
+    "flavor": "A straight jab, drilled into muscle memory."
+  },
+  {
+    "id": "sleepless_watchman_brace",
+    "name": "Brace",
+    "type": "spell",
+    "cost": { "ap": 0, "mana": 0 },
+    "effects": [{ "apply": "armor", "stacks": 3, "target": "self" }],
+    "flavor": "He plants his feet and will not be moved."
+  },
+  {
+    "id": "stray_ghul_pup_nip",
+    "name": "Nip",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 2, "dtype": "serpent_venom" },
+    "effects": [{ "apply": "venom", "stacks": 1, "target": "opponent" }],
+    "tags": ["bite"],
+    "flavor": "Small teeth, but they don't let go clean."
+  },
+  {
+    "id": "stray_ghul_pup_snarl",
+    "name": "Snarl",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 3, "dtype": "serpent_venom" },
+    "flavor": "It lunges, all hunger and no plan."
+  },
+  {
+    "id": "snake_charmers_serpent_strike",
+    "name": "Serpent Strike",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 4, "dtype": "serpent_venom" },
+    "effects": [{ "apply": "venom", "stacks": 2, "target": "opponent" }],
+    "flavor": "The charmer's flute falls silent, and the serpent decides for itself."
+  },
+  {
+    "id": "snake_charmers_serpent_coil",
+    "name": "Coil",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 3, "dtype": "serpent_venom" },
+    "effects": [{ "apply": "venom", "stacks": 1, "target": "opponent" }],
+    "flavor": "It coils tighter with every breath you take."
+  },
+  {
+    "id": "superstitious_sailor_marlinspike_swing",
+    "name": "Marlinspike Swing",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 6, "dtype": "steel" },
+    "flavor": "He swings wide, muttering wards against the evil eye."
+  },
+  {
+    "id": "superstitious_sailor_lucky_charm_bash",
+    "name": "Lucky Charm Bash",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 4, "dtype": "steel" },
+    "flavor": "His lucky charm does nothing for you."
+  },
+  {
+    "id": "superstitious_sailor_evil_eye_ward",
+    "name": "Evil Eye Ward",
+    "type": "spell",
+    "cost": { "ap": 0, "mana": 0 },
+    "effects": [{ "apply": "dizzy", "stacks": 1, "target": "opponent" }],
+    "flavor": "He traces a sign in the air, and you stumble for no reason you can name."
+  },
+  {
+    "id": "cargo_mimic_bite",
+    "name": "Bite",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 8, "dtype": "true_strike" },
+    "tags": ["bite"],
+    "flavor": "The crate was never a crate."
+  },
+  {
+    "id": "cargo_mimic_slam_lid",
+    "name": "Slam Lid",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 6, "dtype": "steel" },
+    "flavor": "The lid slams shut on whatever's nearest."
+  },
+  {
+    "id": "cargo_mimic_splinter_spray",
+    "name": "Splinter Spray",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 5, "dtype": "steel" },
+    "flavor": "Wood shrapnel, flung in every direction."
+  },
+  {
+    "id": "whale_crushing_wave",
+    "name": "Crushing Wave",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 14, "dtype": "tide" },
+    "flavor": "The sea itself rises at its command."
+  },
+  {
+    "id": "whale_rolling_breach",
+    "name": "Rolling Breach",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 12, "dtype": "steel" },
+    "flavor": "It breaches, and the whole island seems to turn over."
+  },
+  {
+    "id": "whale_barnacled_hide_slam",
+    "name": "Barnacled Hide Slam",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 10, "dtype": "steel" },
+    "effects": [{ "apply": "armor", "stacks": 4, "target": "self" }],
+    "flavor": "Centuries of barnacle and stone answer as armor."
+  },
+  {
+    "id": "whale_tail_sweep",
+    "name": "Tail Sweep",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 9, "dtype": "tide" },
+    "flavor": "The tail comes around low, and the water comes with it."
   }
 ]

@@ -1,17 +1,23 @@
-import type { CardDef, Content, EffectDef, EnemyDef } from './types'
+import type { BlessingDef, CardDef, Content, EffectDef, EnemyDef, VerseDef } from './types'
 
 export function makeContent(overrides: {
   cards?: CardDef[]
   enemies?: EnemyDef[]
   effects?: EffectDef[]
+  verses?: VerseDef[]
+  blessings?: BlessingDef[]
 }): Content {
   const cards = new Map<string, CardDef>()
   const enemies = new Map<string, EnemyDef>()
   const effects = new Map<string, EffectDef>()
+  const verses = new Map<string, VerseDef>()
+  const blessings = new Map<string, BlessingDef>()
   for (const c of overrides.cards ?? []) cards.set(c.id, c)
   for (const e of overrides.enemies ?? []) enemies.set(e.id, e)
   for (const e of overrides.effects ?? []) effects.set(e.id, e)
-  return { cards, enemies, effects }
+  for (const v of overrides.verses ?? []) verses.set(v.id, v)
+  for (const b of overrides.blessings ?? []) blessings.set(b.id, b)
+  return { cards, enemies, effects, verses, blessings }
 }
 
 export const FIXTURE_EFFECTS: EffectDef[] = [
@@ -227,6 +233,7 @@ export const FIXTURE_ENEMIES: EnemyDef[] = [
   {
     id: 'test_enemy_lethal',
     name: 'Test Brute',
+    tier: 'boss',
     hp: 100,
     resist: [],
     weak: [],
@@ -235,10 +242,65 @@ export const FIXTURE_ENEMIES: EnemyDef[] = [
   },
 ]
 
-export function makeFixtureContent(extra: { cards?: CardDef[]; enemies?: EnemyDef[]; effects?: EffectDef[] } = {}): Content {
+export const FIXTURE_VERSES: VerseDef[] = [
+  {
+    id: 'verse_battle_a',
+    kind: 'battle',
+    night: [1],
+    name: 'Test Battle A',
+    narration: 'A foe blocks the way.',
+    weight: 3,
+    enemyPool: ['test_enemy'],
+  },
+  {
+    id: 'verse_battle_b',
+    kind: 'battle',
+    night: [1],
+    name: 'Test Battle B',
+    narration: 'Another foe blocks the way.',
+    weight: 3,
+    enemyPool: ['test_enemy_resist'],
+  },
+  {
+    id: 'verse_shop',
+    kind: 'shop',
+    night: [1],
+    name: 'Test Bazaar',
+    narration: 'Wares are for sale.',
+    weight: 1,
+    mustCrossOut: true,
+  },
+  {
+    id: 'verse_turn_the_page',
+    kind: 'event',
+    night: [1],
+    name: 'Turn the Page',
+    narration: 'The page turns to reveal a new scene.',
+    weight: 1,
+    reshuffle: true,
+  },
+  {
+    id: 'verse_boss',
+    kind: 'boss',
+    night: [1],
+    name: 'Test Boss',
+    narration: 'The boss awaits.',
+    enemyPool: ['test_enemy_lethal'],
+  },
+]
+
+export const FIXTURE_BLESSINGS: BlessingDef[] = [
+  { id: 'test_blessing_armor', name: 'Test Ward', narration: 'A ward is granted.', effectId: 'armor', stacks: 5 },
+]
+
+export function makeFixtureContent(
+  extra: { cards?: CardDef[]; enemies?: EnemyDef[]; effects?: EffectDef[]; verses?: VerseDef[]; blessings?: BlessingDef[] } = {},
+): Content {
   return makeContent({
     cards: [...FIXTURE_CARDS, ...(extra.cards ?? [])],
     enemies: [...FIXTURE_ENEMIES, ...(extra.enemies ?? [])],
     effects: [...FIXTURE_EFFECTS, ...(extra.effects ?? [])],
+    verses: [...FIXTURE_VERSES, ...(extra.verses ?? [])],
+    blessings: [...FIXTURE_BLESSINGS, ...(extra.blessings ?? [])],
   })
 }

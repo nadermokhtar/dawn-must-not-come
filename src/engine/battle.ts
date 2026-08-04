@@ -1,4 +1,4 @@
-import type { BattleState, Content, EnemyState, PlayerState } from './types'
+import type { BattleState, Content, EffectInstance, EnemyState, PlayerState } from './types'
 import { applyDamage, checkWinLoss, isBattleOver } from './damage'
 import { drawCards } from './deck'
 import { runHooks } from './effects'
@@ -10,6 +10,7 @@ import type { Emit, BattleEvent } from './events'
 
 export interface PlayerStats {
   hp: number
+  maxHp?: number
   apBase: number
   mana: number
   manaMax: number
@@ -22,6 +23,7 @@ export interface StartBattleArgs {
   enemyId: string
   content: Content
   seed: number
+  initialPlayerEffects?: EffectInstance[]
 }
 
 export interface BattleResult {
@@ -43,12 +45,12 @@ export function startBattle(args: StartBattleArgs): BattleResult {
 
   const player: PlayerState = {
     hp: args.playerStats.hp,
-    maxHp: args.playerStats.hp,
+    maxHp: args.playerStats.maxHp ?? args.playerStats.hp,
     ap: 0,
     apBase: args.playerStats.apBase,
     mana: args.playerStats.mana,
     manaMax: args.playerStats.manaMax,
-    effects: [],
+    effects: args.initialPlayerEffects ?? [],
     drawPile,
     hand: [],
     discard: [],

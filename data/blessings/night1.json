@@ -1,0 +1,26 @@
+[
+  {
+    "id": "jinni_blessing_wards",
+    "name": "Wards of the Lamp",
+    "narration": "\"Wear this ward,\" said the Jinni, \"and let no blade find purchase.\"",
+    "effectId": "armor",
+    "stacks": 5,
+    "art_ref": "ui/blessing_wards.png"
+  },
+  {
+    "id": "jinni_blessing_smoke_veil",
+    "name": "Veil of Smoke",
+    "narration": "\"Wrap yourself in this smoke,\" the Jinni murmured, \"and blows will find only shadow.\"",
+    "effectId": "armor",
+    "stacks": 3,
+    "art_ref": "ui/blessing_smoke_veil.png"
+  },
+  {
+    "id": "jinni_blessing_brass_scale",
+    "name": "Scales of Brass",
+    "narration": "\"Alhamdulillah [praise be to God],\" the Jinni said, pressing brass scales into Sinbad's palm, \"wear these, and no blade shall know where you end and the ship begins.\"",
+    "effectId": "armor",
+    "stacks": 8,
+    "art_ref": "ui/blessing_brass_scale.png"
+  }
+]

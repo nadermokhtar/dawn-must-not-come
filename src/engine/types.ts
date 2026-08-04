@@ -157,8 +157,33 @@ export interface EffectDef {
   modifiers?: EffectModifier[]
 }
 
+export type VerseKind = 'battle' | 'shop' | 'upgrade' | 'remove' | 'blessing' | 'chest' | 'event' | 'bank' | 'boss'
+
+export interface VerseDef {
+  id: string
+  kind: VerseKind
+  night: number[]
+  name: string
+  narration: string
+  weight?: number
+  mustCrossOut?: boolean
+  reshuffle?: boolean
+  enemyPool?: string[]
+}
+
+export interface BlessingDef {
+  id: string
+  name: string
+  narration: string
+  effectId: string
+  stacks: number
+  art_ref?: string
+}
+
 export interface Content {
   cards: Map<string, CardDef>
   enemies: Map<string, EnemyDef>
   effects: Map<string, EffectDef>
+  verses: Map<string, VerseDef>
+  blessings: Map<string, BlessingDef>
 }

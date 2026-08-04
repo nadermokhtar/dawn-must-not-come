@@ -1,0 +1,181 @@
+[
+  {
+    "id": "verse_drunken_dockhand",
+    "kind": "battle",
+    "night": [1],
+    "name": "Drunken Dockhand",
+    "narration": "\"A dockhand blocked the gangway,\" said Scheherazade, \"three parts rum and one part fury.\"",
+    "enemyPool": ["drunken_dockhand"],
+    "weight": 3
+  },
+  {
+    "id": "verse_rat_of_the_hold",
+    "kind": "battle",
+    "night": [1],
+    "name": "Rat of the Hold",
+    "narration": "\"Something moved in the hold,\" said Scheherazade, \"low and quick and unbothered by the dark.\"",
+    "enemyPool": ["rat_of_the_hold"],
+    "weight": 3
+  },
+  {
+    "id": "verse_customs_officer",
+    "kind": "battle",
+    "night": [1],
+    "name": "Customs Officer",
+    "narration": "\"The customs officer demanded to see his papers,\" said Scheherazade, \"and Sinbad, having none worth showing, drew his blade instead.\"",
+    "enemyPool": ["customs_officer"],
+    "weight": 3
+  },
+  {
+    "id": "verse_pickpocket_of_the_souk",
+    "kind": "battle",
+    "night": [1],
+    "name": "Pickpocket of the Souk",
+    "narration": "\"A hand slipped toward his belt in the crowded souk,\" said Scheherazade, \"quick as a thought and twice as light-fingered.\"",
+    "enemyPool": ["pickpocket_of_the_souk"],
+    "weight": 3
+  },
+  {
+    "id": "verse_angry_pelican",
+    "kind": "battle",
+    "night": [1],
+    "name": "Angry Pelican",
+    "narration": "\"A pelican, robbed of its catch by careless fishermen, decided the nearest sailor would do instead,\" said Scheherazade.",
+    "enemyPool": ["angry_pelican"],
+    "weight": 3
+  },
+  {
+    "id": "verse_pearl_diver",
+    "kind": "battle",
+    "night": [1],
+    "name": "Pearl Diver",
+    "narration": "\"A pearl diver surfaced with empty hands and a temper to match,\" said Scheherazade, \"and blamed the nearest stranger for her luck.\"",
+    "enemyPool": ["pearl_diver"],
+    "weight": 3
+  },
+  {
+    "id": "verse_ships_cook",
+    "kind": "battle",
+    "night": [1],
+    "name": "Ship's Cook",
+    "narration": "\"The ship's cook, furious that his galley had been raided, came swinging with the nearest thing still hot,\" said Scheherazade.",
+    "enemyPool": ["ships_cook"],
+    "weight": 3
+  },
+  {
+    "id": "verse_sleepless_watchman",
+    "kind": "battle",
+    "night": [1],
+    "name": "Sleepless Watchman",
+    "narration": "\"The watchman had not slept in three nights,\" said Scheherazade, \"and mistook Sinbad for the ghost he'd been warned about.\"",
+    "enemyPool": ["sleepless_watchman"],
+    "weight": 3
+  },
+  {
+    "id": "verse_stray_ghul_pup",
+    "kind": "battle",
+    "night": [1],
+    "name": "Stray Ghul-pup",
+    "narration": "\"Astaghfirullah [I seek God's forgiveness],\" whispered Scheherazade, \"a small ghoul, orphaned from whatever bred it, snapped at his heels in the dark.\"",
+    "enemyPool": ["stray_ghul_pup"],
+    "weight": 3
+  },
+  {
+    "id": "verse_snake_charmers_serpent",
+    "kind": "battle",
+    "night": [1],
+    "name": "Snake Charmer's Serpent",
+    "narration": "\"The charmer's flute had stopped,\" said Scheherazade, \"and the serpent, no longer charmed, remembered it was a serpent.\"",
+    "enemyPool": ["snake_charmers_serpent"],
+    "weight": 3
+  },
+  {
+    "id": "verse_superstitious_sailor",
+    "kind": "battle",
+    "night": [1],
+    "name": "Superstitious Sailor",
+    "narration": "\"A sailor swore Sinbad's shadow fell wrong,\" said Scheherazade, \"and drew steel against the evil eye he was certain he'd seen.\"",
+    "enemyPool": ["superstitious_sailor"],
+    "weight": 3
+  },
+  {
+    "id": "verse_cargo_mimic",
+    "kind": "battle",
+    "night": [1],
+    "name": "Cargo Mimic",
+    "narration": "\"Ya Allah [O God],\" said Scheherazade, \"the crate Sinbad reached for was not a crate at all.\"",
+    "enemyPool": ["cargo_mimic"],
+    "weight": 3
+  },
+  {
+    "id": "verse_whale_boss",
+    "kind": "boss",
+    "night": [1],
+    "name": "The Whale That Was an Island",
+    "narration": "\"Mashallah [what God has willed],\" breathed Scheherazade, \"what they had thought an island rose from the sea, and the island had teeth.\"",
+    "enemyPool": ["whale_that_was_an_island"]
+  },
+  {
+    "id": "verse_bazaar",
+    "kind": "shop",
+    "night": [1],
+    "name": "The Bazaar",
+    "narration": "\"There was in that city a bazaar,\" said Scheherazade, \"where anything could be bought — for the right story.\"",
+    "mustCrossOut": true,
+    "weight": 1
+  },
+  {
+    "id": "verse_calligrapher",
+    "kind": "upgrade",
+    "night": [1],
+    "name": "The Calligrapher",
+    "narration": "\"In a narrow stall sat the Calligrapher,\" said Scheherazade, \"who for a price would re-ink a blade's story in gold leaf, and strengthen it in the telling.\"",
+    "mustCrossOut": true,
+    "weight": 1
+  },
+  {
+    "id": "verse_house_of_forgetting",
+    "kind": "remove",
+    "night": [1],
+    "name": "The House of Forgetting",
+    "narration": "\"Behind a curtained doorway was a tavern thick with lotus-smoke,\" said Scheherazade, \"where a man might trade a memory for silence — for wallahi [I swear by God], some verses are best left untold.\"",
+    "mustCrossOut": true,
+    "weight": 1
+  },
+  {
+    "id": "verse_jinni_lamp",
+    "kind": "blessing",
+    "night": [1],
+    "name": "The Jinni of the Lamp",
+    "narration": "\"Half-buried in the sand, a brass lamp caught the light,\" said Scheherazade, \"and from its spout curled a Jinni, already bargaining.\"",
+    "mustCrossOut": true,
+    "weight": 1
+  },
+  {
+    "id": "verse_shy_chest",
+    "kind": "chest",
+    "night": [1],
+    "name": "The Bashful Oyster",
+    "narration": "\"An oyster lay half-buried in the sand,\" said Scheherazade, \"clamped shut like a secret too shy to tell — though a pearl gleamed within, for those with patient hands.\"",
+    "mustCrossOut": true,
+    "weight": 1
+  },
+  {
+    "id": "verse_greedy_chest",
+    "kind": "chest",
+    "night": [1],
+    "name": "The Greedy Jar",
+    "narration": "\"A sealed jar sat too neatly on the dock,\" said Scheherazade, \"and something inside it wanted, very badly, to be opened.\"",
+    "mustCrossOut": true,
+    "weight": 1
+  },
+  {
+    "id": "verse_turn_the_page",
+    "kind": "event",
+    "night": [1],
+    "name": "Turn the Page",
+    "narration": "\"Scheherazade turned the page,\" she said, \"and where the ink had been blank, a new scene bloomed to take its place.\"",
+    "reshuffle": true,
+    "weight": 1
+  }
+]

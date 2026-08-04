@@ -20,5 +20,13 @@
         "sinbad_boarding_action"
       ]
     }
+  },
+  "nights": {
+    "1": { "pages": 22 }
+  },
+  "pricing": {
+    "shop": { "common": 40, "uncommon": 70, "rare": 120 },
+    "upgrade": 50,
+    "remove": 60
   }
 }

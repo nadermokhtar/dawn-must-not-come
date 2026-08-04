@@ -75,11 +75,21 @@ mechanics, content, art direction, and data schemas. Read it before implementing
     (tracked per profile) and on tap thereafter.
 
 ## Project status (update as milestones land)
-- **Now:** pre-code. Design (`DESIGN.md`), art pipeline (`PROMPT_PACK.md`), and
-  ~60% of vertical-slice art (`assets/MANIFEST.md`) are in place. No engine yet.
-- **Next milestone:** vertical slice per DESIGN.md §9.6 — scaffold Vite + TS,
-  battle engine with Vitest tests, then Night I content as JSON.
-- Slice-blocking art gaps: bg_night1 (Basra), dockhand, frame_epic, UI kit.
+- **Now:** Night I is playable start-to-finish — battle engine, deck/card system,
+  Map/Verse system (run state, 3-up selection, page counter, all node kinds), and a
+  working economy (Bazaar/Calligrapher/House of Forgetting/Jinni of the Lamp) are all
+  in place per DESIGN.md §9.6 steps 1-3 (plus economy pieces of 4-5). 12 Night I normal
+  enemies + The Whale That Was an Island boss are authored as data.
+- **Explicitly deferred:** XP/leveling math and level-up card picks (§3.4's last
+  bullet), the boss's "battlefield sinks in phases" gimmick (boss is a real
+  boss-tier statblock without it), localStorage persistence (`RunState` is plain-JSON
+  so this is cheap to add later).
+- **Next milestone:** XP/leveling, Blessings beyond the Jinni's fixed pool, Story Forks
+  + Wonder/Mercy thresholds (§9.6 steps 4-6), then real Night I/boss art to replace
+  placeholders.
+- Slice-blocking art gaps: bg_night1 (Basra), dockhand, frame_epic, UI kit, and art
+  for all 10 newly-authored enemies + the boss (all reference placeholder `art_ref`
+  paths that don't resolve to real assets yet).
 
 ## Project skills
 - `/asset-intake` — file newly generated art into `/assets` (dedupe, canonical
