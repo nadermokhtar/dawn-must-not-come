@@ -28,10 +28,24 @@ function loadArray<T>(
   return out
 }
 
-export function loadContent(): Content {
-  const cards = loadArray<CardDef>(cardModules, validateCard, (c) => c.id)
-  const effects = loadArray<EffectDef>(effectModules, validateEffect, (e) => e.id)
-  const enemies = loadArray<EnemyDef>(enemyModules, validateEnemy, (e) => e.id)
+// Scans a raw (pre-normalization) op array for effect-id references, in both
+// the card-authoring shorthand ({apply: "venom", ...}) and the full op form
+// ({op: "apply_effect"|"remove_effect", id: "venom", ...}).
+function collectEffectRefs(rawOps: unknown[] | undefined): string[] {
+  if (!rawOps) return []
+  const refs: string[] = []
+  for (const raw of rawOps) {
+    const r = raw as Record<string, unknown>
+    if (typeof r.apply === 'string') refs.push(r.apply)
+    if ((r.op === 'apply_effect' || r.op === 'remove_effect') && typeof r.id === 'string') refs.push(r.id)
+  }
+  return refs
+}
+
+// Exported separately from loadContent so tests can exercise it against
+// hand-built Content maps without going through import.meta.glob.
+export function validateCrossReferences(content: Content): void {
+  const { cards, enemies, effects } = content
 
   for (const enemy of enemies.values()) {
     for (const cardId of enemy.deck) {
@@ -44,5 +58,31 @@ export function loadContent(): Content {
     }
   }
 
-  return { cards, enemies, effects }
+  for (const card of cards.values()) {
+    for (const upgradeId of card.upgrades ?? []) {
+      if (!cards.has(upgradeId)) {
+        throw new ValidationError(`card "${card.id}": upgrades references unknown card "${upgradeId}"`)
+      }
+    }
+    for (const effectId of collectEffectRefs(card.effects)) {
+      if (!effects.has(effectId)) {
+        throw new ValidationError(`card "${card.id}": effects references unknown effect "${effectId}"`)
+      }
+    }
+    for (const effectId of collectEffectRefs(card.counter?.effects)) {
+      if (!effects.has(effectId)) {
+        throw new ValidationError(`card "${card.id}": counter.effects references unknown effect "${effectId}"`)
+      }
+    }
+  }
+}
+
+export function loadContent(): Content {
+  const cards = loadArray<CardDef>(cardModules, validateCard, (c) => c.id)
+  const effects = loadArray<EffectDef>(effectModules, validateEffect, (e) => e.id)
+  const enemies = loadArray<EnemyDef>(enemyModules, validateEnemy, (e) => e.id)
+
+  const content: Content = { cards, enemies, effects }
+  validateCrossReferences(content)
+  return content
 }

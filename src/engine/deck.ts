@@ -26,3 +26,26 @@ function drawOne(state: BattleState, rng: Rng, emit: Emit): void {
 export function drawCards(state: BattleState, count: number, rng: Rng, emit: Emit): void {
   for (let i = 0; i < count; i++) drawOne(state, rng, emit)
 }
+
+export interface PileCounts {
+  drawPile: number
+  hand: number
+  discard: number
+  exhaust: number
+  counters: number
+  total: number
+}
+
+// Never touches exhaust: reshuffles only pull from discard, so an exhausted
+// card is gone for the rest of the battle by construction.
+export function pileCounts(state: BattleState): PileCounts {
+  const p = state.player
+  return {
+    drawPile: p.drawPile.length,
+    hand: p.hand.length,
+    discard: p.discard.length,
+    exhaust: p.exhaust.length,
+    counters: p.counters.length,
+    total: p.drawPile.length + p.hand.length + p.discard.length + p.exhaust.length + p.counters.length,
+  }
+}

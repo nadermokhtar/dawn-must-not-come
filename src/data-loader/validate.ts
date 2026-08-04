@@ -38,6 +38,21 @@ export function validateCard(raw: unknown, ctx: string): CardDef {
     assert(typeof r.counter === 'object' && r.counter !== null, ctx, 'counter must be an object')
     const counter = r.counter as Record<string, unknown>
     assert(typeof counter.match === 'object' && counter.match !== null, ctx, 'counter.match must be an object')
+    if (counter.effects !== undefined) assert(Array.isArray(counter.effects), ctx, 'counter.effects must be an array')
+  }
+  if (r.stars !== undefined) {
+    assert(typeof r.stars === 'number' && r.stars >= 0 && r.stars <= 3, ctx, 'stars must be a number 0-3')
+  }
+  if (r.upgrades !== undefined) {
+    assert(Array.isArray(r.upgrades), ctx, 'upgrades must be an array')
+    assert(
+      (r.upgrades as unknown[]).every((u) => typeof u === 'string' && u.length > 0),
+      ctx,
+      'upgrades must be an array of non-empty strings',
+    )
+  }
+  if (r.art_ref !== undefined) {
+    assert(typeof r.art_ref === 'string' && r.art_ref.length > 0, ctx, 'art_ref must be a non-empty string')
   }
 
   return r as unknown as CardDef
