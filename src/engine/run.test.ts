@@ -29,6 +29,7 @@ const content = makeFixtureContent({
       class: 'sinbad',
       name: 'Test Upgradeable',
       cost: { ap: 1, mana: 0 },
+      cost_type: 'ap',
       damage: { amount: 5, dtype: 'steel' },
       rarity: 'common',
       upgrades: ['test_upgradeable_plus'],
@@ -39,15 +40,16 @@ const content = makeFixtureContent({
       class: 'sinbad',
       name: 'Test Upgradeable+',
       cost: { ap: 1, mana: 0 },
+      cost_type: 'ap',
       damage: { amount: 8, dtype: 'steel' },
       rarity: 'common',
     },
-    { id: 'test_curse', type: 'curse', class: 'sinbad', name: 'Test Curse', cost: { ap: 0, mana: 0 } },
+    { id: 'test_curse', type: 'curse', class: 'sinbad', name: 'Test Curse', cost: { ap: 0, mana: 0 }, cost_type: 'ap' },
     // No `class` — mirrors a real enemy move card. Must never appear in a
     // player-facing sample (this is exactly the bug the strict class filter
     // in sampleClassCards fixes: a live playthrough surfaced enemy moves
     // leaking into level-up card rewards before this was tightened).
-    { id: 'test_enemy_move', type: 'attack', name: 'Test Enemy Move', cost: { ap: 0, mana: 0 }, damage: { amount: 3, dtype: 'steel' } },
+    { id: 'test_enemy_move', type: 'attack', name: 'Test Enemy Move', cost: { ap: 0, mana: 0 }, cost_type: 'ap', damage: { amount: 3, dtype: 'steel' } },
   ],
   enemies: [
     { id: 'test_enemy_lvl1', name: 'Level 1 Foe', level: 1, hp: 10, resist: [], weak: [], deck: ['enemy_attack'], ai: { mode: 'sequential' } },

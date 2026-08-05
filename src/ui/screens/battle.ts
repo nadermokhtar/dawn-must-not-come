@@ -3,10 +3,10 @@ import { startBattle, playCard, endTurn, type PlayerStats } from '../../engine/b
 import { pileCounts } from '../../engine/deck'
 import type { BattleState, CardInstance, Content, EffectInstance } from '../../engine/types'
 import type { BattleEvent } from '../../engine/events'
-import { createCardElement } from '../cardView'
+import { createCardElement, showCardZoom } from '../cardView'
 import { createArtElement } from '../artUrl'
 import { onHold, onTap } from '../touch'
-import { statBar, pipRow, fillMeter, statusBadge, iconBadge, bottomSheet, flashMessage } from '../components'
+import { statBar, statusBadge, iconBadge, armorBadge, hourglassStat, bottomSheet, flashMessage } from '../components'
 
 const LOG_CAP = 100
 const ENEMY_HAND_SIZE = 3
@@ -27,7 +27,7 @@ export interface BattleScreenOptions {
 }
 
 // win/loss/damage/heal/effect changes matter more than draws/shuffles when
-// picking the single line shown in the compact #recentLog readout.
+// picking the single line shown in the compact narration readout.
 const PRIORITY: Partial<Record<BattleEvent['type'], number>> = {
   win: 100,
   loss: 100,
@@ -47,6 +47,10 @@ function glyphFor(effectId: string): string {
 
 function sideLabel(side: 'player' | 'enemy', enemyName: string): string {
   return side === 'player' ? 'Sinbad' : enemyName
+}
+
+function armorStacksOf(effects: EffectInstance[]): number {
+  return effects.find((e) => e.effectId === 'armor')?.stacks ?? 0
 }
 
 // Covers the full BattleEvent union so the log drawer can show everything
@@ -110,36 +114,49 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
   let logEntries: string[] = []
 
   let lowHpBarked = false
+  let dialogueText = ''
+  let recentText = ''
+  let narrationExpanded = false
 
   root.innerHTML = `
     <div class="battle-screen" style="display:flex;flex-direction:column;height:100%;overflow:hidden;">
-      <div id="enemyBanner" class="enemy-banner" style="padding:0.75rem 0.75rem 0;"></div>
-      <div id="enemyHandStrip" class="enemy-hand-strip"></div>
-      <div id="dialogueLine" class="battle-dialogue"></div>
-      <div id="recentLog" style="padding:0.4rem 0.75rem;font-size:0.75rem;opacity:0.75;min-height:1.2em;"></div>
-      <div style="flex:1;"></div>
-      <div id="handStrip" class="hand-strip fanned"></div>
-      <div id="iconBadgeRow" class="icon-badge-row"></div>
+      <div id="enemyZone" class="enemy-zone"></div>
+      <div id="enemyArmorStrip" class="enemy-armor-strip"></div>
+      <div id="narrationPanel" class="narration-panel"></div>
+      <div id="handZone" class="hand-zone">
+        <div id="handStrip" class="hand-strip fanned"></div>
+      </div>
+      <div id="statusStrip" class="player-status-strip"></div>
       <div id="hudBar" class="hud-bar"></div>
     </div>
   `
 
-  const enemyBanner = root.querySelector<HTMLElement>('#enemyBanner')!
-  const enemyHandStrip = root.querySelector<HTMLElement>('#enemyHandStrip')!
-  const dialogueLine = root.querySelector<HTMLElement>('#dialogueLine')!
-  const recentLog = root.querySelector<HTMLElement>('#recentLog')!
+  const enemyZone = root.querySelector<HTMLElement>('#enemyZone')!
+  const enemyArmorStrip = root.querySelector<HTMLElement>('#enemyArmorStrip')!
+  const narrationPanel = root.querySelector<HTMLElement>('#narrationPanel')!
   const handStrip = root.querySelector<HTMLElement>('#handStrip')!
-  const iconBadgeRow = root.querySelector<HTMLElement>('#iconBadgeRow')!
+  const statusStrip = root.querySelector<HTMLElement>('#statusStrip')!
   const hudBar = root.querySelector<HTMLElement>('#hudBar')!
 
+  function renderNarrationPanel(): void {
+    narrationPanel.classList.toggle('expanded', narrationExpanded)
+    narrationPanel.innerHTML = ''
+    const text = document.createElement('p')
+    text.className = 'narration-text'
+    text.textContent = [dialogueText, recentText].filter(Boolean).join('  ')
+    narrationPanel.appendChild(text)
+  }
+
   function describeRecent(text: string): void {
-    recentLog.textContent = text
+    recentText = text
+    renderNarrationPanel()
   }
 
   let barkTimeoutId: ReturnType<typeof setTimeout> | undefined
 
   function bark(text: string): void {
-    dialogueLine.textContent = text
+    dialogueText = text
+    renderNarrationPanel()
   }
 
   // The frame story is Scheherazade narrating Sinbad's voyage to King
@@ -152,6 +169,11 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
     barkTimeoutId = setTimeout(() => bark(narrationLine), 1300)
   }
 
+  onTap(narrationPanel, () => {
+    narrationExpanded = !narrationExpanded
+    renderNarrationPanel()
+  })
+
   function hitTargetsFrom(events: BattleEvent[]): Array<'player' | 'enemy'> {
     const seen = new Set<'player' | 'enemy'>()
     for (const ev of events) {
@@ -162,7 +184,7 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
 
   function triggerHitAnimation(target: 'player' | 'enemy'): void {
     if (target === 'enemy') {
-      const wrap = enemyBanner.querySelector<HTMLElement>('.enemy-portrait-wrap')
+      const wrap = enemyZone.querySelector<HTMLElement>('.enemy-portrait-wrap')
       if (!wrap) return
       wrap.classList.remove('hit')
       void wrap.offsetWidth
@@ -181,7 +203,7 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
   function revealEnemyPlays(events: BattleEvent[]): void {
     const plays = events.filter((ev) => ev.type === 'enemy_play')
     if (plays.length === 0) return
-    const backs = [...enemyHandStrip.querySelectorAll<HTMLElement>('.card-back')]
+    const backs = [...enemyZone.querySelectorAll<HTMLElement>('.card-back')]
     plays.forEach((ev, i) => {
       const back = backs[i % backs.length]
       if (!back) return
@@ -288,14 +310,6 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
     }
   }
 
-  function showZoom(cardDef: Parameters<typeof createCardElement>[0]): void {
-    const overlay = document.createElement('div')
-    overlay.className = 'zoom-overlay'
-    overlay.appendChild(createCardElement(cardDef, { zoom: true }))
-    document.body.appendChild(overlay)
-    onTap(overlay, () => overlay.remove())
-  }
-
   function showPileList(title: string, cards: CardInstance[]): void {
     bottomSheet(title, cards.length, (body) => {
       const list = document.createElement('ul')
@@ -330,9 +344,9 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
     })
   }
 
-  function renderEnemyBanner(): void {
+  function renderEnemyZone(): void {
     const enemyDef = content.enemies.get(state.enemy.enemyId)!
-    enemyBanner.innerHTML = ''
+    enemyZone.innerHTML = ''
 
     const portraitWrap = document.createElement('div')
     portraitWrap.className = 'enemy-portrait-wrap'
@@ -343,53 +357,72 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
     turnBadge.textContent = `Turn ${state.turn}`
     portraitWrap.appendChild(turnBadge)
 
-    const nameplate = document.createElement('div')
-    nameplate.className = 'enemy-nameplate'
-    const nameEl = document.createElement('div')
-    nameEl.className = 'enemy-name'
-    nameEl.textContent = enemyDef.name
-    nameplate.appendChild(nameEl)
-
-    const subtitleText = [
-      enemyDef.night ? `Night ${enemyDef.night}` : null,
-      enemyDef.tier,
-      enemyDef.level !== undefined ? `Lv ${enemyDef.level}` : null,
-    ]
-      .filter(Boolean)
-      .join(' · ')
-    if (subtitleText) {
-      const subtitle = document.createElement('div')
-      subtitle.className = 'enemy-subtitle'
-      subtitle.textContent = subtitleText
-      nameplate.appendChild(subtitle)
-    }
-
-    nameplate.appendChild(statBar(state.enemy.hp, state.enemy.maxHp, { color: 'var(--madder)', showNumbers: true }))
-    portraitWrap.appendChild(nameplate)
-    enemyBanner.appendChild(portraitWrap)
-
-    const badgeRow = document.createElement('div')
-    badgeRow.className = 'status-badge-row'
-    for (const e of state.enemy.effects) {
-      const def = content.effects.get(e.effectId)
-      badgeRow.appendChild(statusBadge(glyphFor(e.effectId), e.stacks, def?.kind ?? 'neutral', def?.name ?? e.effectId))
-    }
-    enemyBanner.appendChild(badgeRow)
-  }
-
-  // The enemy has no real "hand" in the engine — moves come off its deck via
-  // the AI. This is a purely decorative fan of face-down backs so the enemy
-  // reads as a combatant holding cards, not just a health bar; revealEnemyPlays
-  // flips one to show the name after an enemy_play event.
-  function renderEnemyHandStrip(): void {
-    enemyHandStrip.innerHTML = ''
+    // The enemy has no real "hand" in the engine — moves come off its deck
+    // via the AI. This is a purely decorative fan of face-down backs so the
+    // enemy reads as a combatant holding cards; revealEnemyPlays flips one
+    // to show the name after an enemy_play event.
+    const handBacks = document.createElement('div')
+    handBacks.className = 'enemy-hand-strip'
     for (let i = 0; i < ENEMY_HAND_SIZE; i++) {
       const back = document.createElement('div')
       back.className = 'card card-back'
       const label = document.createElement('div')
       label.className = 'card-back-label'
       back.appendChild(label)
-      enemyHandStrip.appendChild(back)
+      handBacks.appendChild(back)
+    }
+    portraitWrap.appendChild(handBacks)
+
+    enemyZone.appendChild(portraitWrap)
+
+    const nameplate = document.createElement('div')
+    nameplate.className = 'enemy-nameplate'
+
+    const nameRow = document.createElement('div')
+    nameRow.className = 'enemy-name-row'
+    const nameEl = document.createElement('span')
+    nameEl.className = 'enemy-name'
+    nameEl.textContent = enemyDef.name
+    nameRow.appendChild(nameEl)
+
+    const subtitleParts = [
+      enemyDef.night ? `Night ${enemyDef.night}` : null,
+      enemyDef.level !== undefined ? `Lv ${enemyDef.level}` : null,
+    ].filter((s): s is string => Boolean(s))
+    if (subtitleParts.length > 0) {
+      const lvl = document.createElement('span')
+      lvl.className = 'enemy-level'
+      lvl.textContent = subtitleParts.join(' · ')
+      nameRow.appendChild(lvl)
+    }
+    nameplate.appendChild(nameRow)
+
+    nameplate.appendChild(statBar(state.enemy.hp, state.enemy.maxHp, { color: 'var(--madder)', showNumbers: true }))
+
+    const subRow = document.createElement('div')
+    subRow.className = 'enemy-sub-row'
+    subRow.appendChild(statBar(state.enemy.mana, state.enemy.manaMax, { color: 'var(--cost-mana)', showNumbers: true, height: 10 }))
+    subRow.appendChild(hourglassStat(state.enemy.ap))
+    nameplate.appendChild(subRow)
+
+    enemyZone.appendChild(nameplate)
+  }
+
+  function renderEnemyArmorStrip(): void {
+    enemyArmorStrip.innerHTML = ''
+    const armorStacks = armorStacksOf(state.enemy.effects)
+    const otherEffects = state.enemy.effects.filter((e) => e.effectId !== 'armor')
+
+    if (armorStacks === 0 && otherEffects.length === 0) {
+      enemyArmorStrip.classList.add('empty')
+      return
+    }
+    enemyArmorStrip.classList.remove('empty')
+
+    if (armorStacks > 0) enemyArmorStrip.appendChild(armorBadge(armorStacks))
+    for (const e of otherEffects) {
+      const def = content.effects.get(e.effectId)
+      enemyArmorStrip.appendChild(statusBadge(glyphFor(e.effectId), e.stacks, def?.kind ?? 'neutral', def?.name ?? e.effectId))
     }
   }
 
@@ -409,7 +442,7 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
         el,
         () => {
           heldTriggered = true
-          showZoom(def)
+          showCardZoom(def)
         },
         { ms: 350 },
       )
@@ -425,19 +458,30 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
     })
   }
 
-  function renderIconBadges(): void {
-    iconBadgeRow.innerHTML = ''
+  function renderStatusStrip(): void {
+    statusStrip.innerHTML = ''
     const counts = pileCounts(state)
-    const defs: Array<[string, number, CardInstance[]]> = [
-      ['Draw', counts.drawPile, state.player.drawPile],
-      ['Discard', counts.discard, state.player.discard],
-      ['Exhaust', counts.exhaust, state.player.exhaust],
-      ['Set', counts.counters, state.player.counters],
-    ]
-    for (const [label, count, cards] of defs) {
-      iconBadgeRow.appendChild(iconBadge(label, count, { onTap: () => showPileList(label, cards) }))
+
+    const left = document.createElement('div')
+    left.className = 'status-strip-left'
+    left.appendChild(iconBadge('Draw', counts.drawPile, { compact: true, onTap: () => showPileList('Draw', state.player.drawPile) }))
+    statusStrip.appendChild(left)
+
+    const center = document.createElement('div')
+    center.className = 'status-strip-center'
+    for (const e of state.player.effects) {
+      const def = content.effects.get(e.effectId)
+      center.appendChild(statusBadge(glyphFor(e.effectId), e.stacks, def?.kind ?? 'neutral', def?.name ?? e.effectId))
     }
-    iconBadgeRow.appendChild(iconBadge('Log', logEntries.length, { onTap: showLogDrawer }))
+    statusStrip.appendChild(center)
+
+    const right = document.createElement('div')
+    right.className = 'status-strip-right'
+    right.appendChild(iconBadge('Disc', counts.discard, { compact: true, onTap: () => showPileList('Discard', state.player.discard) }))
+    right.appendChild(iconBadge('Exh', counts.exhaust, { compact: true, onTap: () => showPileList('Exhaust', state.player.exhaust) }))
+    right.appendChild(iconBadge('Set', counts.counters, { compact: true, onTap: () => showPileList('Set', state.player.counters) }))
+    right.appendChild(iconBadge('Log', logEntries.length, { compact: true, onTap: showLogDrawer }))
+    statusStrip.appendChild(right)
   }
 
   function renderHud(): void {
@@ -445,39 +489,31 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
 
     const row1 = document.createElement('div')
     row1.className = 'hud-row'
-    row1.appendChild(createArtElement('classes/sinbad.png', 'Sinbad', 'player-portrait'))
-    row1.appendChild(pipRow(state.player.ap, state.player.apBase, { color: 'var(--gold)' }))
-    row1.appendChild(statBar(state.player.hp, state.player.maxHp, { color: 'var(--turquoise)', showNumbers: true }))
-    row1.appendChild(
-      fillMeter(state.player.mana, state.player.manaMax, {
-        color: 'var(--turquoise)',
-        label: `${state.player.mana}/${state.player.manaMax}`,
-      }),
-    )
-    hudBar.appendChild(row1)
-
-    if (state.player.effects.length > 0) {
-      const badgeRow = document.createElement('div')
-      badgeRow.className = 'status-badge-row'
-      for (const e of state.player.effects) {
-        const def = content.effects.get(e.effectId)
-        badgeRow.appendChild(
-          statusBadge(glyphFor(e.effectId), e.stacks, def?.kind ?? 'neutral', def?.name ?? e.effectId),
-        )
-      }
-      hudBar.appendChild(badgeRow)
+    const portraitWrap = document.createElement('div')
+    portraitWrap.className = 'player-portrait-wrap'
+    portraitWrap.appendChild(createArtElement('classes/sinbad.png', 'Sinbad', 'player-portrait'))
+    if (opts.playerLevel !== undefined) {
+      const lvlBadge = document.createElement('div')
+      lvlBadge.className = 'player-level-badge'
+      lvlBadge.textContent = `Lv ${opts.playerLevel}`
+      portraitWrap.appendChild(lvlBadge)
     }
+    row1.appendChild(portraitWrap)
+    row1.appendChild(armorBadge(armorStacksOf(state.player.effects)))
+    row1.appendChild(statBar(state.player.hp, state.player.maxHp, { color: 'var(--turquoise)', showNumbers: true }))
+    hudBar.appendChild(row1)
 
     const row2 = document.createElement('div')
     row2.className = 'hud-row'
-    const turnText = document.createElement('span')
-    turnText.className = 'hud-turn-text'
-    turnText.textContent = opts.playerLevel !== undefined ? `Turn ${state.turn} · Lv ${opts.playerLevel}` : `Turn ${state.turn}`
-    row2.appendChild(turnText)
-
+    const manaBar = statBar(state.player.mana, state.player.manaMax, { color: 'var(--cost-mana)', showNumbers: true, height: 10 })
+    manaBar.style.flex = '0 0 34%'
+    row2.appendChild(manaBar)
+    row2.appendChild(hourglassStat(state.player.ap, state.player.apBase))
+    const counts = pileCounts(state)
+    row2.appendChild(iconBadge('Deck', counts.discard, { compact: true, onTap: () => showPileList('Discard', state.player.discard) }))
     const endTurnBtn = document.createElement('button')
     endTurnBtn.textContent = 'End Turn'
-    endTurnBtn.style.flex = '1'
+    endTurnBtn.className = 'end-turn-btn'
     endTurnBtn.disabled = state.phase !== 'player'
     onTap(endTurnBtn, () => {
       const res = endTurn(state, content)
@@ -504,10 +540,10 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
   }
 
   function render(): void {
-    renderEnemyBanner()
-    renderEnemyHandStrip()
+    renderEnemyZone()
+    renderEnemyArmorStrip()
     renderHandStrip()
-    renderIconBadges()
+    renderStatusStrip()
     renderHud()
     renderEndBanner()
   }

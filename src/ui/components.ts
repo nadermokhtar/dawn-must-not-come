@@ -32,43 +32,33 @@ export function statBar(current: number, max: number, opts: BarOptions): HTMLEle
   return wrap
 }
 
-// CSS-only stand-in for DESIGN.md §8.3's "AP as brass astrolabe pips" —
-// approximates the motif without depending on art that doesn't exist yet.
-export function pipRow(current: number, max: number, opts: { color?: string } = {}): HTMLElement {
-  const row = document.createElement('div')
-  row.className = 'pip-row'
-  for (let i = 0; i < max; i++) {
-    const pip = document.createElement('div')
-    pip.className = 'pip'
-    if (i < current) {
-      pip.classList.add('filled')
-      if (opts.color) pip.style.background = opts.color
-    }
-    row.appendChild(pip)
-  }
-  return row
+// CSS clip-path shield — armor value for player/enemy. No dedicated art asset
+// exists yet for the vertical slice, so the shape is drawn in CSS.
+export function armorBadge(value: number): HTMLElement {
+  const wrap = document.createElement('div')
+  wrap.className = 'armor-badge'
+  const glyph = document.createElement('div')
+  glyph.className = 'armor-badge-glyph'
+  wrap.appendChild(glyph)
+  const num = document.createElement('span')
+  num.className = 'armor-badge-value'
+  num.textContent = String(value)
+  wrap.appendChild(num)
+  return wrap
 }
 
-// CSS-only stand-in for "mana as blue inkwell fill".
-export function fillMeter(current: number, max: number, opts: { color?: string; label?: string } = {}): HTMLElement {
+// CSS clip-path hourglass — AP display (DESIGN.md §8.3's "AP as brass
+// astrolabe pips" reinterpreted per the reference layout's hourglass motif).
+export function hourglassStat(current: number, max?: number): HTMLElement {
   const wrap = document.createElement('div')
-  wrap.className = 'fill-meter-wrap'
-
-  const meter = document.createElement('div')
-  meter.className = 'fill-meter'
-  const fill = document.createElement('div')
-  fill.className = 'fill-meter-fill'
-  const pct = max > 0 ? Math.max(0, Math.min(100, (current / max) * 100)) : 0
-  fill.style.height = `${pct}%`
-  if (opts.color) fill.style.background = opts.color
-  meter.appendChild(fill)
-  wrap.appendChild(meter)
-
-  const caption = document.createElement('div')
-  caption.className = 'fill-meter-caption'
-  caption.textContent = opts.label ?? `${current}/${max}`
-  wrap.appendChild(caption)
-
+  wrap.className = 'hourglass-stat'
+  const glyph = document.createElement('div')
+  glyph.className = 'hourglass-glyph'
+  wrap.appendChild(glyph)
+  const num = document.createElement('span')
+  num.className = 'hourglass-value'
+  num.textContent = max !== undefined ? `${current}/${max}` : String(current)
+  wrap.appendChild(num)
   return wrap
 }
 
@@ -98,9 +88,13 @@ export function statusBadge(glyph: string, stacks: number, kind: BadgeKind, full
 
 // Generalizes the old .pile-badge — pile counters and the log-drawer trigger
 // share this one visual language and code path.
-export function iconBadge(label: string, count?: number, opts: { onTap?: () => void } = {}): HTMLElement {
+export function iconBadge(
+  label: string,
+  count?: number,
+  opts: { onTap?: () => void; compact?: boolean } = {},
+): HTMLElement {
   const el = document.createElement('button')
-  el.className = 'icon-badge'
+  el.className = opts.compact ? 'icon-badge icon-badge-compact' : 'icon-badge'
   el.textContent = count !== undefined ? `${label} ${count}` : label
   if (opts.onTap) onTap(el, opts.onTap)
   return el

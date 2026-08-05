@@ -4,6 +4,7 @@
     "name": "Bottle Swing",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 5, "dtype": "steel" },
     "flavor": "A wild swing, more glass than aim."
   },
@@ -12,6 +13,7 @@
     "name": "Wild Haymaker",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 8, "dtype": "steel" },
     "flavor": "He puts his whole soused weight behind it."
   },
@@ -20,6 +22,7 @@
     "name": "Hiccup",
     "type": "spell",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "flavor": "A pause in the brawl. Nothing happens."
   },
   {
@@ -27,6 +30,7 @@
     "name": "Stagger",
     "type": "spell",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "effects": [{ "apply": "dizzy", "stacks": 1, "target": "self" }],
     "flavor": "He overbalances and nearly falls."
   },
@@ -35,6 +39,7 @@
     "name": "Gnaw",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 3, "dtype": "steel" },
     "tags": ["bite"],
     "flavor": "Small teeth, sharp enough."
@@ -44,6 +49,7 @@
     "name": "Baton Strike",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 6, "dtype": "steel" },
     "flavor": "The baton comes down before you can produce papers."
   },
@@ -52,6 +58,7 @@
     "name": "Shakedown",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 4, "dtype": "steel" },
     "flavor": "He pats you down for anything worth declaring."
   },
@@ -60,6 +67,7 @@
     "name": "Confiscation",
     "type": "spell",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "effects": [{ "apply": "dizzy", "stacks": 1, "target": "opponent" }],
     "flavor": "\"This is now property of the harbor,\" he says, and your footing goes with it."
   },
@@ -68,6 +76,7 @@
     "name": "Quick Slash",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 4, "dtype": "true_strike" },
     "flavor": "The blade finds your purse before you feel the cut."
   },
@@ -76,6 +85,7 @@
     "name": "Purse Cut",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 3, "dtype": "true_strike" },
     "flavor": "Gone before the ache tells you it's missing."
   },
@@ -84,6 +94,7 @@
     "name": "Wing Buffet",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 6, "dtype": "storm" },
     "flavor": "Its wings crack the air like a loosed sail."
   },
@@ -92,6 +103,7 @@
     "name": "Dive Peck",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 4, "dtype": "storm" },
     "flavor": "It stoops from nowhere and stabs with its bill."
   },
@@ -100,6 +112,7 @@
     "name": "Undertow Grab",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 5, "dtype": "tide" },
     "flavor": "A hand rises from the swell and drags you under."
   },
@@ -108,6 +121,7 @@
     "name": "Shell Fling",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 4, "dtype": "tide" },
     "flavor": "A fistful of broken shell, thrown hard."
   },
@@ -116,6 +130,7 @@
     "name": "Pan Sear",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 5, "dtype": "ifrit_flame" },
     "effects": [{ "apply": "burn", "stacks": 1, "target": "opponent" }],
     "flavor": "The pan comes off the fire still burning."
@@ -125,6 +140,7 @@
     "name": "Ladle Smack",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 4, "dtype": "steel" },
     "flavor": "A ladle to the skull, seasoned with contempt."
   },
@@ -133,6 +149,7 @@
     "name": "Halberd Sweep",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 7, "dtype": "steel" },
     "flavor": "He has not slept in three nights, and the halberd shows it."
   },
@@ -141,6 +158,7 @@
     "name": "Thrust",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 5, "dtype": "steel" },
     "flavor": "A straight jab, drilled into muscle memory."
   },
@@ -149,6 +167,7 @@
     "name": "Brace",
     "type": "spell",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "effects": [{ "apply": "armor", "stacks": 3, "target": "self" }],
     "flavor": "He plants his feet and will not be moved."
   },
@@ -157,6 +176,7 @@
     "name": "Nip",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 2, "dtype": "serpent_venom" },
     "effects": [{ "apply": "venom", "stacks": 1, "target": "opponent" }],
     "tags": ["bite"],
@@ -167,6 +187,7 @@
     "name": "Snarl",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 3, "dtype": "serpent_venom" },
     "flavor": "It lunges, all hunger and no plan."
   },
@@ -175,6 +196,7 @@
     "name": "Serpent Strike",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 4, "dtype": "serpent_venom" },
     "effects": [{ "apply": "venom", "stacks": 2, "target": "opponent" }],
     "flavor": "The charmer's flute falls silent, and the serpent decides for itself."
@@ -184,6 +206,7 @@
     "name": "Coil",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 3, "dtype": "serpent_venom" },
     "effects": [{ "apply": "venom", "stacks": 1, "target": "opponent" }],
     "flavor": "It coils tighter with every breath you take."
@@ -193,6 +216,7 @@
     "name": "Marlinspike Swing",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 6, "dtype": "steel" },
     "flavor": "He swings wide, muttering wards against the evil eye."
   },
@@ -201,6 +225,7 @@
     "name": "Lucky Charm Bash",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 4, "dtype": "steel" },
     "flavor": "His lucky charm does nothing for you."
   },
@@ -209,6 +234,7 @@
     "name": "Evil Eye Ward",
     "type": "spell",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "effects": [{ "apply": "dizzy", "stacks": 1, "target": "opponent" }],
     "flavor": "He traces a sign in the air, and you stumble for no reason you can name."
   },
@@ -217,6 +243,7 @@
     "name": "Bite",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 8, "dtype": "true_strike" },
     "tags": ["bite"],
     "flavor": "The crate was never a crate."
@@ -226,6 +253,7 @@
     "name": "Slam Lid",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 6, "dtype": "steel" },
     "flavor": "The lid slams shut on whatever's nearest."
   },
@@ -234,6 +262,7 @@
     "name": "Splinter Spray",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 5, "dtype": "steel" },
     "flavor": "Wood shrapnel, flung in every direction."
   },
@@ -242,6 +271,7 @@
     "name": "Crushing Wave",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 10, "dtype": "tide" },
     "flavor": "The sea itself rises at its command."
   },
@@ -250,6 +280,7 @@
     "name": "Rolling Breach",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 9, "dtype": "steel" },
     "flavor": "It breaches, and the whole island seems to turn over."
   },
@@ -258,6 +289,7 @@
     "name": "Barnacled Hide Slam",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 8, "dtype": "steel" },
     "effects": [{ "apply": "armor", "stacks": 4, "target": "self" }],
     "flavor": "Centuries of barnacle and stone answer as armor."
@@ -267,6 +299,7 @@
     "name": "Tail Sweep",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 7, "dtype": "tide" },
     "flavor": "The tail comes around low, and the water comes with it."
   },
@@ -275,6 +308,7 @@
     "name": "Wing Gust",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 7, "dtype": "storm" },
     "flavor": "Downy wings, but the gust they raise is no joke."
   },
@@ -283,6 +317,7 @@
     "name": "Talon Snatch",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 6, "dtype": "steel" },
     "flavor": "It grabs at anything that moves, still learning what it's for."
   },
@@ -291,6 +326,7 @@
     "name": "Screech",
     "type": "spell",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "effects": [{ "apply": "dizzy", "stacks": 1, "target": "opponent" }],
     "flavor": "A shriek pitched to call its mother, and to ring in your ears besides."
   },
@@ -299,6 +335,7 @@
     "name": "Bloated Grasp",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 6, "dtype": "tide" },
     "effects": [{ "apply": "clinging", "stacks": 1, "target": "opponent" }],
     "flavor": "Waterlogged fingers close around your ankle and do not let go."
@@ -308,6 +345,7 @@
     "name": "Undertow Pull",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 8, "dtype": "tide" },
     "flavor": "The current he brought up with him has not forgotten how to drown a man."
   },
@@ -316,6 +354,7 @@
     "name": "Waterlogged Lurch",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 5, "dtype": "steel" },
     "flavor": "He staggers forward, heavy with a decade of seawater."
   },
@@ -324,6 +363,7 @@
     "name": "Lightning Jab",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 7, "dtype": "storm" },
     "flavor": "A finger of light, quicker than the thunder that follows it."
   },
@@ -332,6 +372,7 @@
     "name": "Thunderclap",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 5, "dtype": "storm" },
     "effects": [{ "apply": "dizzy", "stacks": 1, "target": "opponent" }],
     "flavor": "The crack of it arrives before the sense does."
@@ -341,6 +382,7 @@
     "name": "Gale Dash",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 6, "dtype": "storm" },
     "flavor": "It crosses the deck faster than the eye can follow."
   },
@@ -349,6 +391,7 @@
     "name": "Headlong Charge",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 9, "dtype": "steel" },
     "flavor": "It puts its shoulder down and the whole hillside seems to follow."
   },
@@ -357,6 +400,7 @@
     "name": "Hoof Stomp",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 6, "dtype": "steel" },
     "effects": [{ "apply": "armor", "stacks": 2, "target": "self" }],
     "flavor": "It plants its hooves and dares the ground to argue."
@@ -366,6 +410,7 @@
     "name": "Horn Gore",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 7, "dtype": "true_strike" },
     "flavor": "The horn finds the gap in your guard before you know you left one."
   },
@@ -374,6 +419,7 @@
     "name": "Splintered Backhand",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 8, "dtype": "steel" },
     "flavor": "The carved arm swings wide, trailing rotten timber."
   },
@@ -382,6 +428,7 @@
     "name": "Prow Ram",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 10, "dtype": "steel" },
     "flavor": "It drives forward as if a hull still trailed behind it."
   },
@@ -390,6 +437,7 @@
     "name": "Creaking Brace",
     "type": "spell",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "effects": [{ "apply": "armor", "stacks": 3, "target": "self" }],
     "flavor": "Old wood groans and knits tighter around itself."
   },
@@ -398,6 +446,7 @@
     "name": "Spoiled Skewer",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 6, "dtype": "serpent_venom" },
     "effects": [{ "apply": "venom", "stacks": 2, "target": "opponent" }],
     "flavor": "He insists it's fresh. It is not fresh."
@@ -407,6 +456,7 @@
     "name": "Cleaver Swing",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 8, "dtype": "steel" },
     "flavor": "The cleaver was meant for the meat, not for you, but here we are."
   },
@@ -415,6 +465,7 @@
     "name": "Haggle",
     "type": "spell",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "effects": [{ "apply": "dizzy", "stacks": 1, "target": "opponent" }],
     "flavor": "He talks in circles until you can't remember what the price was."
   },
@@ -423,6 +474,7 @@
     "name": "Bone Dagger",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 8, "dtype": "true_strike" },
     "flavor": "A blade honed from something that used to have a name."
   },
@@ -431,6 +483,7 @@
     "name": "Ambush Strike",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 10, "dtype": "steel" },
     "flavor": "He was in the trees before you knew there were trees."
   },
@@ -439,6 +492,7 @@
     "name": "Warpaint Howl",
     "type": "spell",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "effects": [{ "apply": "armor", "stacks": 3, "target": "self" }],
     "flavor": "The howl rallies something in him that armor alone couldn't."
   },
@@ -447,6 +501,7 @@
     "name": "Venomous Bite",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 7, "dtype": "serpent_venom" },
     "effects": [{ "apply": "venom", "stacks": 3, "target": "opponent" }],
     "tags": ["bite"],
@@ -457,6 +512,7 @@
     "name": "Coiling Crush",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 9, "dtype": "steel" },
     "flavor": "It winds tight around the ribs and squeezes the argument out of you."
   },
@@ -465,6 +521,7 @@
     "name": "Diamond Scale Flash",
     "type": "spell",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "effects": [{ "apply": "armor", "stacks": 4, "target": "self" }],
     "flavor": "Its scales catch the light like the hoard it sleeps on."
   },
@@ -473,6 +530,7 @@
     "name": "Enchanting Song",
     "type": "spell",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "effects": [{ "apply": "dizzy", "stacks": 2, "target": "opponent" }],
     "flavor": "The melody promises safe harbor. It is lying."
   },
@@ -481,6 +539,7 @@
     "name": "Coral Claw Rake",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 9, "dtype": "true_strike" },
     "flavor": "The song stops the instant the claws find you."
   },
@@ -489,6 +548,7 @@
     "name": "Riptide Lash",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 8, "dtype": "tide" },
     "flavor": "A wave answers her voice before you can cover your ears."
   },
@@ -497,6 +557,7 @@
     "name": "Boulder Throw",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 12, "dtype": "steel" },
     "flavor": "It tears a piece of the isle loose and sends it your way."
   },
@@ -505,6 +566,7 @@
     "name": "Double Fist Slam",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 9, "dtype": "steel" },
     "flavor": "Both fists come down together, and the black rock cracks with them."
   },
@@ -513,6 +575,7 @@
     "name": "Chest Beat",
     "type": "spell",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "effects": [{ "apply": "armor", "stacks": 4, "target": "self" }],
     "flavor": "The sound of it rolls off the black rocks like a challenge."
   },
@@ -521,6 +584,7 @@
     "name": "Wind Buffet",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 12, "dtype": "storm" },
     "flavor": "A single wingbeat and the deck tilts underfoot."
   },
@@ -529,6 +593,7 @@
     "name": "Talon Rake",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 14, "dtype": "steel" },
     "flavor": "Talons the length of oars rake across the rigging."
   },
@@ -537,6 +602,7 @@
     "name": "Aerial Dive",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "damage": { "amount": 16, "dtype": "true_strike" },
     "flavor": "It folds its wings and becomes, for one terrible moment, a falling mountain."
   },
@@ -545,6 +611,7 @@
     "name": "Skyborne Shriek",
     "type": "spell",
     "cost": { "ap": 0, "mana": 0 },
+    "cost_type": "ap",
     "effects": [{ "apply": "dizzy", "stacks": 2, "target": "opponent" }],
     "flavor": "The cry rolls off the clouds themselves before the next dive begins."
   }

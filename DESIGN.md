@@ -322,6 +322,8 @@ these expressions mean, in Scheherazade's teaching voice, never as a footnote du
   "name": "Cutlass Strike",
   "type": "attack",            // attack | spell | counter | equipment | curse | item
   "cost": { "ap": 1, "mana": 0 },
+  "cost_type": "ap",           // ap | mana | mixed — drives the battle UI's cost-badge
+                                // color (gold for ap, blue for mana, both for mixed)
   "damage": { "amount": 6, "dtype": "steel" },
   "effects": [],               // e.g. [{"apply":"venom","stacks":2,"target":"enemy"}]
   "draw": 0,

@@ -104,9 +104,32 @@ mechanics, content, art direction, and data schemas. Read it before implementing
   secret chains (Sealed Scroll / Golden Tongue — Night II's Locked Diary/Eccentric
   Seeds/VIP Card verses are flavor-only stubs, not the full chain), mid-battle
   persistence.
-- **Next milestone:** Night III content, the Hidden Night IV unlock chains, real
-  Night I/II/boss art to replace placeholders, more human (non-bot) balance
-  feedback.
+- **Battle UI overhaul (2026-08-05):** rebuilt the battle screen against a Night
+  of the Full Moon layout reference (proportions/hierarchy/card-anatomy only, no
+  art/text borrowed). Cards now render full anatomy — cost badge (gold=AP,
+  blue=mana, stacked badges for the one mixed-cost card), type-colored name
+  banner + bottom ribbon (attack=red, spell=blue, equipment=teal, counter=gold,
+  curse=copper-green, item=tan; tokens in `tokens.css`, never per-card), arched
+  art window, upgrade stars, and an ability-text box that shrinks 12px→10px then
+  clamps with ellipsis (full text on tap-hold zoom). Added `cost_type` (`ap` /
+  `mana` / `mixed`) to the card schema (DESIGN.md §9.1) and migrated all existing
+  card JSON. Enemy zone/nameplate, a thin armor+status strip (hidden when empty),
+  a collapsible 2-line narration panel, and the old Draw/Discard/Exhaust/Set/Log
+  text-button row (now compact tappable badges) were all rebuilt to match.
+  Verified headlessly via a temporary Playwright script at a 390×844 viewport
+  (screenshotted default/selected/zoom/expanded-narration states, no console
+  errors) — **not yet verified on a physical phone**, which the user still needs
+  to do before further polish. The same rich card face (via new
+  `createInspectableCardElement`/`showCardZoom` helpers in `cardView.ts`) now
+  also renders in every other card-picking context, replacing bare name-only
+  buttons: the Bazaar, the Calligrapher (which now previews the *upgraded*
+  card face, not the current one — the point of browsing there is seeing what
+  the gold leaf buys), the House of Forgetting, and the level-up reward
+  picker. Tapping any of these cards opens the same full-detail zoom used in
+  battle.
+- **Next milestone:** phone testing/feedback on the new battle UI, Night III
+  content, the Hidden Night IV unlock chains, real Night I/II/boss art to
+  replace placeholders, more human (non-bot) balance feedback.
 - Slice-blocking art gaps: bg_night1 (Basra), bg_night2, dockhand, frame_epic, UI
   kit, and art for all newly-authored Night I/II enemies + bosses (all reference
   placeholder `art_ref` paths that don't resolve to real assets yet).

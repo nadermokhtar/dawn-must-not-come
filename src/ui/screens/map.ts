@@ -1,4 +1,5 @@
-import type { Content, VerseDef, VerseKind } from '../../engine/types'
+import type { CardDef, Content, VerseDef, VerseKind } from '../../engine/types'
+import { createInspectableCardElement } from '../cardView'
 import {
   XP_TO_LEVEL,
   type RunState,
@@ -200,7 +201,7 @@ export function mountMapScreen(root: HTMLElement, run: RunState, content: Conten
       const list = document.createElement('div')
       list.className = 'economy-list'
       for (const card of offerings) {
-        list.appendChild(economyRow(card.name, cardPrice(card.rarity), (rowBtn) => {
+        list.appendChild(economyRow(card, cardPrice(card.rarity), 'Take', (rowBtn) => {
           const res = buyCard(run, card.id, content)
           if (res.ok) {
             flashMessage(rowBtn, 'Bought!')
@@ -225,7 +226,10 @@ export function mountMapScreen(root: HTMLElement, run: RunState, content: Conten
       list.className = 'economy-list'
       for (const cardId of upgradeableIds) {
         const card = content.cards.get(cardId)!
-        list.appendChild(economyRow(card.name, upgradePrice(), (rowBtn) => {
+        // Show the upgraded face, not the current one — the point of browsing
+        // here is seeing what the gold leaf buys.
+        const upgraded = content.cards.get(card.upgrades![0]!) ?? card
+        list.appendChild(economyRow(upgraded, upgradePrice(), 'Upgrade', (rowBtn) => {
           const res = upgradeCard(run, cardId, content)
           if (res.ok) {
             flashMessage(rowBtn, 'Upgraded!')
@@ -256,7 +260,7 @@ export function mountMapScreen(root: HTMLElement, run: RunState, content: Conten
       for (const cardId of removableIds) {
         const card = content.cards.get(cardId)
         if (!card) continue
-        list.appendChild(economyRow(card.name, removePrice(), (rowBtn) => {
+        list.appendChild(economyRow(card, removePrice(), 'Forget', (rowBtn) => {
           const res = removeCard(run, cardId)
           if (res.ok) {
             flashMessage(rowBtn, 'Forgotten.')
@@ -365,16 +369,25 @@ export function mountMapScreen(root: HTMLElement, run: RunState, content: Conten
     body.appendChild(p)
   }
 
-  function economyRow(label: string, price: number, onBuy: (btn: HTMLButtonElement) => void): HTMLElement {
+  // Renders the actual card face (tap it to zoom for the full, unclamped
+  // ability text) so players can see what they're buying/upgrading/forgetting,
+  // not just its name — the price and action button sit alongside it.
+  function economyRow(card: CardDef, price: number, actionLabel: string, onBuy: (btn: HTMLButtonElement) => void): HTMLElement {
     const row = document.createElement('div')
     row.className = 'economy-row'
-    const text = document.createElement('span')
-    text.textContent = `${label} — ${price} dinars`
-    row.appendChild(text)
+    row.appendChild(createInspectableCardElement(card))
+
+    const info = document.createElement('div')
+    info.className = 'economy-info'
+    const priceLabel = document.createElement('span')
+    priceLabel.className = 'economy-price'
+    priceLabel.textContent = `${price} dinars`
+    info.appendChild(priceLabel)
     const btn = document.createElement('button')
-    btn.textContent = 'Take'
+    btn.textContent = actionLabel
     onTap(btn, () => onBuy(btn))
-    row.appendChild(btn)
+    info.appendChild(btn)
+    row.appendChild(info)
     return row
   }
 

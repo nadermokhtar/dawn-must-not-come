@@ -8,6 +8,7 @@ const VALID_CARD = {
   name: 'X',
   type: 'attack',
   cost: { ap: 1, mana: 0 },
+  cost_type: 'ap',
 }
 
 describe('validateCard rejects malformed cards', () => {

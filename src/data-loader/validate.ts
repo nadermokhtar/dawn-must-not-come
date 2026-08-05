@@ -3,6 +3,7 @@ import type { BlessingDef, CardDef, EffectDef, EnemyDef, StoryForkDef, VerseDef 
 export class ValidationError extends Error {}
 
 const CARD_TYPES = ['attack', 'spell', 'counter', 'equipment', 'curse', 'item']
+const COST_TYPES = ['ap', 'mana', 'mixed']
 const DTYPES = ['steel', 'true_strike', 'ifrit_flame', 'tide', 'storm', 'serpent_venom']
 const EFFECT_KINDS = ['buff', 'debuff', 'neutral']
 const VERSE_KINDS = ['battle', 'shop', 'upgrade', 'remove', 'blessing', 'chest', 'event', 'bank', 'boss']
@@ -22,6 +23,11 @@ export function validateCard(raw: unknown, ctx: string): CardDef {
   const cost = r.cost as Record<string, unknown>
   assert(typeof cost.ap === 'number', ctx, 'cost.ap must be a number')
   assert(typeof cost.mana === 'number', ctx, 'cost.mana must be a number')
+  assert(
+    typeof r.cost_type === 'string' && COST_TYPES.includes(r.cost_type),
+    ctx,
+    `cost_type must be one of ${COST_TYPES.join('|')}`,
+  )
 
   if (r.damage !== undefined) {
     assert(typeof r.damage === 'object' && r.damage !== null, ctx, 'damage must be an object')

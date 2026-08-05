@@ -11,4 +11,17 @@
 
   --parchment-dim: #d6c7a5;
   --ink: #2a2118;
+
+  /* Card type banner/ribbon colors (DESIGN.md §9.1 card anatomy) — the single
+     source of truth for type coloring; never hardcode these per-card. */
+  --card-attack: #8a3030;
+  --card-spell: #24447e;
+  --card-equipment: #2f8f88;
+  --card-counter: #b8912a;
+  --card-curse: #4e6e58;
+  --card-item: #8a6a2f;
+
+  /* Cost-type badge/frame colors */
+  --cost-ap: var(--gold);
+  --cost-mana: #3f7fd9;
 }

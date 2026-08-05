@@ -95,6 +95,7 @@ export const FIXTURE_CARDS: CardDef[] = [
     name: 'Test Strike',
     type: 'attack',
     cost: { ap: 1, mana: 0 },
+    cost_type: 'ap',
     damage: { amount: 5, dtype: 'steel' },
   },
   {
@@ -102,6 +103,7 @@ export const FIXTURE_CARDS: CardDef[] = [
     name: 'Test Heavy Strike',
     type: 'attack',
     cost: { ap: 2, mana: 0 },
+    cost_type: 'ap',
     damage: { amount: 8, dtype: 'steel' },
   },
   {
@@ -109,6 +111,7 @@ export const FIXTURE_CARDS: CardDef[] = [
     name: 'Test Rally',
     type: 'spell',
     cost: { ap: 0, mana: 1 },
+    cost_type: 'mana',
     effects: [{ op: 'modify_resource', resource: 'ap', delta: 2, target: 'self' }],
   },
   {
@@ -116,6 +119,7 @@ export const FIXTURE_CARDS: CardDef[] = [
     name: 'Test Draw',
     type: 'spell',
     cost: { ap: 0, mana: 0 },
+    cost_type: 'ap',
     draw: 2,
   },
   {
@@ -123,6 +127,7 @@ export const FIXTURE_CARDS: CardDef[] = [
     name: 'Test Armor',
     type: 'spell',
     cost: { ap: 1, mana: 0 },
+    cost_type: 'ap',
     effects: [{ apply: 'armor', stacks: 5, target: 'self' }],
   },
   {
@@ -130,6 +135,7 @@ export const FIXTURE_CARDS: CardDef[] = [
     name: 'Test Counter',
     type: 'counter',
     cost: { ap: 1, mana: 0 },
+    cost_type: 'ap',
     counter: {
       match: { action_type: 'attack' },
       negate: true,
@@ -141,6 +147,7 @@ export const FIXTURE_CARDS: CardDef[] = [
     name: 'Test Fire Ward',
     type: 'counter',
     cost: { ap: 0, mana: 0 },
+    cost_type: 'ap',
     counter: {
       match: { dtype: 'ifrit_flame' },
       negate: true,
@@ -152,6 +159,7 @@ export const FIXTURE_CARDS: CardDef[] = [
     name: 'Claw',
     type: 'attack',
     cost: { ap: 0, mana: 0 },
+    cost_type: 'ap',
     damage: { amount: 4, dtype: 'steel' },
   },
   {
@@ -159,6 +167,7 @@ export const FIXTURE_CARDS: CardDef[] = [
     name: 'Bite',
     type: 'attack',
     cost: { ap: 0, mana: 0 },
+    cost_type: 'ap',
     damage: { amount: 6, dtype: 'steel' },
   },
   {
@@ -166,12 +175,14 @@ export const FIXTURE_CARDS: CardDef[] = [
     name: 'Screech',
     type: 'spell',
     cost: { ap: 0, mana: 0 },
+    cost_type: 'ap',
   },
   {
     id: 'enemy_ifrit_attack',
     name: 'Cinder Spit',
     type: 'attack',
     cost: { ap: 0, mana: 0 },
+    cost_type: 'ap',
     damage: { amount: 5, dtype: 'ifrit_flame' },
   },
 ]

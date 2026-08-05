@@ -59,6 +59,8 @@ export interface CardCost {
   mana: number
 }
 
+export type CostType = 'ap' | 'mana' | 'mixed'
+
 export interface CardDamage {
   amount: number
   dtype: DType
@@ -82,6 +84,7 @@ export interface CardDef {
   name: string
   type: CardType
   cost: CardCost
+  cost_type: CostType
   damage?: CardDamage
   effects?: unknown[]
   draw?: number
