@@ -445,6 +445,7 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
 
     const row1 = document.createElement('div')
     row1.className = 'hud-row'
+    row1.appendChild(createArtElement('classes/sinbad.png', 'Sinbad', 'player-portrait'))
     row1.appendChild(pipRow(state.player.ap, state.player.apBase, { color: 'var(--gold)' }))
     row1.appendChild(statBar(state.player.hp, state.player.maxHp, { color: 'var(--turquoise)', showNumbers: true }))
     row1.appendChild(

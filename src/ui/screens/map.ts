@@ -90,7 +90,12 @@ export function mountMapScreen(root: HTMLElement, run: RunState, content: Conten
   }
 
   function renderNarration(): void {
-    mapNarration.textContent = narration
+    mapNarration.innerHTML = ''
+    mapNarration.appendChild(createArtElement('keyart/scheherazade_king.png', 'Scheherazade and the King', 'narration-portrait'))
+    const text = document.createElement('div')
+    text.className = 'narration-text'
+    text.textContent = narration
+    mapNarration.appendChild(text)
   }
 
   function renderVerseRow(): void {

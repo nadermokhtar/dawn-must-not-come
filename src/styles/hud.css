@@ -354,6 +354,16 @@
   flex: 1;
 }
 
+.player-portrait {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid var(--gold);
+  flex: 0 0 auto;
+  font-size: 6px;
+}
+
 .hud-turn-text {
   font-size: 0.8rem;
   white-space: nowrap;

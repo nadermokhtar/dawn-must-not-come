@@ -77,7 +77,7 @@ function showEndScreen(kind: 'night_cleared' | 'defeated'): void {
       ? '&ldquo;Inshallah [God willing],&rdquo; said Scheherazade, &ldquo;we will continue the story tomorrow.&rdquo;'
       : '&ldquo;Astaghfirullah [I seek God&rsquo;s forgiveness],&rdquo; Scheherazade whispered, &ldquo;the tale ends here &mdash; for tonight.&rdquo;'
   app.innerHTML = `
-    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:1rem;text-align:center;padding:1rem;">
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:1rem;text-align:center;padding:1rem;background-image:linear-gradient(rgba(16,26,60,0.6),rgba(16,26,60,0.85)),url('/assets/backgrounds/bg_title.jpg');background-size:cover;background-position:center;">
       <h1 style="color:var(--gold);font-weight:normal;">${title}</h1>
       <p style="opacity:0.7;font-style:italic;">${kingLine}</p>
       <p style="opacity:0.85;font-style:italic;">${message}</p>
