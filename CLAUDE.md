@@ -127,9 +127,53 @@ mechanics, content, art direction, and data schemas. Read it before implementing
   the gold leaf buys), the House of Forgetting, and the level-up reward
   picker. Tapping any of these cards opens the same full-detail zoom used in
   battle.
-- **Next milestone:** phone testing/feedback on the new battle UI, Night III
-  content, the Hidden Night IV unlock chains, real Night I/II/boss art to
-  replace placeholders, more human (non-bot) balance feedback.
+- **Verse persistence + ceremony UI + onboarding (2026-08-05):** three follow-ups
+  from first-human-playtester feedback (see `project_first_playtest_feedback`
+  memory) and reference screenshots of the Victory/level-up/Bazaar/Blessing/
+  Chest screens.
+  - **Verse persistence bug fix:** picking one of the map's 3 offered Verses
+    used to re-roll all 3 (`rollVerseOptions` was a pure function of
+    `(seed, night, page, rerollCount)`, and page always advanced on entry) —
+    so leaving for a battle and coming back showed 3 brand-new options, losing
+    track of the Bazaar/Blessing/Chest that was sitting there. Fixed by adding
+    `RunState.verseOptionIds` (persisted, slot-replaced individually by
+    `enterVerse`) and a new `currentVerseOptions()` the map screen reads
+    instead — matches NotFM's actual rule (picking one only replaces that
+    one; a reshuffle or a boss clear is what re-rolls all 3).
+  - **Shared "ceremony" UI** (`ceremonyDialog()` in `components.ts`, styles in
+    the new `ceremony.css`): a glowing portrait + ribbon-banner title + panel,
+    replacing the old plain `bottomSheet` list rows for every "big moment"
+    screen — Victory/Defeat (now shows Sinbad's portrait + current Lv/XP,
+    `BattleScreenOptions` grew `playerXp`/`xpToLevel`), the level-up reward
+    picker, and the Bazaar/Calligrapher/House of Forgetting/Jinni/Chest/Sealed
+    Jar/Bank (previously vertical list rows with an accidental full-width
+    "Pick" button next to a tiny card — now side-by-side card columns via
+    `.ceremony-choice-row`, matching the reference proportions). `bottomSheet`
+    itself is untouched and still backs pile-lists/the event log, which don't
+    need ceremony.
+  - **Onboarding** (`src/ui/onboarding.ts`, flags persisted per-profile via
+    `hasSeen`/`markSeen` in `persistence.ts` — NOT per-run, so a fresh run
+    never re-triggers a tutorial already dismissed): the DESIGN.md §8.5
+    basmala now actually opens every new run (cold start and "Begin a New
+    Telling" both route through it); a one-time "how Verses work" explainer
+    overlays the first-ever map; a one-time "how to fight" explainer overlays
+    the first-ever battle. Both re-openable anytime via a "?" header button
+    (map header, battle status strip). Also added a "↻" restart-run button on
+    the map header, behind a confirm/cancel dialog since it discards progress.
+  - **Tooltips:** every icon-only widget (the armor shield, the AP hourglass,
+    the map's Dinars/Wonder/Mercy badges) now sets a native `title` *and*
+    taps to a `flashMessage` explaining itself — `title` alone doesn't fire on
+    touch, so both are needed on a touch-first game.
+  - Verified headlessly via temporary Playwright scripts (390×844): the full
+    verse-persistence round-trip, all 6 ceremony screen types, the full
+    basmala → map-tutorial → tooltip-toast → restart-confirm → battle →
+    battle-tutorial → AP-tooltip chain. No console errors in any pass. Still
+    not verified on a physical phone.
+- **Next milestone:** phone testing/feedback on all of the above, Night III
+  content, the Hidden Night IV unlock chains (now has an exact 3-step
+  reference shape from DESIGN.md §3.7 — Locked Diary / VIP Card / Eccentric
+  Seeds), real Night I/II/boss art to replace placeholders, more human
+  (non-bot) balance feedback.
 - Slice-blocking art gaps: bg_night1 (Basra), bg_night2, dockhand, frame_epic, UI
   kit, and art for all newly-authored Night I/II enemies + bosses (all reference
   placeholder `art_ref` paths that don't resolve to real assets yet).
