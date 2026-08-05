@@ -359,6 +359,95 @@
   white-space: nowrap;
 }
 
+/* ---- attack feedback (slash on the enemy, shake+flash on the player) ---- */
+
+.enemy-portrait-wrap.hit {
+  animation: portraitShake 0.35s ease;
+}
+
+@keyframes portraitShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px) rotate(-1deg);
+  }
+  40% {
+    transform: translateX(5px) rotate(1deg);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+
+.slash-streak {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, 0.95) 48%, rgba(255, 255, 255, 0.95) 52%, transparent 58%);
+  opacity: 0;
+  animation: slashSweep 0.4s ease-out;
+}
+
+@keyframes slashSweep {
+  0% {
+    opacity: 0;
+    transform: translateX(-60%) scaleX(1.4);
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(60%) scaleX(1.4);
+  }
+}
+
+.hud-bar.hit {
+  animation: hudHitFlash 0.35s ease;
+}
+
+@keyframes hudHitFlash {
+  0%,
+  100% {
+    background: var(--lapis);
+  }
+  30% {
+    background: var(--madder);
+  }
+}
+
+/* ---- enemy hand strip ---- */
+
+.enemy-hand-strip {
+  display: flex;
+  gap: 6px;
+  padding: 0 0.75rem 0.5rem;
+  justify-content: center;
+}
+
+.enemy-hand-strip .card-back {
+  width: 44px;
+  height: 64px;
+}
+
+/* ---- battle dialogue (Scheherazade's barks, distinct from the terse
+   mechanical event log below it) ---- */
+
+.battle-dialogue {
+  padding: 0 0.75rem 0.4rem;
+  font-style: italic;
+  color: var(--parchment-dim);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  min-height: 1.1em;
+}
+
 /* ---- win/loss banner ---- */
 
 .end-banner {

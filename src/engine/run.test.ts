@@ -108,6 +108,16 @@ describe('battle rewards', () => {
     expect(run.bossDefeated).toBe(true)
     expect(run.result).toBe('night_cleared')
   })
+
+  it('heals a fraction of missing HP on a win, capped at maxHp', () => {
+    const run = baseRun({ hp: 10, maxHp: 30 })
+    applyBattleReward(run, 'test_enemy', content)
+    expect(run.hp).toBe(16)
+
+    const fullRun = baseRun({ hp: 30, maxHp: 30 })
+    applyBattleReward(fullRun, 'test_enemy', content)
+    expect(fullRun.hp).toBe(30)
+  })
 })
 
 describe('economy', () => {

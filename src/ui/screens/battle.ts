@@ -9,6 +9,8 @@ import { onHold, onTap } from '../touch'
 import { statBar, pipRow, fillMeter, statusBadge, iconBadge, bottomSheet, flashMessage } from '../components'
 
 const LOG_CAP = 100
+const ENEMY_HAND_SIZE = 3
+const LOW_HP_BARK_THRESHOLD = 0.4
 
 export interface BattleOutcome {
   outcome: 'win' | 'loss'
@@ -106,9 +108,13 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
   let selectedUid: number | null = null
   let logEntries: string[] = []
 
+  let lowHpBarked = false
+
   root.innerHTML = `
     <div class="battle-screen" style="display:flex;flex-direction:column;height:100%;overflow:hidden;">
       <div id="enemyBanner" class="enemy-banner" style="padding:0.75rem 0.75rem 0;"></div>
+      <div id="enemyHandStrip" class="enemy-hand-strip"></div>
+      <div id="dialogueLine" class="battle-dialogue"></div>
       <div id="recentLog" style="padding:0.4rem 0.75rem;font-size:0.75rem;opacity:0.75;min-height:1.2em;"></div>
       <div style="flex:1;"></div>
       <div id="handStrip" class="hand-strip fanned"></div>
@@ -118,6 +124,8 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
   `
 
   const enemyBanner = root.querySelector<HTMLElement>('#enemyBanner')!
+  const enemyHandStrip = root.querySelector<HTMLElement>('#enemyHandStrip')!
+  const dialogueLine = root.querySelector<HTMLElement>('#dialogueLine')!
   const recentLog = root.querySelector<HTMLElement>('#recentLog')!
   const handStrip = root.querySelector<HTMLElement>('#handStrip')!
   const iconBadgeRow = root.querySelector<HTMLElement>('#iconBadgeRow')!
@@ -125,6 +133,67 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
 
   function describeRecent(text: string): void {
     recentLog.textContent = text
+  }
+
+  function bark(text: string): void {
+    dialogueLine.textContent = text
+  }
+
+  function hitTargetsFrom(events: BattleEvent[]): Array<'player' | 'enemy'> {
+    const seen = new Set<'player' | 'enemy'>()
+    for (const ev of events) {
+      if (ev.type === 'damage' && ev.final > 0) seen.add(ev.target)
+    }
+    return [...seen]
+  }
+
+  function triggerHitAnimation(target: 'player' | 'enemy'): void {
+    if (target === 'enemy') {
+      const wrap = enemyBanner.querySelector<HTMLElement>('.enemy-portrait-wrap')
+      if (!wrap) return
+      wrap.classList.remove('hit')
+      void wrap.offsetWidth
+      wrap.classList.add('hit')
+      const streak = document.createElement('div')
+      streak.className = 'slash-streak'
+      wrap.appendChild(streak)
+      streak.addEventListener('animationend', () => streak.remove())
+    } else {
+      hudBar.classList.remove('hit')
+      void hudBar.offsetWidth
+      hudBar.classList.add('hit')
+    }
+  }
+
+  function revealEnemyPlays(events: BattleEvent[]): void {
+    const plays = events.filter((ev) => ev.type === 'enemy_play')
+    if (plays.length === 0) return
+    const backs = [...enemyHandStrip.querySelectorAll<HTMLElement>('.card-back')]
+    plays.forEach((ev, i) => {
+      const back = backs[i % backs.length]
+      if (!back) return
+      const label = back.querySelector<HTMLElement>('.card-back-label')
+      if (label) label.textContent = content.cards.get(ev.cardId)?.name ?? ev.cardId
+      back.classList.remove('revealed')
+      void back.offsetWidth
+      back.classList.add('revealed')
+    })
+  }
+
+  function maybeBarkLowHp(): void {
+    if (lowHpBarked || state.player.hp <= 0) return
+    if (state.player.hp / state.player.maxHp <= LOW_HP_BARK_THRESHOLD) {
+      lowHpBarked = true
+      bark(`"Ya Allah [O God]," Scheherazade breathed, "Sinbad's strength is failing..."`)
+    }
+  }
+
+  function applyAndRender(events: BattleEvent[]): void {
+    summarizeEvents(events)
+    render()
+    for (const target of hitTargetsFrom(events)) triggerHitAnimation(target)
+    revealEnemyPlays(events)
+    maybeBarkLowHp()
   }
 
   function summarizeEvents(events: BattleEvent[]): void {
@@ -155,8 +224,10 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
     state = result.state
     selectedUid = null
     logEntries = []
-    summarizeEvents(result.events)
-    render()
+    lowHpBarked = false
+    const enemyName = content.enemies.get(opts.enemyId)!.name
+    bark(`"Steady your blade," said Scheherazade, "for ${enemyName} blocks the way."`)
+    applyAndRender(result.events)
   }
 
   function affordability(cardId: string): { ok: boolean; missingAp: number; missingMana: number } {
@@ -188,10 +259,10 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
         const msg = `Can't play that: ${res.error.replace(/_/g, ' ')}.`
         logEntries.push(msg)
         describeRecent(msg)
+        render()
       } else {
-        summarizeEvents(res.events)
+        applyAndRender(res.events)
       }
-      render()
     } else {
       selectedUid = inst.uid
       render()
@@ -281,6 +352,22 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
     enemyBanner.appendChild(badgeRow)
   }
 
+  // The enemy has no real "hand" in the engine — moves come off its deck via
+  // the AI. This is a purely decorative fan of face-down backs so the enemy
+  // reads as a combatant holding cards, not just a health bar; revealEnemyPlays
+  // flips one to show the name after an enemy_play event.
+  function renderEnemyHandStrip(): void {
+    enemyHandStrip.innerHTML = ''
+    for (let i = 0; i < ENEMY_HAND_SIZE; i++) {
+      const back = document.createElement('div')
+      back.className = 'card card-back'
+      const label = document.createElement('div')
+      label.className = 'card-back-label'
+      back.appendChild(label)
+      enemyHandStrip.appendChild(back)
+    }
+  }
+
   function renderHandStrip(): void {
     handStrip.classList.toggle('active', state.phase === 'player')
     handStrip.innerHTML = ''
@@ -368,8 +455,7 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
     endTurnBtn.disabled = state.phase !== 'player'
     onTap(endTurnBtn, () => {
       const res = endTurn(state, content)
-      summarizeEvents(res.events)
-      render()
+      applyAndRender(res.events)
     })
     row2.appendChild(endTurnBtn)
     hudBar.appendChild(row2)
@@ -393,6 +479,7 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
 
   function render(): void {
     renderEnemyBanner()
+    renderEnemyHandStrip()
     renderHandStrip()
     renderIconBadges()
     renderHud()

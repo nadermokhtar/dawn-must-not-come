@@ -7,15 +7,21 @@ import { loadContent } from './data-loader/loadContent'
 import { applyBattleReward, blessingEffects, createRun, recordDefeat } from './engine/run'
 import { mountMapScreen } from './ui/screens/map'
 import { mountBattleScreen } from './ui/screens/battle'
+import { onTap } from './ui/touch'
 
 const appEl = document.getElementById('app')
 if (!appEl) throw new Error('#app not found')
 const app: HTMLElement = appEl
 
 const content = loadContent()
-const run = createRun('sinbad', Date.now())
+let run = createRun('sinbad', Date.now())
 
 let disposeCurrent: () => void = () => {}
+
+function startNewRun(): void {
+  run = createRun('sinbad', Date.now())
+  showMap()
+}
 
 function showMap(): void {
   disposeCurrent()
@@ -71,6 +77,11 @@ function showEndScreen(kind: 'night_cleared' | 'defeated'): void {
       <p style="opacity:0.85;font-style:italic;">${message}</p>
     </div>
   `
+  const btn = document.createElement('button')
+  btn.textContent = 'Begin a New Telling'
+  btn.style.marginTop = '0.5rem'
+  onTap(btn, startNewRun)
+  app.querySelector('div')!.appendChild(btn)
 }
 
 showMap()

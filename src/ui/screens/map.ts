@@ -156,7 +156,9 @@ export function mountMapScreen(root: HTMLElement, run: RunState, content: Conten
   }
 
   function openBazaar(verse: VerseDef): void {
-    const pool = [...content.cards.values()].filter((c) => c.class === run.classId && c.type !== 'curse')
+    const pool = [...content.cards.values()].filter(
+      (c) => (c.class === run.classId || c.class === undefined) && c.type !== 'curse' && !c.id.endsWith('_plus'),
+    )
     const rng = createRng(deriveSeed(run.seed, 'bazaar', run.night, run.page))
     const offerings = rng.shuffle(pool).slice(0, 4)
 

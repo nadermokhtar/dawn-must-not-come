@@ -30,6 +30,7 @@ const DEFAULT_PAGES_IN_NIGHT = 22
 const BOSS_REWARD_DINARS = 50
 const KILL_REWARD_DINARS = 10
 const CHEST_REWARD_DINARS = 20
+const WIN_HEAL_FRACTION = 0.2
 
 export interface RunState {
   seed: number
@@ -165,6 +166,7 @@ export function applyBattleReward(run: RunState, enemyId: string, content: Conte
   if (!enemy) throw new Error(`unknown enemy ${enemyId}`)
   const dinars = enemy.tier === 'boss' ? BOSS_REWARD_DINARS : KILL_REWARD_DINARS
   run.dinars += dinars
+  run.hp = Math.min(run.maxHp, run.hp + Math.round(run.maxHp * WIN_HEAL_FRACTION))
   if (enemy.tier === 'boss') {
     run.bossDefeated = true
     run.result = 'night_cleared'
