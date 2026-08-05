@@ -66,6 +66,12 @@ export interface RunState {
   blessings: string[]
   flags: Record<string, string>
   crossedOutVerseIds: string[]
+  // The verses currently offered on the map, persisted across screens. Per
+  // DESIGN.md §3.1 / NotFM: picking one of the 3 shown Verses only replaces
+  // that one — the other 2 stay put, so you can battle and come back to find
+  // the Bazaar or Blessing verse still waiting. Empty means "needs a full
+  // roll" (fresh run, after a reshuffle, or after advancing to a new Night).
+  verseOptionIds: string[]
   bossDefeated: boolean
   resolvedForks: string[]
   bankedDinars: number
@@ -99,6 +105,7 @@ export function createRun(classId: string, seed: number): RunState {
     blessings: [],
     flags: {},
     crossedOutVerseIds: [],
+    verseOptionIds: [],
     bossDefeated: false,
     resolvedForks: [],
     bankedDinars: 0,
@@ -140,36 +147,39 @@ function isVerseLevelEligible(verse: VerseDef, run: RunState, content: Content):
   })
 }
 
-// 3-up selection per DESIGN.md §3.1. Deterministic per (seed, night, page,
-// rerollCount) so replays/tests are stable, but a "Turn the Page" reshuffle
-// (which bumps rerollCount without advancing the page) still yields a
-// different draw.
-export function rollVerseOptions(run: RunState, content: Content): VerseDef[] {
-  const boss = bossVerseFor(run, content)
-  if (run.page >= run.pagesInNight && boss && !run.bossDefeated) {
-    return [boss]
-  }
-
-  const pool = [...content.verses.values()].filter(
+function eligibleVersePool(run: RunState, content: Content): VerseDef[] {
+  return [...content.verses.values()].filter(
     (v) =>
       v.kind !== 'boss' &&
       v.night.includes(run.night) &&
       !(v.mustCrossOut && run.crossedOutVerseIds.includes(v.id)) &&
       isVerseLevelEligible(v, run, content),
   )
-  if (pool.length === 0) throw new Error('verse pool exhausted for night ' + run.night)
+}
 
+function weightedVersePool(pool: VerseDef[]): VerseDef[] {
   const weighted: VerseDef[] = []
   for (const v of pool) {
     const w = Math.max(1, Math.round(v.weight ?? 1))
     for (let i = 0; i < w; i++) weighted.push(v)
   }
+  return weighted
+}
 
-  const rng = createRng(deriveSeed(run.seed, 'night', run.night, 'page', run.page, 'reroll', run.rerollCount))
+// Picks up to `count` distinct eligible verses (skipping `exclude`),
+// deterministic per (seed, night, page, rerollCount, salt) so replays/tests
+// are stable — `salt` differentiates a full 3-up roll from a single
+// slot-replacement roll so they don't collide on the same draw.
+function rollDistinctVerses(run: RunState, content: Content, count: number, exclude: Set<string>, salt: string): VerseDef[] {
+  const pool = eligibleVersePool(run, content).filter((v) => !exclude.has(v.id))
+  if (pool.length === 0) return []
+
+  const weighted = weightedVersePool(pool)
+  const rng = createRng(deriveSeed(run.seed, 'night', run.night, 'page', run.page, 'reroll', run.rerollCount, salt))
   const chosen: VerseDef[] = []
   const usedIds = new Set<string>()
   let guard = 0
-  while (chosen.length < 3 && chosen.length < pool.length && guard < 200) {
+  while (chosen.length < count && chosen.length < pool.length && guard < 200) {
     guard++
     const pick = rng.pick(weighted)
     if (usedIds.has(pick.id)) continue
@@ -177,6 +187,45 @@ export function rollVerseOptions(run: RunState, content: Content): VerseDef[] {
     chosen.push(pick)
   }
   return chosen
+}
+
+// 3-up selection per DESIGN.md §3.1. Deterministic per (seed, night, page,
+// rerollCount) so replays/tests are stable, but a "Turn the Page" reshuffle
+// (which bumps rerollCount without advancing the page) still yields a
+// different draw. This is the "roll all 3 from scratch" path — used to
+// bootstrap `currentVerseOptions` below, not called directly by the UI.
+export function rollVerseOptions(run: RunState, content: Content): VerseDef[] {
+  const boss = bossVerseFor(run, content)
+  if (run.page >= run.pagesInNight && boss && !run.bossDefeated) {
+    return [boss]
+  }
+
+  if (eligibleVersePool(run, content).length === 0) {
+    throw new Error('verse pool exhausted for night ' + run.night)
+  }
+  return rollDistinctVerses(run, content, 3, new Set(), 'roll')
+}
+
+// The verses to actually show on the map — persisted in `run.verseOptionIds`
+// across screens (see the field's doc comment). Bootstraps or repairs by
+// rolling however many slots are missing (fresh run, mid-run save from
+// before this field existed, or a slot invalidated by a night/level change).
+export function currentVerseOptions(run: RunState, content: Content): VerseDef[] {
+  const boss = bossVerseFor(run, content)
+  if (run.page >= run.pagesInNight && boss && !run.bossDefeated) {
+    return [boss]
+  }
+
+  const stored = run.verseOptionIds
+    .map((id) => content.verses.get(id))
+    .filter((v): v is VerseDef => v !== undefined && v.night.includes(run.night) && isVerseLevelEligible(v, run, content))
+
+  if (stored.length >= 3) return stored.slice(0, 3)
+
+  const rolled = rollDistinctVerses(run, content, 3 - stored.length, new Set(stored.map((v) => v.id)), 'roll')
+  const combined = [...stored, ...rolled]
+  run.verseOptionIds = combined.map((v) => v.id)
+  return combined
 }
 
 export interface EnterVerseResult {
@@ -189,24 +238,42 @@ export interface EnterVerseResult {
 // Page/cross-out bookkeeping for picking one of the 3 offered Verses.
 // Reshuffle Verses ("Turn the Page") don't consume a page; everything else
 // does, including battles (a Verse is spent by visiting it, win or lose).
+//
+// Slot persistence (DESIGN.md §3.1 / NotFM): picking a Verse replaces only
+// that one slot in `run.verseOptionIds` — the other 2 stay exactly as they
+// were, so leaving for a battle and coming back still shows the Bazaar or
+// Blessing verse that was sitting there. A reshuffle discards all 3 (the one
+// documented exception); a boss clear also discards all 3, since the next
+// roll belongs to a new page batch or a new Night entirely.
 export function enterVerse(run: RunState, verseId: string, content: Content): EnterVerseResult {
   const verse = content.verses.get(verseId)
   if (!verse) throw new Error(`unknown verse ${verseId}`)
 
   if (verse.reshuffle) {
     run.rerollCount += 1
+    run.verseOptionIds = []
     return { kind: verse.kind, verseId: verse.id, reshuffled: true }
   }
 
   if (verse.mustCrossOut && !run.crossedOutVerseIds.includes(verse.id)) {
     run.crossedOutVerseIds.push(verse.id)
   }
-  if (verse.kind !== 'boss') run.page += 1
+
+  const isBoss = verse.kind === 'boss'
+  if (!isBoss) run.page += 1
 
   let enemyId: string | undefined
   if (verse.enemyPool && verse.enemyPool.length > 0) {
     const rng = createRng(deriveSeed(run.seed, 'enemy', run.night, run.page, verse.id))
     enemyId = rng.pick(verse.enemyPool)
+  }
+
+  if (isBoss) {
+    run.verseOptionIds = []
+  } else {
+    const remaining = run.verseOptionIds.filter((id) => id !== verseId)
+    const replacement = rollDistinctVerses(run, content, 1, new Set(remaining), `slot-${verseId}-${run.page}`)
+    run.verseOptionIds = [...remaining, ...replacement.map((v) => v.id)]
   }
 
   return { kind: verse.kind, verseId: verse.id, enemyId, reshuffled: false }

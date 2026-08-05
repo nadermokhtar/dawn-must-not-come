@@ -13,11 +13,24 @@
   padding: 0.75rem 0.75rem 0;
 }
 
+.map-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
 .map-title {
   color: var(--gold);
   font-size: 0.85rem;
   letter-spacing: 0.02em;
-  margin-bottom: 0.5rem;
+}
+
+.map-header-btns {
+  display: flex;
+  gap: 6px;
+  flex: 0 0 auto;
 }
 
 .map-stats-row {
@@ -129,7 +142,7 @@
   border-color: var(--coral);
 }
 
-/* ---- economy sheets (Bazaar / Calligrapher / House of Forgetting) ---- */
+/* ---- narration line + leave button shared by story-fork/economy dialogs ---- */
 
 .sheet-narration {
   font-style: italic;
@@ -139,68 +152,8 @@
   margin: 0.5rem 0;
 }
 
-.economy-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  margin: 0.5rem 0;
-}
-
-.economy-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid rgba(201, 162, 39, 0.25);
-}
-
-.economy-row .card {
-  flex: 0 0 auto;
-}
-
-.economy-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.4rem;
-}
-
-.economy-price {
-  font-size: 0.8rem;
-  color: var(--parchment-dim);
-}
-
-.economy-info button {
-  width: 100%;
-}
-
 .sheet-leave-btn {
   width: 100%;
   margin-top: 0.5rem;
 }
 
-/* ---- level-up reward picker ---- */
-
-.levelup-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  margin: 0.5rem 0;
-}
-
-.levelup-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid rgba(201, 162, 39, 0.25);
-}
-
-.levelup-row .card {
-  flex: 0 0 auto;
-}
-
-.levelup-row button {
-  flex: 1;
-}

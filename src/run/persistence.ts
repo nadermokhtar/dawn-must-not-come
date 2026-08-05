@@ -37,3 +37,35 @@ export function clearRun(): void {
     // ignore
   }
 }
+
+// Per-profile (per-browser), not per-run — a fresh run must NOT re-trigger
+// tutorials the player has already dismissed, unlike RunState which resets
+// every createRun(). Generic string flags rather than one key per tutorial
+// so new one-time hints can be added without touching persistence code.
+const SEEN_KEY = 'dawn-must-not-come:seen'
+
+function loadSeenFlags(): Set<string> {
+  try {
+    const raw = localStorage.getItem(SEEN_KEY)
+    if (!raw) return new Set()
+    const arr = JSON.parse(raw) as unknown
+    return Array.isArray(arr) ? new Set(arr.filter((x): x is string => typeof x === 'string')) : new Set()
+  } catch {
+    return new Set()
+  }
+}
+
+export function hasSeen(flag: string): boolean {
+  return loadSeenFlags().has(flag)
+}
+
+export function markSeen(flag: string): void {
+  try {
+    const flags = loadSeenFlags()
+    flags.add(flag)
+    localStorage.setItem(SEEN_KEY, JSON.stringify([...flags]))
+  } catch {
+    // Private browsing / storage-full: worst case the tutorial reappears
+    // next time, which is harmless.
+  }
+}

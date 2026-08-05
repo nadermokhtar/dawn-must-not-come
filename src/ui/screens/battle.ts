@@ -6,7 +6,8 @@ import type { BattleEvent } from '../../engine/events'
 import { createCardElement, showCardZoom } from '../cardView'
 import { createArtElement } from '../artUrl'
 import { onHold, onTap } from '../touch'
-import { statBar, statusBadge, iconBadge, armorBadge, hourglassStat, bottomSheet, flashMessage } from '../components'
+import { statBar, statusBadge, iconBadge, armorBadge, hourglassStat, bottomSheet, ceremonyDialog, flashMessage } from '../components'
+import { maybeShowBattleTutorial, showBattleHelp } from '../onboarding'
 
 const LOG_CAP = 100
 const ENEMY_HAND_SIZE = 3
@@ -21,6 +22,8 @@ export interface BattleScreenOptions {
   enemyId: string
   playerStats: PlayerStats
   playerLevel?: number
+  playerXp?: number
+  xpToLevel?: number
   deck: string[]
   initialPlayerEffects?: EffectInstance[]
   onExit: (result: BattleOutcome) => void
@@ -114,6 +117,7 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
   let logEntries: string[] = []
 
   let lowHpBarked = false
+  let endBannerShown = false
   let dialogueText = ''
   let recentText = ''
   let narrationExpanded = false
@@ -263,6 +267,7 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
     selectedUid = null
     logEntries = []
     lowHpBarked = false
+    endBannerShown = false
     const enemyDef = content.enemies.get(opts.enemyId)!
     barkExchange(
       `"What creature bars his way now?" the King asked.`,
@@ -464,7 +469,19 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
 
     const left = document.createElement('div')
     left.className = 'status-strip-left'
-    left.appendChild(iconBadge('Draw', counts.drawPile, { compact: true, onTap: () => showPileList('Draw', state.player.drawPile) }))
+    const helpBtn = document.createElement('button')
+    helpBtn.className = 'help-btn'
+    helpBtn.textContent = '?'
+    helpBtn.title = 'How to fight'
+    onTap(helpBtn, showBattleHelp)
+    left.appendChild(helpBtn)
+    left.appendChild(
+      iconBadge('Draw', counts.drawPile, {
+        compact: true,
+        tooltip: 'Draw pile: cards left to draw this battle. Tap to view.',
+        onTap: () => showPileList('Draw', state.player.drawPile),
+      }),
+    )
     statusStrip.appendChild(left)
 
     const center = document.createElement('div')
@@ -477,10 +494,28 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
 
     const right = document.createElement('div')
     right.className = 'status-strip-right'
-    right.appendChild(iconBadge('Disc', counts.discard, { compact: true, onTap: () => showPileList('Discard', state.player.discard) }))
-    right.appendChild(iconBadge('Exh', counts.exhaust, { compact: true, onTap: () => showPileList('Exhaust', state.player.exhaust) }))
-    right.appendChild(iconBadge('Set', counts.counters, { compact: true, onTap: () => showPileList('Set', state.player.counters) }))
-    right.appendChild(iconBadge('Log', logEntries.length, { compact: true, onTap: showLogDrawer }))
+    right.appendChild(
+      iconBadge('Disc', counts.discard, {
+        compact: true,
+        tooltip: 'Discard pile: played/discarded cards — reshuffles into the draw pile when it empties. Tap to view.',
+        onTap: () => showPileList('Discard', state.player.discard),
+      }),
+    )
+    right.appendChild(
+      iconBadge('Exh', counts.exhaust, {
+        compact: true,
+        tooltip: 'Exhaust pile: cards removed from play for the rest of this battle. Tap to view.',
+        onTap: () => showPileList('Exhaust', state.player.exhaust),
+      }),
+    )
+    right.appendChild(
+      iconBadge('Set', counts.counters, {
+        compact: true,
+        tooltip: 'Set: Counter cards placed face-down, ready to trigger on the enemy\'s next move. Tap to view.',
+        onTap: () => showPileList('Set', state.player.counters),
+      }),
+    )
+    right.appendChild(iconBadge('Log', logEntries.length, { compact: true, tooltip: 'Full battle event log. Tap to view.', onTap: showLogDrawer }))
     statusStrip.appendChild(right)
   }
 
@@ -510,7 +545,13 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
     row2.appendChild(manaBar)
     row2.appendChild(hourglassStat(state.player.ap, state.player.apBase))
     const counts = pileCounts(state)
-    row2.appendChild(iconBadge('Deck', counts.discard, { compact: true, onTap: () => showPileList('Discard', state.player.discard) }))
+    row2.appendChild(
+      iconBadge('Deck', counts.discard, {
+        compact: true,
+        tooltip: 'Discard pile count. Tap to view.',
+        onTap: () => showPileList('Discard', state.player.discard),
+      }),
+    )
     const endTurnBtn = document.createElement('button')
     endTurnBtn.textContent = 'End Turn'
     endTurnBtn.className = 'end-turn-btn'
@@ -524,19 +565,41 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
   }
 
   function renderEndBanner(): void {
-    const existing = root.querySelector('.end-banner')
-    if (existing) existing.remove()
-    if (state.phase !== 'over') return
+    if (state.phase !== 'over' || endBannerShown) return
+    endBannerShown = true
 
     const won = state.result === 'win'
-    const banner = document.createElement('div')
-    banner.className = 'end-banner'
-    banner.innerHTML = `<h2>${won ? 'Victory' : 'Defeat'}</h2>`
-    const btn = document.createElement('button')
-    btn.textContent = won ? 'Continue' : 'Return to the Manuscript'
-    banner.appendChild(btn)
-    onTap(btn, () => opts.onExit({ outcome: won ? 'win' : 'loss', hpRemaining: state.player.hp }))
-    root.querySelector('.battle-screen')!.appendChild(banner)
+    ceremonyDialog(
+      {
+        title: won ? 'Victory' : 'Defeat',
+        portraitRef: 'classes/sinbad.png',
+        portraitLabel: 'Sinbad',
+        ribbonColor: won ? 'var(--coral)' : 'var(--madder)',
+      },
+      (body, close) => {
+        if (won && opts.playerLevel !== undefined) {
+          const lvRow = document.createElement('div')
+          lvRow.className = 'ceremony-level-row'
+          const lvLabel = document.createElement('span')
+          lvLabel.className = 'ceremony-level-label'
+          lvLabel.textContent = `Lv ${opts.playerLevel}`
+          lvRow.appendChild(lvLabel)
+          if (opts.playerXp !== undefined && opts.xpToLevel !== undefined) {
+            lvRow.appendChild(statBar(opts.playerXp, opts.xpToLevel, { color: 'var(--gold)', showNumbers: true }))
+          }
+          body.appendChild(lvRow)
+        }
+
+        const btn = document.createElement('button')
+        btn.className = 'ceremony-continue-btn'
+        btn.textContent = won ? 'Continue' : 'Return to the Manuscript'
+        onTap(btn, () => {
+          close()
+          opts.onExit({ outcome: won ? 'win' : 'loss', hpRemaining: state.player.hp })
+        })
+        body.appendChild(btn)
+      },
+    )
   }
 
   function render(): void {
@@ -549,10 +612,13 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
   }
 
   begin()
+  // No-op after the first time ever (persisted per-profile) — overlays a
+  // one-time "how to fight" explainer on top of the freshly mounted battle.
+  maybeShowBattleTutorial(() => {})
 
   return function dispose(): void {
     if (barkTimeoutId !== undefined) clearTimeout(barkTimeoutId)
     root.innerHTML = ''
-    document.querySelectorAll('.zoom-overlay, .sheet-overlay').forEach((el) => el.remove())
+    document.querySelectorAll('.zoom-overlay, .sheet-overlay, .ceremony-overlay').forEach((el) => el.remove())
   }
 }

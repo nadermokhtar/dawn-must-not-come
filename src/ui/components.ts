@@ -1,4 +1,5 @@
 import { onTap } from './touch'
+import { createArtElement } from './artUrl'
 
 // Generic, reusable DOM widgets — no battle-domain knowledge (no BattleState/
 // BattleEvent/Content imports) so later screens (map, bazaar...) can reuse
@@ -32,6 +33,17 @@ export function statBar(current: number, max: number, opts: BarOptions): HTMLEle
   return wrap
 }
 
+// title = native hover tooltip (desktop); tap = flashMessage (touch has no
+// hover) — every icon-only widget gets both so nothing is unexplained on
+// either input method.
+function withTooltip(el: HTMLElement, text: string): void {
+  el.title = text
+  onTap(el, () => flashMessage(el, text))
+}
+
+const ARMOR_TOOLTIP = 'Armor: absorbs damage until depleted, then breaks.'
+const AP_TOOLTIP = 'Action Points (AP): spent to play cards, refill each turn.'
+
 // CSS clip-path shield — armor value for player/enemy. No dedicated art asset
 // exists yet for the vertical slice, so the shape is drawn in CSS.
 export function armorBadge(value: number): HTMLElement {
@@ -44,6 +56,7 @@ export function armorBadge(value: number): HTMLElement {
   num.className = 'armor-badge-value'
   num.textContent = String(value)
   wrap.appendChild(num)
+  withTooltip(wrap, ARMOR_TOOLTIP)
   return wrap
 }
 
@@ -59,6 +72,7 @@ export function hourglassStat(current: number, max?: number): HTMLElement {
   num.className = 'hourglass-value'
   num.textContent = max !== undefined ? `${current}/${max}` : String(current)
   wrap.appendChild(num)
+  withTooltip(wrap, AP_TOOLTIP)
   return wrap
 }
 
@@ -91,12 +105,17 @@ export function statusBadge(glyph: string, stacks: number, kind: BadgeKind, full
 export function iconBadge(
   label: string,
   count?: number,
-  opts: { onTap?: () => void; compact?: boolean } = {},
+  opts: { onTap?: () => void; compact?: boolean; tooltip?: string } = {},
 ): HTMLElement {
   const el = document.createElement('button')
   el.className = opts.compact ? 'icon-badge icon-badge-compact' : 'icon-badge'
   el.textContent = count !== undefined ? `${label} ${count}` : label
-  if (opts.onTap) onTap(el, opts.onTap)
+  if (opts.tooltip) el.title = opts.tooltip
+  if (opts.onTap) {
+    onTap(el, opts.onTap)
+  } else if (opts.tooltip) {
+    onTap(el, () => flashMessage(el, opts.tooltip!))
+  }
   return el
 }
 
@@ -140,4 +159,61 @@ export function flashMessage(anchor: HTMLElement, text: string, ms = 1600): void
   toast.style.top = `${Math.max(8, rect.top - 36)}px`
   document.body.appendChild(toast)
   setTimeout(() => toast.remove(), ms)
+}
+
+export interface CeremonyOptions {
+  title: string
+  portraitRef?: string
+  portraitLabel: string
+  ribbonColor?: string
+  closable?: boolean
+}
+
+// The shared "big moment" overlay — a glowing portrait, a ribbon-banner
+// title, and a panel body — used for every screen that stops the player to
+// present a choice or a result at consistent proportions: Victory, level-up
+// rewards, the Bazaar, the Calligrapher, the House of Forgetting, Blessings,
+// chests. Distinct from `bottomSheet` (which stays a plain slide-up list for
+// pile views/the event log — those don't need ceremony).
+export function ceremonyDialog(
+  opts: CeremonyOptions,
+  build: (body: HTMLElement, close: () => void) => void,
+): { close: () => void } {
+  const overlay = document.createElement('div')
+  overlay.className = 'ceremony-overlay'
+
+  const frame = document.createElement('div')
+  frame.className = 'ceremony-frame'
+
+  const portraitWrap = document.createElement('div')
+  portraitWrap.className = 'ceremony-portrait-wrap'
+  portraitWrap.appendChild(createArtElement(opts.portraitRef, opts.portraitLabel, 'ceremony-portrait'))
+  frame.appendChild(portraitWrap)
+
+  const ribbon = document.createElement('div')
+  ribbon.className = 'ceremony-ribbon'
+  if (opts.ribbonColor) ribbon.style.background = opts.ribbonColor
+  ribbon.textContent = opts.title
+  frame.appendChild(ribbon)
+
+  const panel = document.createElement('div')
+  panel.className = 'ceremony-panel'
+
+  const close = () => overlay.remove()
+
+  if (opts.closable) {
+    const closeBtn = document.createElement('button')
+    closeBtn.className = 'ceremony-close'
+    closeBtn.textContent = '✕'
+    onTap(closeBtn, close)
+    panel.appendChild(closeBtn)
+  }
+
+  frame.appendChild(panel)
+  overlay.appendChild(frame)
+  document.body.appendChild(overlay)
+
+  build(panel, close)
+
+  return { close }
 }

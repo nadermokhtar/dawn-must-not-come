@@ -107,6 +107,142 @@ Ifrit Flame... invert per enemy design).
   Reskin: the tree is **"Scheherazade's Craft"** — storytelling skills she hones each night.
 - Class unlocks, difficulty unlocks, card index ("The Library of Tales"), endings gallery.
 
+### 3.7 Reference: mechanics lessons from Night of the Full Moon (not yet implemented)
+
+Research notes pulled directly from the NotFM wiki's primary pages (`Full Moon`, `Doebun's Grand
+Guide`, `Mechanic`, `Druggist`, `Recycle`, `Assemble`, `Exhausted`, plus the `Game Mechanics` /
+`Buffs` / `Debuffs` / `Side effects` categories — fetched via the wiki's MediaWiki API, since the
+page HTML sits behind a Cloudflare challenge), captured so future mechanical-depth work (post-slice,
+per §9.6) starts from an informed, source-verified baseline. Nothing in this subsection is in scope
+for the current vertical slice — it's a reference for §3.5/§3.6 follow-on work.
+
+**Card taxonomy — type is tied to cost identity, not just flavor.** NotFM's card types each have a
+fixed cost *shape* and a matching frame color: Attack (no cost, red), Action (AP-gated utility,
+yellow), Mana (no cost, generates mana, blue), Spell (mana-gated burst, purple), Prayer (Nun-only,
+delayed trigger on a turn counter, white), Counter (pink), Equipment (green), Special (gray-purple,
+mostly non-combat/shop utility). Our simplified model (any type can cost AP and/or mana, per
+`cost_type` §9.1) is a deliberate simplification for the slice, but if we ever want NotFM's clarity
+of "glance at the frame color, know the resource," tying `type` to a fixed `cost_type` per type
+(the way the recent battle-UI work already color-codes type banners/ribbons) is the direction to
+grow into rather than keeping cost fully independent of type.
+
+**Exile has two distinct flavors — we only have one.** NotFM's `Removed` page draws a sharp line:
+*"Exiled"* cards are removed only for the current battle (return to the deck pool after combat
+ends), while *"Permanently Exiled"* cards are gone for the rest of the run. Our existing
+`PlayerState.exhaust` pile (`src/engine/types.ts`) is battle-scoped state inside `BattleState`, so
+it's already NotFM's **temporary** Exile — a new battle rebuilds hand/draw pile from
+`RunState.deck`, unaffected by last battle's exhaust pile. We have no engine path for **permanent**
+Exile (a card effect that mutates `RunState.deck` itself, distinct from the paid House of
+Forgetting service). NotFM also calls out **exile-triggered payoff** as a real design lever (flat
+armor, resource regen, enemy debuffs when a card gets exiled) and **exile-triggered card effects**
+that key off *how many* cards have been exiled this battle/combo (Mechanic's Vacuum build: "deals
+more damage when enemy has less cards"). Our `TriggerPoint` union (`src/engine/types.ts`) has no
+`card_exhausted` trigger point, and `card_played` is declared in that union but **never actually
+invoked by `runHooks`** in `battle.ts` (`playCard`'s resolution path doesn't fire it) — both need
+wiring before exhaust-synergy cards or Battery-style equipment (below) are possible.
+- **Recycle** (its own wiki page, distinct from Exile): adds a temporary copy of the played card
+  back to hand at the same cost — once by default, or X times if the card reads `Recycle(X)`. A
+  controlled combo multiplier, distinct from card draw. Maps to a new `CardDef.recycle?: number`.
+- **Assemble** (Mechanic-exclusive): each time an "Assemble:" condition is met, that card's play
+  cost drops by 1 — a build-up-to-a-free-play mechanic, the inverse of Recycle's "replay the same
+  effect."
+- **Exhausted** (a *keyword*, Mechanic-exclusive — do not confuse with our `exhaust` pile/NotFM's
+  Exile, which is a different concept sharing a similar name): spends *all* remaining AP at once,
+  triggering the card's effect once per AP spent (e.g. "Exhausted: deal 3 damage" with 3 AP
+  remaining deals 9). A pure burst-finisher payoff for going all-in on a turn.
+- **Battery:** equipment that auto-fires a secondary effect (lightning damage, shield, etc.)
+  whenever a spell is played, at no extra AP cost — a passive multiplier for spell-heavy builds.
+  Needs the `card_played` hook actually wired (see above) plus a way for `OpCondition` to filter
+  on the played card's `type`, which it can't do today (`OpCondition` only has `turn_gte`,
+  `hp_pct_lte`, `stacks_gte`, `chance`).
+- **Class-exclusive delayed-payoff resources** (Rage/Siphon/Penance) are a recurring pattern worth
+  copying: a class-specific meter that accumulates over a fight and pays off automatically at a
+  fixed trigger (Rage: piercing damage at end of turn scaled to its level, resets by design each
+  fight; Penance: same shape for Nun; Siphon: steal mana, or true-damage-and-lifesteal if the enemy
+  is already out of mana). Each is its own resource, not reusing HP/AP/mana, and each is exclusive
+  to one class — a strong signature-mechanic pattern for Night III+ classes.
+- **Potion/item doubling:** a card that doubles the *base effect* of item cards played (stacks
+  additively, not a flat multiplier) — fits our existing `item` type (`item_healing_draught`,
+  `item_smoke_bomb`, `item_whetstone`).
+- **In-combat max-HP scaling:** rare NotFM cards permanently raise max HP *mid-battle* (not just
+  between-battle leveling) as a counter to deck-exhaustion attrition in long fights — a boss-fight
+  survivability lever we don't have an equivalent of yet.
+- **Build archetypes as a design pattern**, not just individual cards: Mechanic alone documents 5
+  named archetypes (Dynamite Factory, Exhaustion, Fortress, Frailty, Vacuum, Ubergrade) that cards
+  visibly signal membership in, so players draft toward a build instead of picking card-by-card.
+  Worth keeping in mind authoring Night III+ classes — Sinbad's current pool (§7) doesn't yet lean
+  into a named archetype this explicitly.
+
+**Hard Mode ladder — precise, source-verified table** (supersedes the earlier draft in §3.5, which
+was accurate on the broad strokes but not the specifics):
+
+| Tier | Unlocked by | Reward | Mechanical change |
+|---|---|---|---|
+| Normal | — | — | Can't fight the true final boss. |
+| Hard I | Defeat a specific mid-tier enemy | One class-specific unique card per class | Baseline hard difficulty. |
+| Hard II | Clear Hard I | More class cards | Normal enemies get more HP + upgraded cards. |
+| Hard III | Clear Hard II | More class cards | Level-up/rest healing drops from full restore to 50%. |
+| Hard IV | Clear Hard III | More class cards | Boss enemies get more HP + upgraded cards. |
+| Hard V | Clear Hard IV | More class cards | From Night II on, enemies gain a stacking permanent +1 dmg buff every 2 enemy turns. |
+| Hard VI | Clear Hard V | More class cards | Shop prices ~+50%. |
+| Hard VII | Clear Hard VI | — | Max hand size capped at 3 (removes the final level-up hand-size upgrade); always fights the true final boss. |
+| Nightmare | Clear Hard VII | — | Extra disaster event; adds the 5 Movements below. |
+
+Confirms our existing §3.5 design was directionally right: **Wonder/Mercy are Courage/Reputation's
+reskin**, and on Hard+ they really are replaced by a Time-Dust-for-blessing-choices currency spent
+with an NPC (2 dust = 1 choice, 4 = pick of 2, 6 = pick of 3) — exactly what §3.5's Sand of the
+Hourglass / Keeper of Hours already specs.
+
+**Nightmare's 5 "Movements"** (our "King's Moods," §3.5) — precise effects, replacing the earlier
+generic approximations: **Dark** locks the initial hand size *and* card sequence for the whole
+battle (not just the opening hand); **Barren** makes *healing events themselves* (bandages, rest
+points) reduce max HP instead of restoring it — a full inversion, not just "reduced healing";
+**Melancholy** increases exploration/combat skill cooldowns; **Plague** adds one junk "Prank" card
+(a specific unplayable/disruptive card, not generic junk); **Withered** raises Smithy/Tavern/Shop
+prices ~50% (i.e. Calligrapher/House of Forgetting/Bazaar in our vocabulary, not literally every
+service).
+
+**Dialogue Choices confirm our Story Fork design, precisely.** NotFM's chapter-end reveals aren't
+random: the **first 3 Nights each have exactly 3 specific enemies** flagged for a post-victory
+dialogue choice (a fixed, curated list per chapter, not "any enemy"), and each choice nudges
+Courage or Reputation (our Wonder/Mercy) — with a small UX touch worth stealing: a persistent
+sword/crown icon on replay showing *which* choice you made last time, so returning players aren't
+re-reading the same dialogue blind. This maps exactly onto our `EnemyDef.story_fork_id` +
+Wonder/Mercy design — we already built the right shape.
+
+**The Hidden Night IV chain, worked out exactly** (fills in the "Sealed Scroll / Golden Tongue"
+stub noted in CLAUDE.md — this is the literal mechanic those are reskinning):
+- **Locked Diary chain:** get the Locked Diary from Night II's Fairy-Blessing-equivalent verse →
+  upgrade it at the Calligrapher (only the upgrade option works, not other upgrade paths) → trade
+  the upgraded item with the Trader-of-Tales-equivalent (Card Collector) for a new item → forget
+  *that* item at the House of Forgetting → the House of Forgetting instead grants a specific
+  blessing that has no combat effect at all — its sole purpose is unlocking the hidden chapter.
+- **VIP Card chain:** get the VIP Card from Night II's Fairy-Blessing-equivalent verse → buy a
+  specific item from the VIP-only shop it unlocks → take that item to the House of Forgetting to
+  "ferment" it into an action card → play that action card against any enemy, which **permanently
+  reduces base AP by 1** for the rest of the run as the cost of the unlock → grants a unique ending
+  blessing and unlocks the hidden chapter.
+- **Eccentric Seeds chain:** also picked up from Night II's Fairy-Blessing-equivalent verse; the
+  wiki's own writeup of this one is an unfinished stub (it only confirms the pickup point, not the
+  full sequence), so treat it as the least-specified of the three and expect to design our own
+  completion for it rather than porting a documented one.
+- All three explicitly require **paying attention to non-battle Verses** in Night II specifically —
+  the hidden chain is entirely opt-in flavor content layered on ordinary economy Verses, not a
+  separate track. That's exactly the "Night II's Locked Diary/Eccentric Seeds/VIP Card verses are
+  flavor-only stubs, not the full chain" gap CLAUDE.md already flags as our next-milestone item —
+  now with the real 3-step shape to build toward instead of inventing one from scratch.
+
+**One claim I could not verify against primary sources:** an earlier pass (sourced from web search,
+not the wiki directly) described an unlockable "Ability Bar" — equip cards dropped from monsters
+in 3 categories, plus Hard Mode replacing the fixed starter deck with a "Universal Set" drafted
+across two pre-run selection phases. None of "Ability Bar," "Apothecary entry," or "Universal"
+appear anywhere in the `Full Moon` wiki page, the `Druggist`/Apothecary class page, or — checked in
+case of a mix-up — the wiki's *other* hosted game, `Memory in the Mirror` (a different,
+minion-battler title that shares this fandom wiki but has no Apothecary, Hard Mode, or Ability Bar
+of its own either). It's possible this describes a mobile-app-specific screen this wiki doesn't
+document, or was a mixed-up/hallucinated summary — flagging rather than silently keeping it in the
+design doc as if source-verified.
+
 ---
 
 ## 4. THE TELLING — the dynamic narration system (our differentiator)
