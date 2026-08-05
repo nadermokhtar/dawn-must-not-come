@@ -31,6 +31,11 @@ const BOSS_REWARD_DINARS = 50
 const KILL_REWARD_DINARS = 10
 const CHEST_REWARD_DINARS = 20
 const WIN_HEAL_FRACTION = 0.2
+const XP_PER_KILL = 10
+export const XP_TO_LEVEL = 20
+const HP_PER_LEVEL = 3
+const MAX_LEVEL = 20
+const LEVEL_GATE_HEADROOM = 1
 
 export interface RunState {
   seed: number
@@ -39,6 +44,8 @@ export interface RunState {
   page: number
   pagesInNight: number
   rerollCount: number
+  level: number
+  xp: number
   hp: number
   maxHp: number
   apBase: number
@@ -68,6 +75,8 @@ export function createRun(classId: string, seed: number): RunState {
     page: 0,
     pagesInNight: PROGRESSION.nights?.['1']?.pages ?? DEFAULT_PAGES_IN_NIGHT,
     rerollCount: 0,
+    level: 1,
+    xp: 0,
     hp: cls.hp,
     maxHp: cls.hp,
     apBase: cls.ap_base,
@@ -86,11 +95,39 @@ export function createRun(classId: string, seed: number): RunState {
   }
 }
 
+// Flat 20 XP/level so a 10-XP kill levels the player up roughly every other
+// fight, regardless of how far into the run they are (matches the pacing the
+// leveling system was asked to hit — not a scaling RPG curve).
+export function grantXp(run: RunState, amount: number): { levelsGained: number } {
+  run.xp += amount
+  let levelsGained = 0
+  while (run.xp >= XP_TO_LEVEL && run.level < MAX_LEVEL) {
+    run.xp -= XP_TO_LEVEL
+    run.level += 1
+    run.maxHp += HP_PER_LEVEL
+    run.hp = Math.min(run.maxHp, run.hp + HP_PER_LEVEL)
+    levelsGained += 1
+  }
+  return { levelsGained }
+}
+
 function bossVerseFor(run: RunState, content: Content): VerseDef | undefined {
   for (const v of content.verses.values()) {
     if (v.kind === 'boss' && v.night.includes(run.night)) return v
   }
   return undefined
+}
+
+// Fairness gate: a battle Verse only offers a fight the player is ready for
+// — its enemy must be within [run.level, run.level + headroom]. Non-battle
+// Verses and enemies with no level assigned are always eligible.
+function isVerseLevelEligible(verse: VerseDef, run: RunState, content: Content): boolean {
+  if (verse.kind !== 'battle' || !verse.enemyPool) return true
+  return verse.enemyPool.every((id) => {
+    const level = content.enemies.get(id)?.level
+    if (level === undefined) return true
+    return level >= run.level && level <= run.level + LEVEL_GATE_HEADROOM
+  })
 }
 
 // 3-up selection per DESIGN.md §3.1. Deterministic per (seed, night, page,
@@ -104,7 +141,11 @@ export function rollVerseOptions(run: RunState, content: Content): VerseDef[] {
   }
 
   const pool = [...content.verses.values()].filter(
-    (v) => v.kind !== 'boss' && v.night.includes(run.night) && !(v.mustCrossOut && run.crossedOutVerseIds.includes(v.id)),
+    (v) =>
+      v.kind !== 'boss' &&
+      v.night.includes(run.night) &&
+      !(v.mustCrossOut && run.crossedOutVerseIds.includes(v.id)) &&
+      isVerseLevelEligible(v, run, content),
   )
   if (pool.length === 0) throw new Error('verse pool exhausted for night ' + run.night)
 
@@ -161,17 +202,18 @@ export function enterVerse(run: RunState, verseId: string, content: Content): En
   return { kind: verse.kind, verseId: verse.id, enemyId, reshuffled: false }
 }
 
-export function applyBattleReward(run: RunState, enemyId: string, content: Content): { dinars: number } {
+export function applyBattleReward(run: RunState, enemyId: string, content: Content): { dinars: number; levelsGained: number } {
   const enemy = content.enemies.get(enemyId)
   if (!enemy) throw new Error(`unknown enemy ${enemyId}`)
   const dinars = enemy.tier === 'boss' ? BOSS_REWARD_DINARS : KILL_REWARD_DINARS
   run.dinars += dinars
+  const { levelsGained } = grantXp(run, XP_PER_KILL)
   run.hp = Math.min(run.maxHp, run.hp + Math.round(run.maxHp * WIN_HEAL_FRACTION))
   if (enemy.tier === 'boss') {
     run.bossDefeated = true
     run.result = 'night_cleared'
   }
-  return { dinars }
+  return { dinars, levelsGained }
 }
 
 export function recordDefeat(run: RunState): void {

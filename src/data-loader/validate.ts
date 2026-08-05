@@ -69,6 +69,9 @@ export function validateEnemy(raw: unknown, ctx: string): EnemyDef {
   assert(r.resist === undefined || Array.isArray(r.resist), ctx, 'resist must be an array')
   assert(r.weak === undefined || Array.isArray(r.weak), ctx, 'weak must be an array')
   assert(Array.isArray(r.deck) && r.deck.length > 0, ctx, 'deck must be a non-empty array')
+  if (r.level !== undefined) {
+    assert(typeof r.level === 'number' && r.level >= 1 && r.level <= 20, ctx, 'level must be a number 1-20')
+  }
 
   r.resist = r.resist ?? []
   r.weak = r.weak ?? []

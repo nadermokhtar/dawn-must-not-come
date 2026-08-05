@@ -1,5 +1,6 @@
 import type { Content, VerseDef, VerseKind } from '../../engine/types'
 import {
+  XP_TO_LEVEL,
   type RunState,
   buyCard,
   cardPrice,
@@ -74,6 +75,18 @@ export function mountMapScreen(root: HTMLElement, run: RunState, content: Conten
     statsRow.appendChild(iconBadge('Wonder', run.wonder))
     statsRow.appendChild(iconBadge('Mercy', run.mercy))
     mapHeader.appendChild(statsRow)
+
+    const levelRow = document.createElement('div')
+    levelRow.className = 'map-stats-row'
+    const levelWrap = document.createElement('div')
+    levelWrap.className = 'map-stat'
+    const levelLabel = document.createElement('span')
+    levelLabel.className = 'map-stat-label'
+    levelLabel.textContent = `Lv ${run.level}`
+    levelWrap.appendChild(levelLabel)
+    levelWrap.appendChild(statBar(run.xp, XP_TO_LEVEL, { color: 'var(--gold)', showNumbers: true }))
+    levelRow.appendChild(levelWrap)
+    mapHeader.appendChild(levelRow)
   }
 
   function renderNarration(): void {
@@ -97,6 +110,14 @@ export function mountMapScreen(root: HTMLElement, run: RunState, content: Conten
       kind.className = 'verse-tile-kind'
       kind.textContent = KIND_LABEL[verse.kind]
       tile.appendChild(kind)
+
+      const enemyLevel = verse.enemyPool?.[0] ? content.enemies.get(verse.enemyPool[0])?.level : undefined
+      if (enemyLevel !== undefined) {
+        const levelBadge = document.createElement('div')
+        levelBadge.className = 'verse-tile-level'
+        levelBadge.textContent = `Lv ${enemyLevel}`
+        tile.appendChild(levelBadge)
+      }
 
       onTap(tile, () => selectVerse(verse))
       verseRow.appendChild(tile)

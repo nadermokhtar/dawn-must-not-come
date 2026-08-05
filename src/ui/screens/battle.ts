@@ -20,6 +20,7 @@ export interface BattleOutcome {
 export interface BattleScreenOptions {
   enemyId: string
   playerStats: PlayerStats
+  playerLevel?: number
   deck: string[]
   initialPlayerEffects?: EffectInstance[]
   onExit: (result: BattleOutcome) => void
@@ -135,8 +136,20 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
     recentLog.textContent = text
   }
 
+  let barkTimeoutId: ReturnType<typeof setTimeout> | undefined
+
   function bark(text: string): void {
     dialogueLine.textContent = text
+  }
+
+  // The frame story is Scheherazade narrating Sinbad's voyage to King
+  // Shahryar (DESIGN.md §2) — so dialogue here is the King prompting with a
+  // question and Scheherazade answering in narration, never Scheherazade
+  // addressing Sinbad directly (that reads as her shouting orders at him).
+  function barkExchange(kingLine: string, narrationLine: string): void {
+    if (barkTimeoutId !== undefined) clearTimeout(barkTimeoutId)
+    bark(kingLine)
+    barkTimeoutId = setTimeout(() => bark(narrationLine), 1300)
   }
 
   function hitTargetsFrom(events: BattleEvent[]): Array<'player' | 'enemy'> {
@@ -184,7 +197,10 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
     if (lowHpBarked || state.player.hp <= 0) return
     if (state.player.hp / state.player.maxHp <= LOW_HP_BARK_THRESHOLD) {
       lowHpBarked = true
-      bark(`"Ya Allah [O God]," Scheherazade breathed, "Sinbad's strength is failing..."`)
+      barkExchange(
+        `"Does he yet live?" the King asked, leaning forward.`,
+        `"Barely," Scheherazade said. "Ya Allah [O God], Sinbad's strength was failing him."`,
+      )
     }
   }
 
@@ -225,8 +241,11 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
     selectedUid = null
     logEntries = []
     lowHpBarked = false
-    const enemyName = content.enemies.get(opts.enemyId)!.name
-    bark(`"Steady your blade," said Scheherazade, "for ${enemyName} blocks the way."`)
+    const enemyDef = content.enemies.get(opts.enemyId)!
+    barkExchange(
+      `"What creature bars his way now?" the King asked.`,
+      `"${enemyDef.tier === 'boss' ? 'A terror' : 'A trial'}," Scheherazade said, "for Sinbad had come upon ${enemyDef.name}."`,
+    )
     applyAndRender(result.events)
   }
 
@@ -331,7 +350,13 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
     nameEl.textContent = enemyDef.name
     nameplate.appendChild(nameEl)
 
-    const subtitleText = [enemyDef.night ? `Night ${enemyDef.night}` : null, enemyDef.tier].filter(Boolean).join(' · ')
+    const subtitleText = [
+      enemyDef.night ? `Night ${enemyDef.night}` : null,
+      enemyDef.tier,
+      enemyDef.level !== undefined ? `Lv ${enemyDef.level}` : null,
+    ]
+      .filter(Boolean)
+      .join(' · ')
     if (subtitleText) {
       const subtitle = document.createElement('div')
       subtitle.className = 'enemy-subtitle'
@@ -446,7 +471,7 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
     row2.className = 'hud-row'
     const turnText = document.createElement('span')
     turnText.className = 'hud-turn-text'
-    turnText.textContent = `Turn ${state.turn}`
+    turnText.textContent = opts.playerLevel !== undefined ? `Turn ${state.turn} · Lv ${opts.playerLevel}` : `Turn ${state.turn}`
     row2.appendChild(turnText)
 
     const endTurnBtn = document.createElement('button')
@@ -489,6 +514,7 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
   begin()
 
   return function dispose(): void {
+    if (barkTimeoutId !== undefined) clearTimeout(barkTimeoutId)
     root.innerHTML = ''
     document.querySelectorAll('.zoom-overlay, .sheet-overlay').forEach((el) => el.remove())
   }

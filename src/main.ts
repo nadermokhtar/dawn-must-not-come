@@ -43,6 +43,7 @@ function showBattle(enemyId: string): void {
       manaMax: run.manaMax,
       handSize: run.handSize,
     },
+    playerLevel: run.level,
     initialPlayerEffects: blessingEffects(run, content),
     onExit: (result) => {
       run.hp = result.hpRemaining
@@ -67,6 +68,10 @@ function showEndScreen(kind: 'night_cleared' | 'defeated'): void {
     app.innerHTML = ''
   }
   const title = kind === 'night_cleared' ? 'Night Cleared' : 'Sinbad Falls'
+  const kingLine =
+    kind === 'night_cleared'
+      ? '&ldquo;And does the voyage end there?&rdquo; the King asked.'
+      : '&ldquo;Does the story end so?&rdquo; the King demanded, frowning.'
   const message =
     kind === 'night_cleared'
       ? '&ldquo;Inshallah [God willing],&rdquo; said Scheherazade, &ldquo;we will continue the story tomorrow.&rdquo;'
@@ -74,6 +79,7 @@ function showEndScreen(kind: 'night_cleared' | 'defeated'): void {
   app.innerHTML = `
     <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:1rem;text-align:center;padding:1rem;">
       <h1 style="color:var(--gold);font-weight:normal;">${title}</h1>
+      <p style="opacity:0.7;font-style:italic;">${kingLine}</p>
       <p style="opacity:0.85;font-style:italic;">${message}</p>
     </div>
   `

@@ -106,6 +106,7 @@ export interface EnemyDef {
   name: string
   night?: number
   tier?: string
+  level?: number
   hp: number
   resist: DType[]
   weak: DType[]

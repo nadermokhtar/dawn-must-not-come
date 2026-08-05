@@ -93,6 +93,12 @@
   letter-spacing: 0.03em;
 }
 
+.verse-tile-level {
+  font-size: 0.65rem;
+  color: var(--gold);
+  font-weight: bold;
+}
+
 .verse-tile.kind-boss {
   border-color: var(--madder);
 }

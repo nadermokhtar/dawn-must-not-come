@@ -6,6 +6,7 @@ import {
   createRun,
   enterVerse,
   grantBlessing,
+  grantXp,
   removeCard,
   resolveChest,
   rollVerseOptions,
@@ -32,6 +33,30 @@ const content = makeFixtureContent({
       cost: { ap: 1, mana: 0 },
       damage: { amount: 8, dtype: 'steel' },
       rarity: 'common',
+    },
+  ],
+  enemies: [
+    { id: 'test_enemy_lvl1', name: 'Level 1 Foe', level: 1, hp: 10, resist: [], weak: [], deck: ['enemy_attack'], ai: { mode: 'sequential' } },
+    { id: 'test_enemy_lvl3', name: 'Level 3 Foe', level: 3, hp: 10, resist: [], weak: [], deck: ['enemy_attack'], ai: { mode: 'sequential' } },
+  ],
+  verses: [
+    {
+      id: 'verse_battle_lvl1',
+      kind: 'battle',
+      night: [1],
+      name: 'Level 1 Battle',
+      narration: 'A weaker foe.',
+      weight: 3,
+      enemyPool: ['test_enemy_lvl1'],
+    },
+    {
+      id: 'verse_battle_lvl3',
+      kind: 'battle',
+      night: [1],
+      name: 'Level 3 Battle',
+      narration: 'A stronger foe.',
+      weight: 3,
+      enemyPool: ['test_enemy_lvl3'],
     },
   ],
 })
@@ -177,5 +202,55 @@ describe('blessingEffects', () => {
   it('maps owned blessings to effect instances', () => {
     const run = baseRun({ blessings: ['test_blessing_armor'] })
     expect(blessingEffects(run, content)).toEqual([{ effectId: 'armor', stacks: 5 }])
+  })
+})
+
+describe('grantXp / leveling', () => {
+  it('levels up roughly every 2 kills, growing maxHp and healing', () => {
+    const run = baseRun({ hp: 30, maxHp: 30 })
+    expect(grantXp(run, 10)).toEqual({ levelsGained: 0 })
+    expect(run.level).toBe(1)
+
+    expect(grantXp(run, 10)).toEqual({ levelsGained: 1 })
+    expect(run.level).toBe(2)
+    expect(run.maxHp).toBe(33)
+    expect(run.hp).toBe(33)
+  })
+
+  it('applyBattleReward grants XP toward leveling', () => {
+    const run = baseRun({ xp: 10 })
+    const { levelsGained } = applyBattleReward(run, 'test_enemy', content)
+    expect(levelsGained).toBe(1)
+    expect(run.level).toBe(2)
+  })
+
+  it('does not level past MAX_LEVEL', () => {
+    const run = baseRun({ level: 20, xp: 0 })
+    grantXp(run, 1000)
+    expect(run.level).toBe(20)
+  })
+})
+
+describe('level-gated battle verses', () => {
+  it('only offers battles within [level, level + 1]', () => {
+    const lowLevelRun = baseRun({ level: 1 })
+    let sawEligible = false
+    for (let page = 0; page < 10; page++) {
+      lowLevelRun.page = page
+      const options = rollVerseOptions(lowLevelRun, content)
+      if (options.some((v) => v.id === 'verse_battle_lvl1')) sawEligible = true
+      expect(options.some((v) => v.id === 'verse_battle_lvl3')).toBe(false)
+    }
+    expect(sawEligible).toBe(true)
+
+    const higherLevelRun = baseRun({ level: 3 })
+    sawEligible = false
+    for (let page = 0; page < 10; page++) {
+      higherLevelRun.page = page
+      const options = rollVerseOptions(higherLevelRun, content)
+      if (options.some((v) => v.id === 'verse_battle_lvl3')) sawEligible = true
+      expect(options.some((v) => v.id === 'verse_battle_lvl1')).toBe(false)
+    }
+    expect(sawEligible).toBe(true)
   })
 })

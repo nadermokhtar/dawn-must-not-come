@@ -76,17 +76,24 @@ mechanics, content, art direction, and data schemas. Read it before implementing
 
 ## Project status (update as milestones land)
 - **Now:** Night I is playable start-to-finish — battle engine, deck/card system,
-  Map/Verse system (run state, 3-up selection, page counter, all node kinds), and a
-  working economy (Bazaar/Calligrapher/House of Forgetting/Jinni of the Lamp) are all
-  in place per DESIGN.md §9.6 steps 1-3 (plus economy pieces of 4-5). 12 Night I normal
-  enemies + The Whale That Was an Island boss are authored as data.
-- **Explicitly deferred:** XP/leveling math and level-up card picks (§3.4's last
-  bullet), the boss's "battlefield sinks in phases" gimmick (boss is a real
-  boss-tier statblock without it), localStorage persistence (`RunState` is plain-JSON
-  so this is cheap to add later).
-- **Next milestone:** XP/leveling, Blessings beyond the Jinni's fixed pool, Story Forks
-  + Wonder/Mercy thresholds (§9.6 steps 4-6), then real Night I/boss art to replace
-  placeholders.
+  Map/Verse system (run state, 3-up selection, page counter, all node kinds), a
+  working economy (Bazaar/Calligrapher/House of Forgetting/Jinni of the Lamp), and
+  enemy levels + player XP/leveling are all in place per DESIGN.md §9.6 steps 1-3
+  (plus pieces of 4). 12 Night I normal enemies (levels 1-12) + The Whale That Was
+  an Island boss (level 15) are authored as data. Player starts level 1, gains flat
+  XP per kill (levels up roughly every 2 kills), and battle Verses are gated to
+  `[player level, player level + 1]` so the map never offers a fight the player
+  isn't ready for; leveling up grows max HP. Battle screen has combat feedback
+  (slash/hit animations, a decorative enemy hand strip, Scheherazade/King dialogue
+  barks) and missing art falls back to placehold.co (Playfair Display) instead of a
+  plain CSS box.
+- **Explicitly deferred:** level-up card picks (the rest of §3.4's last bullet —
+  HP growth is in, card rewards on level-up are not), the boss's "battlefield sinks
+  in phases" gimmick (boss is a real boss-tier statblock without it), localStorage
+  persistence (`RunState` is plain-JSON so this is cheap to add later).
+- **Next milestone:** level-up card rewards, Blessings beyond the Jinni's fixed
+  pool, Story Forks + Wonder/Mercy thresholds (§9.6 steps 5-6), then real Night I/
+  boss art to replace placeholders.
 - Slice-blocking art gaps: bg_night1 (Basra), dockhand, frame_epic, UI kit, and art
   for all 10 newly-authored enemies + the boss (all reference placeholder `art_ref`
   paths that don't resolve to real assets yet).
