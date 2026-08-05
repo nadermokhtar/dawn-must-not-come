@@ -216,6 +216,16 @@
   font-size: 0.75rem;
 }
 
+.onboarding-skip-btn {
+  width: 100%;
+  margin-top: 8px;
+  background: transparent;
+  border-color: transparent;
+  color: var(--parchment-dim);
+  font-size: 0.78rem;
+  text-decoration: underline;
+}
+
 .help-btn {
   width: 30px;
   height: 30px;

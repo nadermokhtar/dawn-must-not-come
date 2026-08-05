@@ -20,7 +20,7 @@ import { mountMapScreen } from './ui/screens/map'
 import { mountBattleScreen } from './ui/screens/battle'
 import { showStoryFork } from './ui/storyFork'
 import { showLevelUpReward } from './ui/levelUpReward'
-import { showBasmalaIntro, maybeShowMapTutorial } from './ui/onboarding'
+import { showBasmalaIntro, maybeShowMapTutorial, skipTutorialsForExperiencedPlayer } from './ui/onboarding'
 import { ceremonyDialog } from './ui/components'
 import { onTap } from './ui/touch'
 import { loadRun, saveRun } from './run/persistence'
@@ -32,6 +32,9 @@ const app: HTMLElement = appEl
 const content = loadContent()
 const loadedRun = loadRun()
 let run: RunState = loadedRun ?? createRun('sinbad', Date.now())
+// A loaded save with real progress predates these tutorials — that player
+// already knows how to play, so never spring a beginner explainer on them.
+if (loadedRun) skipTutorialsForExperiencedPlayer(loadedRun)
 
 let disposeCurrent: () => void = () => {}
 

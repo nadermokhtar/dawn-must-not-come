@@ -2,7 +2,7 @@ export type Side = 'player' | 'enemy'
 
 export type DType = 'steel' | 'true_strike' | 'ifrit_flame' | 'tide' | 'storm' | 'serpent_venom'
 
-export type CardType = 'attack' | 'spell' | 'counter' | 'equipment' | 'curse' | 'item'
+export type CardType = 'attack' | 'spell' | 'counter' | 'equipment' | 'affliction' | 'item'
 
 export interface CardInstance {
   uid: number

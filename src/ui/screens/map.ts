@@ -42,16 +42,42 @@ const KIND_LABEL: Record<VerseKind, string> = {
   boss: 'Boss',
 }
 
+const KIND_BLURB: Record<VerseKind, string> = {
+  battle: 'A fight for XP and dinars.',
+  boss: "The Night's greatest threat.",
+  shop: 'Buy new cards for your deck.',
+  upgrade: 'Re-ink a card in gold leaf.',
+  remove: 'Forget a card, for a price.',
+  blessing: 'Receive a lasting boon.',
+  chest: 'Dinars, waiting to be found.',
+  event: 'Turn to a new set of paths.',
+  bank: 'Bank dinars for later, with interest.',
+}
+
+const ACTION_LABEL: Record<VerseKind, string> = {
+  battle: 'Fight',
+  boss: 'Fight',
+  shop: 'Browse',
+  upgrade: 'Enter',
+  remove: 'Enter',
+  blessing: 'Receive',
+  chest: 'Open',
+  event: 'Turn the Page',
+  bank: 'Enter',
+}
+
 export function mountMapScreen(root: HTMLElement, run: RunState, content: Content, handlers: MapScreenHandlers): () => void {
   let narration = '"The tale continues," said Scheherazade, "though the King grows restless for what comes next."'
   let options: VerseDef[] = []
+  let highlightedVerseId: string | null = null
 
   root.innerHTML = `
     <div class="map-screen" style="display:flex;flex-direction:column;height:100%;overflow:hidden;">
       <div id="mapHeader" class="map-header"></div>
       <div id="mapNarration" class="map-narration"></div>
-      <div style="flex:1;"></div>
-      <div id="verseRow" class="verse-row"></div>
+      <div class="verse-area">
+        <div id="verseRow" class="verse-row"></div>
+      </div>
     </div>
   `
 
@@ -137,11 +163,18 @@ export function mountMapScreen(root: HTMLElement, run: RunState, content: Conten
     mapNarration.appendChild(text)
   }
 
+  // Tiles are a two-step pick: tap once to highlight (shows the blurb's
+  // action button + a cancel), tap the action button to actually commit.
+  // Reshuffle verses go through the same flow — "Turn the Page" is just
+  // another action label, not a special immediate case.
   function renderVerseRow(): void {
     verseRow.innerHTML = ''
     for (const verse of options) {
-      const tile = document.createElement('button')
-      tile.className = `verse-tile kind-${verse.kind}`
+      const highlighted = verse.id === highlightedVerseId
+      const tile = document.createElement('div')
+      tile.className = `verse-tile kind-${verse.kind}${highlighted ? ' selected' : ''}`
+      tile.setAttribute('role', 'button')
+      tile.tabIndex = 0
 
       tile.appendChild(createArtElement(undefined, verse.name, 'verse-tile-art'))
 
@@ -163,7 +196,48 @@ export function mountMapScreen(root: HTMLElement, run: RunState, content: Conten
         tile.appendChild(levelBadge)
       }
 
-      onTap(tile, () => selectVerse(verse))
+      const blurb = document.createElement('div')
+      blurb.className = 'verse-tile-blurb'
+      blurb.textContent = KIND_BLURB[verse.kind]
+      tile.appendChild(blurb)
+
+      if (highlighted) {
+        const actions = document.createElement('div')
+        actions.className = 'verse-tile-actions'
+
+        const actionBtn = document.createElement('button')
+        actionBtn.className = 'verse-tile-action-btn'
+        actionBtn.textContent = ACTION_LABEL[verse.kind]
+        onTap(actionBtn, (ev) => {
+          ev.stopPropagation()
+          highlightedVerseId = null
+          selectVerse(verse)
+        })
+        actions.appendChild(actionBtn)
+
+        // Only non-battle Verses can be backed out of once highlighted — a
+        // fight isn't something you get to preview and decline.
+        if (verse.kind !== 'battle' && verse.kind !== 'boss') {
+          const cancelBtn = document.createElement('button')
+          cancelBtn.className = 'verse-tile-cancel-btn'
+          cancelBtn.textContent = '✕'
+          cancelBtn.title = 'Cancel'
+          onTap(cancelBtn, (ev) => {
+            ev.stopPropagation()
+            highlightedVerseId = null
+            renderVerseRow()
+          })
+          actions.appendChild(cancelBtn)
+        }
+
+        tile.appendChild(actions)
+      }
+
+      onTap(tile, () => {
+        if (highlightedVerseId === verse.id) return
+        highlightedVerseId = verse.id
+        renderVerseRow()
+      })
       verseRow.appendChild(tile)
     }
   }

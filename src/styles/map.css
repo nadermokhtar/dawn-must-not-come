@@ -81,15 +81,34 @@
   line-height: 1.4;
 }
 
+/* Centers the 3 Verse tiles in whatever space is left below the narration,
+   instead of pinning them to the bottom edge with a dead empty gap above. */
+.verse-area {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+}
+
 .verse-row {
   display: flex;
+  align-items: flex-start;
+  justify-content: center;
   gap: 0.6rem;
   padding: 0.75rem;
   padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+  width: 100%;
+  overflow-x: auto;
 }
 
+/* Fixed size (not flex:1-stretched to fill the row) so tiles read
+   consistently regardless of viewport width — just centered as a group. */
 .verse-tile {
-  flex: 1;
+  flex: 0 0 auto;
+  width: 112px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -100,6 +119,13 @@
   border: 2px solid var(--gold);
   border-radius: 10px;
   text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.verse-tile.selected {
+  transform: translateY(-4px);
+  box-shadow: 0 0 12px 2px rgba(63, 169, 165, 0.6);
 }
 
 .verse-tile-art {
@@ -132,6 +158,43 @@
   font-size: 0.65rem;
   color: var(--gold);
   font-weight: bold;
+}
+
+.verse-tile-blurb {
+  font-size: 0.68rem;
+  font-style: italic;
+  color: var(--parchment-dim);
+  line-height: 1.25;
+}
+
+.verse-tile-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 2px;
+}
+
+.verse-tile-action-btn {
+  flex: 1;
+  background: var(--turquoise);
+  color: var(--indigo);
+  border-color: var(--turquoise);
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 6px 4px;
+  min-height: unset;
+}
+
+.verse-tile-cancel-btn {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  min-width: unset;
+  min-height: unset;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 12px;
 }
 
 .verse-tile.kind-boss {

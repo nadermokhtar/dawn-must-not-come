@@ -1,6 +1,7 @@
 import { ceremonyDialog } from './components'
 import { onTap } from './touch'
 import { hasSeen, markSeen } from '../run/persistence'
+import type { RunState } from '../engine/run'
 
 // DESIGN.md §8.5: every telling opens with the basmala — shown at the start
 // of every new run (not just the player's first ever), since it's narrative
@@ -22,6 +23,21 @@ export function showBasmalaIntro(onContinue: () => void): void {
     })
     body.appendChild(btn)
   })
+}
+
+// A visibly secondary "I already know this" option next to the primary CTA
+// — does exactly what the primary button does (close + continue), just
+// labeled for someone who doesn't want to read the list. Not used on the
+// basmala, which is already a single tap with no reading friction.
+function skipLink(close: () => void, onContinue: () => void): HTMLElement {
+  const btn = document.createElement('button')
+  btn.className = 'onboarding-skip-btn'
+  btn.textContent = "I know, skip this"
+  onTap(btn, () => {
+    close()
+    onContinue()
+  })
+  return btn
 }
 
 function instructionList(lines: string[]): HTMLElement {
@@ -71,6 +87,7 @@ export function maybeShowMapTutorial(onContinue: () => void): void {
       onContinue()
     })
     body.appendChild(btn)
+    body.appendChild(skipLink(close, onContinue))
   })
 }
 
@@ -123,9 +140,23 @@ export function maybeShowBattleTutorial(onContinue: () => void): void {
       onContinue()
     })
     body.appendChild(btn)
+    body.appendChild(skipLink(close, onContinue))
   })
 }
 
 export function showBattleHelp(): void {
   maybeShowBattleTutorial(() => {})
+}
+
+// A loaded save with real progress means the player already knows how to
+// play — they just haven't seen these specific dialogs yet, since the flags
+// they gate on didn't exist before this onboarding system shipped. Silently
+// marks both seen so an experienced player picking the game back up never
+// gets a beginner tutorial sprung on them. Safe to call on every load: once
+// both flags are set, this is a no-op.
+export function skipTutorialsForExperiencedPlayer(run: RunState): void {
+  const hasProgress = run.page > 0 || run.night > 1 || run.level > 1
+  if (!hasProgress) return
+  markSeen(MAP_TUTORIAL_FLAG)
+  markSeen(BATTLE_TUTORIAL_FLAG)
 }
