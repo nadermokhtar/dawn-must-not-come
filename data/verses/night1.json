@@ -118,7 +118,7 @@
   {
     "id": "verse_bazaar",
     "kind": "shop",
-    "night": [1],
+    "night": [1, 2],
     "name": "The Bazaar",
     "narration": "\"There was in that city a bazaar,\" said Scheherazade, \"where anything could be bought — for the right story.\"",
     "mustCrossOut": true,
@@ -127,7 +127,7 @@
   {
     "id": "verse_calligrapher",
     "kind": "upgrade",
-    "night": [1],
+    "night": [1, 2],
     "name": "The Calligrapher",
     "narration": "\"In a narrow stall sat the Calligrapher,\" said Scheherazade, \"who for a price would re-ink a blade's story in gold leaf, and strengthen it in the telling.\"",
     "mustCrossOut": true,
@@ -136,7 +136,7 @@
   {
     "id": "verse_house_of_forgetting",
     "kind": "remove",
-    "night": [1],
+    "night": [1, 2],
     "name": "The House of Forgetting",
     "narration": "\"Behind a curtained doorway was a tavern thick with lotus-smoke,\" said Scheherazade, \"where a man might trade a memory for silence — for wallahi [I swear by God], some verses are best left untold.\"",
     "mustCrossOut": true,
@@ -145,7 +145,7 @@
   {
     "id": "verse_jinni_lamp",
     "kind": "blessing",
-    "night": [1],
+    "night": [1, 2],
     "name": "The Jinni of the Lamp",
     "narration": "\"Half-buried in the sand, a brass lamp caught the light,\" said Scheherazade, \"and from its spout curled a Jinni, already bargaining.\"",
     "mustCrossOut": true,
@@ -154,7 +154,7 @@
   {
     "id": "verse_shy_chest",
     "kind": "chest",
-    "night": [1],
+    "night": [1, 2],
     "name": "The Bashful Oyster",
     "narration": "\"An oyster lay half-buried in the sand,\" said Scheherazade, \"clamped shut like a secret too shy to tell — though a pearl gleamed within, for those with patient hands.\"",
     "mustCrossOut": true,
@@ -163,7 +163,7 @@
   {
     "id": "verse_greedy_chest",
     "kind": "chest",
-    "night": [1],
+    "night": [1, 2],
     "name": "The Greedy Jar",
     "narration": "\"A sealed jar sat too neatly on the dock,\" said Scheherazade, \"and something inside it wanted, very badly, to be opened.\"",
     "mustCrossOut": true,
@@ -172,10 +172,19 @@
   {
     "id": "verse_turn_the_page",
     "kind": "event",
-    "night": [1],
+    "night": [1, 2],
     "name": "Turn the Page",
     "narration": "\"Scheherazade turned the page,\" she said, \"and where the ink had been blank, a new scene bloomed to take its place.\"",
     "reshuffle": true,
+    "weight": 1
+  },
+  {
+    "id": "verse_sealed_jar",
+    "kind": "chest",
+    "night": [1, 2],
+    "name": "The Sealed Jar",
+    "narration": "\"Astaghfirullah [I seek God's forgiveness],\" Scheherazade murmured, \"for the jar bore Solomon's own seal — and no one, O King, can say what a jinn locked away so long ago has become.\"",
+    "mustCrossOut": true,
     "weight": 1
   }
 ]

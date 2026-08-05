@@ -242,7 +242,7 @@
     "name": "Crushing Wave",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
-    "damage": { "amount": 14, "dtype": "tide" },
+    "damage": { "amount": 10, "dtype": "tide" },
     "flavor": "The sea itself rises at its command."
   },
   {
@@ -250,7 +250,7 @@
     "name": "Rolling Breach",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
-    "damage": { "amount": 12, "dtype": "steel" },
+    "damage": { "amount": 9, "dtype": "steel" },
     "flavor": "It breaches, and the whole island seems to turn over."
   },
   {
@@ -258,7 +258,7 @@
     "name": "Barnacled Hide Slam",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
-    "damage": { "amount": 10, "dtype": "steel" },
+    "damage": { "amount": 8, "dtype": "steel" },
     "effects": [{ "apply": "armor", "stacks": 4, "target": "self" }],
     "flavor": "Centuries of barnacle and stone answer as armor."
   },
@@ -267,7 +267,285 @@
     "name": "Tail Sweep",
     "type": "attack",
     "cost": { "ap": 0, "mana": 0 },
-    "damage": { "amount": 9, "dtype": "tide" },
+    "damage": { "amount": 7, "dtype": "tide" },
     "flavor": "The tail comes around low, and the water comes with it."
+  },
+  {
+    "id": "roc_hatchling_wing_gust",
+    "name": "Wing Gust",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 7, "dtype": "storm" },
+    "flavor": "Downy wings, but the gust they raise is no joke."
+  },
+  {
+    "id": "roc_hatchling_talon_snatch",
+    "name": "Talon Snatch",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 6, "dtype": "steel" },
+    "flavor": "It grabs at anything that moves, still learning what it's for."
+  },
+  {
+    "id": "roc_hatchling_screech",
+    "name": "Screech",
+    "type": "spell",
+    "cost": { "ap": 0, "mana": 0 },
+    "effects": [{ "apply": "dizzy", "stacks": 1, "target": "opponent" }],
+    "flavor": "A shriek pitched to call its mother, and to ring in your ears besides."
+  },
+  {
+    "id": "drowned_sailor_bloated_grasp",
+    "name": "Bloated Grasp",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 6, "dtype": "tide" },
+    "effects": [{ "apply": "clinging", "stacks": 1, "target": "opponent" }],
+    "flavor": "Waterlogged fingers close around your ankle and do not let go."
+  },
+  {
+    "id": "drowned_sailor_undertow_pull",
+    "name": "Undertow Pull",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 8, "dtype": "tide" },
+    "flavor": "The current he brought up with him has not forgotten how to drown a man."
+  },
+  {
+    "id": "drowned_sailor_waterlogged_lurch",
+    "name": "Waterlogged Lurch",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 5, "dtype": "steel" },
+    "flavor": "He staggers forward, heavy with a decade of seawater."
+  },
+  {
+    "id": "storm_sprite_lightning_jab",
+    "name": "Lightning Jab",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 7, "dtype": "storm" },
+    "flavor": "A finger of light, quicker than the thunder that follows it."
+  },
+  {
+    "id": "storm_sprite_thunderclap",
+    "name": "Thunderclap",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 5, "dtype": "storm" },
+    "effects": [{ "apply": "dizzy", "stacks": 1, "target": "opponent" }],
+    "flavor": "The crack of it arrives before the sense does."
+  },
+  {
+    "id": "storm_sprite_gale_dash",
+    "name": "Gale Dash",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 6, "dtype": "storm" },
+    "flavor": "It crosses the deck faster than the eye can follow."
+  },
+  {
+    "id": "cyclopean_shepherds_ram_headlong_charge",
+    "name": "Headlong Charge",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 9, "dtype": "steel" },
+    "flavor": "It puts its shoulder down and the whole hillside seems to follow."
+  },
+  {
+    "id": "cyclopean_shepherds_ram_hoof_stomp",
+    "name": "Hoof Stomp",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 6, "dtype": "steel" },
+    "effects": [{ "apply": "armor", "stacks": 2, "target": "self" }],
+    "flavor": "It plants its hooves and dares the ground to argue."
+  },
+  {
+    "id": "cyclopean_shepherds_ram_horn_gore",
+    "name": "Horn Gore",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 7, "dtype": "true_strike" },
+    "flavor": "The horn finds the gap in your guard before you know you left one."
+  },
+  {
+    "id": "living_figurehead_splintered_backhand",
+    "name": "Splintered Backhand",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 8, "dtype": "steel" },
+    "flavor": "The carved arm swings wide, trailing rotten timber."
+  },
+  {
+    "id": "living_figurehead_prow_ram",
+    "name": "Prow Ram",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 10, "dtype": "steel" },
+    "flavor": "It drives forward as if a hull still trailed behind it."
+  },
+  {
+    "id": "living_figurehead_creaking_brace",
+    "name": "Creaking Brace",
+    "type": "spell",
+    "cost": { "ap": 0, "mana": 0 },
+    "effects": [{ "apply": "armor", "stacks": 3, "target": "self" }],
+    "flavor": "Old wood groans and knits tighter around itself."
+  },
+  {
+    "id": "merchant_of_dubious_meat_spoiled_skewer",
+    "name": "Spoiled Skewer",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 6, "dtype": "serpent_venom" },
+    "effects": [{ "apply": "venom", "stacks": 2, "target": "opponent" }],
+    "flavor": "He insists it's fresh. It is not fresh."
+  },
+  {
+    "id": "merchant_of_dubious_meat_cleaver_swing",
+    "name": "Cleaver Swing",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 8, "dtype": "steel" },
+    "flavor": "The cleaver was meant for the meat, not for you, but here we are."
+  },
+  {
+    "id": "merchant_of_dubious_meat_haggle",
+    "name": "Haggle",
+    "type": "spell",
+    "cost": { "ap": 0, "mana": 0 },
+    "effects": [{ "apply": "dizzy", "stacks": 1, "target": "opponent" }],
+    "flavor": "He talks in circles until you can't remember what the price was."
+  },
+  {
+    "id": "cannibal_scout_bone_dagger",
+    "name": "Bone Dagger",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 8, "dtype": "true_strike" },
+    "flavor": "A blade honed from something that used to have a name."
+  },
+  {
+    "id": "cannibal_scout_ambush_strike",
+    "name": "Ambush Strike",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 10, "dtype": "steel" },
+    "flavor": "He was in the trees before you knew there were trees."
+  },
+  {
+    "id": "cannibal_scout_warpaint_howl",
+    "name": "Warpaint Howl",
+    "type": "spell",
+    "cost": { "ap": 0, "mana": 0 },
+    "effects": [{ "apply": "armor", "stacks": 3, "target": "self" }],
+    "flavor": "The howl rallies something in him that armor alone couldn't."
+  },
+  {
+    "id": "diamond_valley_serpent_venomous_bite",
+    "name": "Venomous Bite",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 7, "dtype": "serpent_venom" },
+    "effects": [{ "apply": "venom", "stacks": 3, "target": "opponent" }],
+    "tags": ["bite"],
+    "flavor": "Its fangs are longer than the stones it guards are wide."
+  },
+  {
+    "id": "diamond_valley_serpent_coiling_crush",
+    "name": "Coiling Crush",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 9, "dtype": "steel" },
+    "flavor": "It winds tight around the ribs and squeezes the argument out of you."
+  },
+  {
+    "id": "diamond_valley_serpent_diamond_scale_flash",
+    "name": "Diamond Scale Flash",
+    "type": "spell",
+    "cost": { "ap": 0, "mana": 0 },
+    "effects": [{ "apply": "armor", "stacks": 4, "target": "self" }],
+    "flavor": "Its scales catch the light like the hoard it sleeps on."
+  },
+  {
+    "id": "siren_of_the_shoals_enchanting_song",
+    "name": "Enchanting Song",
+    "type": "spell",
+    "cost": { "ap": 0, "mana": 0 },
+    "effects": [{ "apply": "dizzy", "stacks": 2, "target": "opponent" }],
+    "flavor": "The melody promises safe harbor. It is lying."
+  },
+  {
+    "id": "siren_of_the_shoals_coral_claw_rake",
+    "name": "Coral Claw Rake",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 9, "dtype": "true_strike" },
+    "flavor": "The song stops the instant the claws find you."
+  },
+  {
+    "id": "siren_of_the_shoals_riptide_lash",
+    "name": "Riptide Lash",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 8, "dtype": "tide" },
+    "flavor": "A wave answers her voice before you can cover your ears."
+  },
+  {
+    "id": "ape_of_the_black_isle_boulder_throw",
+    "name": "Boulder Throw",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 12, "dtype": "steel" },
+    "flavor": "It tears a piece of the isle loose and sends it your way."
+  },
+  {
+    "id": "ape_of_the_black_isle_double_fist_slam",
+    "name": "Double Fist Slam",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 9, "dtype": "steel" },
+    "flavor": "Both fists come down together, and the black rock cracks with them."
+  },
+  {
+    "id": "ape_of_the_black_isle_chest_beat",
+    "name": "Chest Beat",
+    "type": "spell",
+    "cost": { "ap": 0, "mana": 0 },
+    "effects": [{ "apply": "armor", "stacks": 4, "target": "self" }],
+    "flavor": "The sound of it rolls off the black rocks like a challenge."
+  },
+  {
+    "id": "roc_wind_buffet",
+    "name": "Wind Buffet",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 12, "dtype": "storm" },
+    "flavor": "A single wingbeat and the deck tilts underfoot."
+  },
+  {
+    "id": "roc_talon_rake",
+    "name": "Talon Rake",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 14, "dtype": "steel" },
+    "flavor": "Talons the length of oars rake across the rigging."
+  },
+  {
+    "id": "roc_aerial_dive",
+    "name": "Aerial Dive",
+    "type": "attack",
+    "cost": { "ap": 0, "mana": 0 },
+    "damage": { "amount": 16, "dtype": "true_strike" },
+    "flavor": "It folds its wings and becomes, for one terrible moment, a falling mountain."
+  },
+  {
+    "id": "roc_skyborne_shriek",
+    "name": "Skyborne Shriek",
+    "type": "spell",
+    "cost": { "ap": 0, "mana": 0 },
+    "effects": [{ "apply": "dizzy", "stacks": 2, "target": "opponent" }],
+    "flavor": "The cry rolls off the clouds themselves before the next dive begins."
   }
 ]

@@ -4,14 +4,18 @@ import {
   type RunState,
   buyCard,
   cardPrice,
+  depositBank,
   enterVerse,
   grantBlessing,
   removeCard,
   removePrice,
   resolveChest,
+  resolveSealedJar,
   rollVerseOptions,
+  sampleClassCards,
   upgradeCard,
   upgradePrice,
+  withdrawBank,
 } from '../../engine/run'
 import { createRng, deriveSeed } from '../../engine/rng'
 import { createArtElement } from '../artUrl'
@@ -20,6 +24,7 @@ import { bottomSheet, flashMessage, iconBadge, statBar } from '../components'
 
 export interface MapScreenHandlers {
   onBattleVerse: (enemyId: string) => void
+  onStateChange?: () => void
 }
 
 const KIND_LABEL: Record<VerseKind, string> = {
@@ -87,6 +92,8 @@ export function mountMapScreen(root: HTMLElement, run: RunState, content: Conten
     levelWrap.appendChild(statBar(run.xp, XP_TO_LEVEL, { color: 'var(--gold)', showNumbers: true }))
     levelRow.appendChild(levelWrap)
     mapHeader.appendChild(levelRow)
+
+    handlers.onStateChange?.()
   }
 
   function renderNarration(): void {
@@ -174,7 +181,11 @@ export function mountMapScreen(root: HTMLElement, run: RunState, content: Conten
         openJinni(verse)
         return
       case 'chest':
-        openChest(verse)
+        if (verse.id === 'verse_sealed_jar') openSealedJar(verse)
+        else openChest(verse)
+        return
+      case 'bank':
+        openBank(verse)
         return
       default:
         continueAfterSheet(verse)
@@ -182,11 +193,7 @@ export function mountMapScreen(root: HTMLElement, run: RunState, content: Conten
   }
 
   function openBazaar(verse: VerseDef): void {
-    const pool = [...content.cards.values()].filter(
-      (c) => (c.class === run.classId || c.class === undefined) && c.type !== 'curse' && !c.id.endsWith('_plus'),
-    )
-    const rng = createRng(deriveSeed(run.seed, 'bazaar', run.night, run.page))
-    const offerings = rng.shuffle(pool).slice(0, 4)
+    const offerings = sampleClassCards(run, content, 4, 'bazaar')
 
     bottomSheet(verse.name, offerings.length, (body, close) => {
       appendNarrationLine(body, verse.narration)
@@ -288,6 +295,66 @@ export function mountMapScreen(root: HTMLElement, run: RunState, content: Conten
       appendNarrationLine(body, verse.narration)
       appendNarrationLine(body, `You find ${dinars} dinars within.`)
       appendLeaveButton(body, close, verse, 'Continue')
+    })
+  }
+
+  function openSealedJar(verse: VerseDef): void {
+    const outcome = resolveSealedJar(run, content)
+    bottomSheet(verse.name, undefined, (body, close) => {
+      appendNarrationLine(body, verse.narration)
+      if ('blessingId' in outcome) {
+        const blessing = content.blessings.get(outcome.blessingId)
+        appendNarrationLine(body, blessing?.narration ?? 'A blessing slips free of the jar.')
+      } else {
+        const curse = content.cards.get(outcome.curseCardId)
+        appendNarrationLine(body, `Something ill-tempered slips free — ${curse?.name ?? outcome.curseCardId} finds its way into the deck.`)
+      }
+      appendLeaveButton(body, close, verse, 'Continue')
+    })
+  }
+
+  function openBank(verse: VerseDef): void {
+    bottomSheet(verse.name, undefined, (body, close) => {
+      appendNarrationLine(body, verse.narration)
+
+      const status = document.createElement('p')
+      status.className = 'sheet-narration'
+      const refreshStatus = () => {
+        status.textContent = `Banked: ${run.bankedDinars} dinars · On hand: ${run.dinars} dinars.`
+      }
+      refreshStatus()
+      body.appendChild(status)
+
+      const depositBtn = document.createElement('button')
+      depositBtn.className = 'sheet-leave-btn'
+      depositBtn.textContent = 'Deposit all'
+      onTap(depositBtn, () => {
+        const res = depositBank(run, run.dinars)
+        if (res.ok) {
+          refreshStatus()
+          renderHeader()
+        } else {
+          flashMessage(depositBtn, 'Nothing to deposit')
+        }
+      })
+      body.appendChild(depositBtn)
+
+      const withdrawBtn = document.createElement('button')
+      withdrawBtn.className = 'sheet-leave-btn'
+      withdrawBtn.textContent = 'Withdraw all (+20% interest)'
+      onTap(withdrawBtn, () => {
+        if (run.bankedDinars <= 0) {
+          flashMessage(withdrawBtn, 'Nothing banked')
+          return
+        }
+        const { dinars } = withdrawBank(run)
+        flashMessage(withdrawBtn, `+${dinars} dinars!`)
+        refreshStatus()
+        renderHeader()
+      })
+      body.appendChild(withdrawBtn)
+
+      appendLeaveButton(body, close, verse, 'Leave')
     })
   }
 

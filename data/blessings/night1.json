@@ -22,5 +22,21 @@
     "effectId": "armor",
     "stacks": 8,
     "art_ref": "ui/blessing_brass_scale.png"
+  },
+  {
+    "id": "jinni_blessing_healing_draught",
+    "name": "Breath of the Lamp",
+    "narration": "\"Mashallah [what God has willed],\" the Jinni said, and warm smoke settled into Sinbad's wounds, \"let the tale mend you as it goes.\"",
+    "effectId": "vigor",
+    "stacks": 3,
+    "art_ref": "ui/blessing_breath.png"
+  },
+  {
+    "id": "jinni_blessing_swift_feet",
+    "name": "Sandals of the Wind",
+    "narration": "\"Wear these,\" the Jinni said, \"and your hand shall move before your foe's.\"",
+    "effectId": "swift",
+    "stacks": 1,
+    "art_ref": "ui/blessing_swift_feet.png"
   }
 ]

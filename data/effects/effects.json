@@ -67,5 +67,38 @@
     "modifiers": [
       { "pipeline": "outgoing_damage", "op": "add_flat", "value": -2 }
     ]
+  },
+  {
+    "id": "vigor",
+    "name": "Vigor",
+    "kind": "buff",
+    "max_stacks": 99,
+    "remove_at_zero": true,
+    "hooks": [
+      {
+        "on": "turn_start",
+        "who": "owner",
+        "do": [
+          { "op": "heal", "amount": "$stacks", "to": "self" },
+          { "op": "change_stacks", "delta": -1 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "swift",
+    "name": "Swift",
+    "kind": "buff",
+    "max_stacks": 1,
+    "permanent": true,
+    "hooks": [
+      {
+        "on": "turn_start",
+        "who": "owner",
+        "do": [
+          { "op": "modify_resource", "resource": "ap", "delta": 1, "target": "self" }
+        ]
+      }
+    ]
   }
 ]

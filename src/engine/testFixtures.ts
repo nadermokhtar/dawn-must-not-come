@@ -1,4 +1,4 @@
-import type { BlessingDef, CardDef, Content, EffectDef, EnemyDef, VerseDef } from './types'
+import type { BlessingDef, CardDef, Content, EffectDef, EnemyDef, StoryForkDef, VerseDef } from './types'
 
 export function makeContent(overrides: {
   cards?: CardDef[]
@@ -6,18 +6,21 @@ export function makeContent(overrides: {
   effects?: EffectDef[]
   verses?: VerseDef[]
   blessings?: BlessingDef[]
+  storyForks?: StoryForkDef[]
 }): Content {
   const cards = new Map<string, CardDef>()
   const enemies = new Map<string, EnemyDef>()
   const effects = new Map<string, EffectDef>()
   const verses = new Map<string, VerseDef>()
   const blessings = new Map<string, BlessingDef>()
+  const storyForks = new Map<string, StoryForkDef>()
   for (const c of overrides.cards ?? []) cards.set(c.id, c)
   for (const e of overrides.enemies ?? []) enemies.set(e.id, e)
   for (const e of overrides.effects ?? []) effects.set(e.id, e)
   for (const v of overrides.verses ?? []) verses.set(v.id, v)
   for (const b of overrides.blessings ?? []) blessings.set(b.id, b)
-  return { cards, enemies, effects, verses, blessings }
+  for (const f of overrides.storyForks ?? []) storyForks.set(f.id, f)
+  return { cards, enemies, effects, verses, blessings, storyForks }
 }
 
 export const FIXTURE_EFFECTS: EffectDef[] = [
@@ -294,7 +297,14 @@ export const FIXTURE_BLESSINGS: BlessingDef[] = [
 ]
 
 export function makeFixtureContent(
-  extra: { cards?: CardDef[]; enemies?: EnemyDef[]; effects?: EffectDef[]; verses?: VerseDef[]; blessings?: BlessingDef[] } = {},
+  extra: {
+    cards?: CardDef[]
+    enemies?: EnemyDef[]
+    effects?: EffectDef[]
+    verses?: VerseDef[]
+    blessings?: BlessingDef[]
+    storyForks?: StoryForkDef[]
+  } = {},
 ): Content {
   return makeContent({
     cards: [...FIXTURE_CARDS, ...(extra.cards ?? [])],
@@ -302,5 +312,6 @@ export function makeFixtureContent(
     effects: [...FIXTURE_EFFECTS, ...(extra.effects ?? [])],
     verses: [...FIXTURE_VERSES, ...(extra.verses ?? [])],
     blessings: [...FIXTURE_BLESSINGS, ...(extra.blessings ?? [])],
+    storyForks: [...(extra.storyForks ?? [])],
   })
 }

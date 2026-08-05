@@ -75,28 +75,41 @@ mechanics, content, art direction, and data schemas. Read it before implementing
     (tracked per profile) and on tap thereafter.
 
 ## Project status (update as milestones land)
-- **Now:** Night I is playable start-to-finish — battle engine, deck/card system,
-  Map/Verse system (run state, 3-up selection, page counter, all node kinds), a
-  working economy (Bazaar/Calligrapher/House of Forgetting/Jinni of the Lamp), and
-  enemy levels + player XP/leveling are all in place per DESIGN.md §9.6 steps 1-3
-  (plus pieces of 4). 12 Night I normal enemies (levels 1-12) + The Whale That Was
-  an Island boss (level 15) are authored as data. Player starts level 1, gains flat
-  XP per kill (levels up roughly every 2 kills), and battle Verses are gated to
-  `[player level, player level + 1]` so the map never offers a fight the player
-  isn't ready for; leveling up grows max HP. Battle screen has combat feedback
-  (slash/hit animations, a decorative enemy hand strip, Scheherazade/King dialogue
-  barks) and missing art falls back to placehold.co (Playfair Display) instead of a
-  plain CSS box.
-- **Explicitly deferred:** level-up card picks (the rest of §3.4's last bullet —
-  HP growth is in, card rewards on level-up are not), the boss's "battlefield sinks
-  in phases" gimmick (boss is a real boss-tier statblock without it), localStorage
-  persistence (`RunState` is plain-JSON so this is cheap to add later).
-- **Next milestone:** level-up card rewards, Blessings beyond the Jinni's fixed
-  pool, Story Forks + Wonder/Mercy thresholds (§9.6 steps 5-6), then real Night I/
-  boss art to replace placeholders.
-- Slice-blocking art gaps: bg_night1 (Basra), dockhand, frame_epic, UI kit, and art
-  for all 10 newly-authored enemies + the boss (all reference placeholder `art_ref`
-  paths that don't resolve to real assets yet).
+- **Now:** the full Night I → Night II loop is playable per DESIGN.md §9.6 steps
+  1-6: battle engine, deck/card system, Map/Verse system, a working economy
+  (Bazaar/Calligrapher/House of Forgetting/Jinni of the Lamp, plus the Coin Djinn
+  bank and the risk/reward Sealed Jar), enemy levels + player XP/leveling with
+  level-gated battle Verses (`[player level, player level + 1]`) and level-up card
+  rewards, 3 Story Forks (tied to `EnemyDef.story_fork_id`) with Wonder/Mercy
+  threshold bonuses, and localStorage persistence of `RunState` (map-level progress
+  — not mid-battle state). Clearing Night I's boss advances to Night II instead of
+  ending the run (`applyBattleReward` checks whether further-night content exists);
+  clearing Night II's boss (The Roc) is the current terminal ending. Battle screen
+  has combat feedback (slash/hit animations, a decorative enemy hand strip,
+  Scheherazade/King dialogue barks) and missing art falls back to placehold.co
+  (Playfair Display) instead of a plain CSS box.
+- **Balance pass (2026-08-04):** a live bot-driven playthrough surfaced two real
+  issues, both fixed: (1) `sampleClassCards`'s card-pool filter incorrectly treated
+  "no `class` field" as "any class," which let enemy-only move cards leak into the
+  Bazaar and level-up rewards — fixed by tagging the 3 class-less item cards
+  explicitly and requiring an exact class match. (2) The Night I boss (90 HP, up to
+  14 dmg/hit, resisted steel) was tuned for a much higher level than players
+  realistically reach by page 22 (~level 9-10) — reduced to 65 HP, 7-10 dmg/hit, no
+  steel resist. `WIN_HEAL_FRACTION` was tuned 0.2 → 0.1 → settled at 0.15 (0.2 made
+  the mid-game nearly risk-free; 0.1 caused a death spiral for careless play).
+  Verified via Playwright bot runs, not just numbers on paper — bot skill is a
+  floor, not a ceiling, so treat this as "not a brick wall," not "perfectly tuned."
+- **Explicitly deferred:** the boss's "battlefield sinks in phases" gimmick (boss is
+  a real boss-tier statblock without it), Night III onward, the Hidden Night IV
+  secret chains (Sealed Scroll / Golden Tongue — Night II's Locked Diary/Eccentric
+  Seeds/VIP Card verses are flavor-only stubs, not the full chain), mid-battle
+  persistence.
+- **Next milestone:** Night III content, the Hidden Night IV unlock chains, real
+  Night I/II/boss art to replace placeholders, more human (non-bot) balance
+  feedback.
+- Slice-blocking art gaps: bg_night1 (Basra), bg_night2, dockhand, frame_epic, UI
+  kit, and art for all newly-authored Night I/II enemies + bosses (all reference
+  placeholder `art_ref` paths that don't resolve to real assets yet).
 
 ## Project skills
 - `/asset-intake` — file newly generated art into `/assets` (dedupe, canonical

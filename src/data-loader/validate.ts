@@ -1,4 +1,4 @@
-import type { BlessingDef, CardDef, EffectDef, EnemyDef, VerseDef } from '../engine/types'
+import type { BlessingDef, CardDef, EffectDef, EnemyDef, StoryForkDef, VerseDef } from '../engine/types'
 
 export class ValidationError extends Error {}
 
@@ -72,6 +72,9 @@ export function validateEnemy(raw: unknown, ctx: string): EnemyDef {
   if (r.level !== undefined) {
     assert(typeof r.level === 'number' && r.level >= 1 && r.level <= 20, ctx, 'level must be a number 1-20')
   }
+  if (r.story_fork_id !== undefined) {
+    assert(typeof r.story_fork_id === 'string' && r.story_fork_id.length > 0, ctx, 'story_fork_id must be a non-empty string')
+  }
 
   r.resist = r.resist ?? []
   r.weak = r.weak ?? []
@@ -136,4 +139,24 @@ export function validateBlessing(raw: unknown, ctx: string): BlessingDef {
   }
 
   return r as unknown as BlessingDef
+}
+
+export function validateStoryFork(raw: unknown, ctx: string): StoryForkDef {
+  assert(typeof raw === 'object' && raw !== null, ctx, 'expected an object')
+  const r = raw as Record<string, unknown>
+  assert(typeof r.id === 'string' && r.id.length > 0, ctx, 'id must be a non-empty string')
+  ctx = `${ctx} (${r.id})`
+  assert(typeof r.narration === 'string', ctx, 'narration must be a string')
+  assert(Array.isArray(r.options) && r.options.length >= 2, ctx, 'options must be an array of at least 2')
+  for (const raw of r.options) {
+    assert(typeof raw === 'object' && raw !== null, ctx, 'each option must be an object')
+    const opt = raw as Record<string, unknown>
+    assert(typeof opt.id === 'string' && opt.id.length > 0, ctx, 'option.id must be a non-empty string')
+    assert(typeof opt.label === 'string' && opt.label.length > 0, ctx, 'option.label must be a non-empty string')
+    for (const key of ['wonderDelta', 'mercyDelta', 'hpDelta', 'dinarsDelta']) {
+      if (opt[key] !== undefined) assert(typeof opt[key] === 'number', ctx, `option.${key} must be a number`)
+    }
+  }
+
+  return r as unknown as StoryForkDef
 }

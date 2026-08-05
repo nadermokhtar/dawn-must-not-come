@@ -255,7 +255,7 @@
     "art_ref": "ui/card_boarding_axe.png"
   },
   {
-    "id": "item_healing_draught",
+    "id": "item_healing_draught", "class": "sinbad",
     "name": "Healing Draught",
     "type": "item",
     "cost": { "ap": 1, "mana": 0 },
@@ -267,7 +267,7 @@
     "art_ref": "ui/card_healing_draught.png"
   },
   {
-    "id": "item_smoke_bomb",
+    "id": "item_smoke_bomb", "class": "sinbad",
     "name": "Smoke Bomb",
     "type": "item",
     "cost": { "ap": 1, "mana": 0 },
@@ -279,7 +279,7 @@
     "art_ref": "ui/card_smoke_bomb.png"
   },
   {
-    "id": "item_whetstone",
+    "id": "item_whetstone", "class": "sinbad",
     "name": "Whetstone",
     "type": "item",
     "cost": { "ap": 1, "mana": 0 },

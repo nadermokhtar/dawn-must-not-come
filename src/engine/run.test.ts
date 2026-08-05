@@ -4,13 +4,19 @@ import {
   blessingEffects,
   buyCard,
   createRun,
+  depositBank,
   enterVerse,
+  forkForEnemy,
   grantBlessing,
   grantXp,
   removeCard,
   resolveChest,
+  resolveSealedJar,
+  resolveStoryFork,
   rollVerseOptions,
+  sampleClassCards,
   upgradeCard,
+  withdrawBank,
   type RunState,
 } from './run'
 import { makeFixtureContent } from './testFixtures'
@@ -20,6 +26,7 @@ const content = makeFixtureContent({
     {
       id: 'test_upgradeable',
       type: 'attack',
+      class: 'sinbad',
       name: 'Test Upgradeable',
       cost: { ap: 1, mana: 0 },
       damage: { amount: 5, dtype: 'steel' },
@@ -29,15 +36,33 @@ const content = makeFixtureContent({
     {
       id: 'test_upgradeable_plus',
       type: 'attack',
+      class: 'sinbad',
       name: 'Test Upgradeable+',
       cost: { ap: 1, mana: 0 },
       damage: { amount: 8, dtype: 'steel' },
       rarity: 'common',
     },
+    { id: 'test_curse', type: 'curse', class: 'sinbad', name: 'Test Curse', cost: { ap: 0, mana: 0 } },
+    // No `class` — mirrors a real enemy move card. Must never appear in a
+    // player-facing sample (this is exactly the bug the strict class filter
+    // in sampleClassCards fixes: a live playthrough surfaced enemy moves
+    // leaking into level-up card rewards before this was tightened).
+    { id: 'test_enemy_move', type: 'attack', name: 'Test Enemy Move', cost: { ap: 0, mana: 0 }, damage: { amount: 3, dtype: 'steel' } },
   ],
   enemies: [
     { id: 'test_enemy_lvl1', name: 'Level 1 Foe', level: 1, hp: 10, resist: [], weak: [], deck: ['enemy_attack'], ai: { mode: 'sequential' } },
     { id: 'test_enemy_lvl3', name: 'Level 3 Foe', level: 3, hp: 10, resist: [], weak: [], deck: ['enemy_attack'], ai: { mode: 'sequential' } },
+    {
+      id: 'test_enemy_forked',
+      name: 'Forked Foe',
+      hp: 10,
+      resist: [],
+      weak: [],
+      deck: ['enemy_attack'],
+      ai: { mode: 'sequential' },
+      story_fork_id: 'test_fork',
+    },
+    { id: 'test_enemy_lethal_n2', name: 'Night 2 Boss', tier: 'boss', hp: 10, resist: [], weak: [], deck: ['enemy_attack'], ai: { mode: 'sequential' } },
   ],
   verses: [
     {
@@ -57,6 +82,24 @@ const content = makeFixtureContent({
       narration: 'A stronger foe.',
       weight: 3,
       enemyPool: ['test_enemy_lvl3'],
+    },
+    {
+      id: 'verse_night2_stub',
+      kind: 'event',
+      night: [2],
+      name: 'Night 2 Stub',
+      narration: 'Night 2 exists.',
+      weight: 1,
+    },
+  ],
+  storyForks: [
+    {
+      id: 'test_fork',
+      narration: 'A choice is offered.',
+      options: [
+        { id: 'wonder_choice', label: 'Choose wonder', wonderDelta: 5 },
+        { id: 'mercy_choice', label: 'Choose mercy', mercyDelta: 5, dinarsDelta: 10 },
+      ],
     },
   ],
 })
@@ -127,9 +170,21 @@ describe('battle rewards', () => {
     expect(run.result).toBeUndefined()
   })
 
-  it('clears the night on a boss kill', () => {
+  it('advances to the next night on a boss kill when further night content exists', () => {
     const run = baseRun()
-    applyBattleReward(run, 'test_enemy_lethal', content)
+    const { nightAdvanced } = applyBattleReward(run, 'test_enemy_lethal', content)
+    expect(nightAdvanced).toBe(true)
+    expect(run.night).toBe(2)
+    expect(run.page).toBe(0)
+    expect(run.crossedOutVerseIds).toEqual([])
+    expect(run.bossDefeated).toBe(false)
+    expect(run.result).toBeUndefined()
+  })
+
+  it('ends the run on a boss kill when no further night content exists', () => {
+    const run = baseRun({ night: 2 })
+    const { nightAdvanced } = applyBattleReward(run, 'test_enemy_lethal_n2', content)
+    expect(nightAdvanced).toBe(false)
     expect(run.bossDefeated).toBe(true)
     expect(run.result).toBe('night_cleared')
   })
@@ -137,7 +192,7 @@ describe('battle rewards', () => {
   it('heals a fraction of missing HP on a win, capped at maxHp', () => {
     const run = baseRun({ hp: 10, maxHp: 30 })
     applyBattleReward(run, 'test_enemy', content)
-    expect(run.hp).toBe(16)
+    expect(run.hp).toBe(15)
 
     const fullRun = baseRun({ hp: 30, maxHp: 30 })
     applyBattleReward(fullRun, 'test_enemy', content)
@@ -252,5 +307,105 @@ describe('level-gated battle verses', () => {
       expect(options.some((v) => v.id === 'verse_battle_lvl1')).toBe(false)
     }
     expect(sawEligible).toBe(true)
+  })
+})
+
+describe('story forks', () => {
+  it('forkForEnemy finds a fork tied to the enemy and hides it once resolved', () => {
+    const run = baseRun()
+    const found = forkForEnemy(run, 'test_enemy_forked', content)
+    expect(found?.forkId).toBe('test_fork')
+
+    run.resolvedForks.push('test_fork')
+    expect(forkForEnemy(run, 'test_enemy_forked', content)).toBeUndefined()
+  })
+
+  it('forkForEnemy returns undefined for enemies with no story_fork_id', () => {
+    const run = baseRun()
+    expect(forkForEnemy(run, 'test_enemy', content)).toBeUndefined()
+  })
+
+  it('resolveStoryFork applies the chosen option deltas and records it', () => {
+    // mercy 0 -> 5 crosses the mercy-4 threshold, so dinars gets the option's
+    // own +10 plus the one-time +20 threshold bonus (covered separately below).
+    const run = baseRun({ wonder: 0, mercy: 0, dinars: 0 })
+    resolveStoryFork(run, 'test_fork', 'mercy_choice', content)
+    expect(run.mercy).toBe(5)
+    expect(run.dinars).toBe(30)
+    expect(run.wonder).toBe(0)
+    expect(run.resolvedForks).toEqual(['test_fork'])
+  })
+
+  it('clamps wonder/mercy/dinars/hp at 0 and hp at maxHp', () => {
+    const run = baseRun({ mercy: 0, dinars: 0 })
+    resolveStoryFork(run, 'test_fork', 'wonder_choice', content)
+    expect(run.wonder).toBeGreaterThanOrEqual(0)
+  })
+})
+
+describe('Wonder/Mercy thresholds', () => {
+  it('grants +maxHp once when wonder crosses a threshold', () => {
+    const run = baseRun({ wonder: 3, maxHp: 30, hp: 30 })
+    resolveStoryFork(run, 'test_fork', 'wonder_choice', content) // wonder: 3 -> 8, crosses both 4 and 8
+    expect(run.wonder).toBe(8)
+    expect(run.maxHp).toBe(40) // +5 for threshold 4, +5 for threshold 8
+    expect(run.flags['wonder_threshold_4']).toBe('granted')
+    expect(run.flags['wonder_threshold_8']).toBe('granted')
+
+    const before = run.maxHp
+    run.wonder = 3 // simulate dropping back below, then re-crossing
+    resolveStoryFork(run, 'test_fork', 'wonder_choice', content)
+    expect(run.maxHp).toBe(before) // already granted, no double-dip
+  })
+
+  it('grants +dinars once when mercy crosses its threshold', () => {
+    const run = baseRun({ mercy: 0, dinars: 0 })
+    resolveStoryFork(run, 'test_fork', 'mercy_choice', content) // mercy 0 -> 5, crosses 4
+    expect(run.dinars).toBe(30) // 10 from the option + 20 threshold bonus
+    expect(run.flags['mercy_threshold_4']).toBe('granted')
+  })
+})
+
+describe('sampleClassCards', () => {
+  it('is deterministic and excludes curses, _plus variants, and class-less (enemy-only) cards', () => {
+    const run = baseRun()
+    const pool = sampleClassCards(run, content, 100, 'test')
+    const a = sampleClassCards(run, content, 3, 'test')
+    const b = sampleClassCards(run, content, 3, 'test')
+    expect(a.map((c) => c.id)).toEqual(b.map((c) => c.id))
+    expect(pool.some((c) => c.type === 'curse')).toBe(false)
+    expect(pool.some((c) => c.id.endsWith('_plus'))).toBe(false)
+    expect(pool.some((c) => c.id === 'test_enemy_move')).toBe(false)
+    expect(pool.every((c) => c.class === run.classId)).toBe(true)
+  })
+})
+
+describe('bank', () => {
+  it('deposits and withdraws with interest', () => {
+    const run = baseRun({ dinars: 50, bankedDinars: 0 })
+    expect(depositBank(run, 50)).toEqual({ ok: true })
+    expect(run.dinars).toBe(0)
+    expect(run.bankedDinars).toBe(50)
+
+    const { dinars } = withdrawBank(run)
+    expect(dinars).toBe(60) // 50 + 20% interest
+    expect(run.dinars).toBe(60)
+    expect(run.bankedDinars).toBe(0)
+  })
+
+  it('deposit fails without enough dinars', () => {
+    const run = baseRun({ dinars: 10 })
+    expect(depositBank(run, 50)).toEqual({ ok: false, error: 'insufficient_dinars' })
+  })
+})
+
+describe('resolveSealedJar', () => {
+  it('always grants exactly one of a blessing or a curse card', () => {
+    const run = baseRun()
+    const outcome = resolveSealedJar(run, content)
+    const isBlessing = 'blessingId' in outcome
+    const isCurse = 'curseCardId' in outcome
+    expect(isBlessing !== isCurse).toBe(true)
+    if (isBlessing) expect(run.blessings).toContain(outcome.blessingId)
   })
 })

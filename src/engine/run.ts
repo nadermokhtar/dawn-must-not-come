@@ -1,4 +1,4 @@
-import type { Content, EffectInstance, VerseDef, VerseKind } from './types'
+import type { CardDef, Content, EffectInstance, VerseDef, VerseKind } from './types'
 import { createRng, deriveSeed } from './rng'
 import progression from '../../data/progression.json'
 
@@ -30,12 +30,18 @@ const DEFAULT_PAGES_IN_NIGHT = 22
 const BOSS_REWARD_DINARS = 50
 const KILL_REWARD_DINARS = 10
 const CHEST_REWARD_DINARS = 20
-const WIN_HEAL_FRACTION = 0.2
+const WIN_HEAL_FRACTION = 0.15
 const XP_PER_KILL = 10
 export const XP_TO_LEVEL = 20
 const HP_PER_LEVEL = 3
 const MAX_LEVEL = 20
 const LEVEL_GATE_HEADROOM = 1
+const WONDER_HP_THRESHOLDS = [4, 8]
+const WONDER_HP_BONUS = 5
+const MERCY_DINAR_THRESHOLDS = [4]
+const MERCY_DINAR_BONUS = 20
+const BANK_INTEREST_RATE = 0.2
+const SEALED_JAR_CURSE_CARD_IDS = ['curse_seasickness', 'curse_petty_grudge', 'curse_barnacles']
 
 export interface RunState {
   seed: number
@@ -61,6 +67,8 @@ export interface RunState {
   flags: Record<string, string>
   crossedOutVerseIds: string[]
   bossDefeated: boolean
+  resolvedForks: string[]
+  bankedDinars: number
   result?: 'night_cleared' | 'defeated'
 }
 
@@ -92,6 +100,8 @@ export function createRun(classId: string, seed: number): RunState {
     flags: {},
     crossedOutVerseIds: [],
     bossDefeated: false,
+    resolvedForks: [],
+    bankedDinars: 0,
   }
 }
 
@@ -202,22 +212,137 @@ export function enterVerse(run: RunState, verseId: string, content: Content): En
   return { kind: verse.kind, verseId: verse.id, enemyId, reshuffled: false }
 }
 
-export function applyBattleReward(run: RunState, enemyId: string, content: Content): { dinars: number; levelsGained: number } {
+function hasNightContent(content: Content, night: number): boolean {
+  for (const v of content.verses.values()) {
+    if (v.night.includes(night)) return true
+  }
+  return false
+}
+
+export function applyBattleReward(
+  run: RunState,
+  enemyId: string,
+  content: Content,
+): { dinars: number; levelsGained: number; nightAdvanced: boolean } {
   const enemy = content.enemies.get(enemyId)
   if (!enemy) throw new Error(`unknown enemy ${enemyId}`)
   const dinars = enemy.tier === 'boss' ? BOSS_REWARD_DINARS : KILL_REWARD_DINARS
   run.dinars += dinars
   const { levelsGained } = grantXp(run, XP_PER_KILL)
   run.hp = Math.min(run.maxHp, run.hp + Math.round(run.maxHp * WIN_HEAL_FRACTION))
+
+  let nightAdvanced = false
   if (enemy.tier === 'boss') {
     run.bossDefeated = true
-    run.result = 'night_cleared'
+    if (hasNightContent(content, run.night + 1)) {
+      run.night += 1
+      run.page = 0
+      run.rerollCount = 0
+      run.crossedOutVerseIds = []
+      run.pagesInNight = PROGRESSION.nights?.[String(run.night)]?.pages ?? DEFAULT_PAGES_IN_NIGHT
+      run.bossDefeated = false
+      nightAdvanced = true
+    } else {
+      run.result = 'night_cleared'
+    }
   }
-  return { dinars, levelsGained }
+  return { dinars, levelsGained, nightAdvanced }
 }
 
 export function recordDefeat(run: RunState): void {
   run.result = 'defeated'
+}
+
+// DESIGN.md §4.2: Wonder must be >= Mercy to unlock the most dangerous hidden
+// fights (not yet built); either stat crossing a threshold grants a one-time
+// bonus, tracked in `flags` so it's never granted twice.
+function applyWonderMercyThresholds(run: RunState): void {
+  for (const t of WONDER_HP_THRESHOLDS) {
+    const key = `wonder_threshold_${t}`
+    if (run.wonder >= t && !run.flags[key]) {
+      run.flags[key] = 'granted'
+      run.maxHp += WONDER_HP_BONUS
+      run.hp += WONDER_HP_BONUS
+    }
+  }
+  for (const t of MERCY_DINAR_THRESHOLDS) {
+    const key = `mercy_threshold_${t}`
+    if (run.mercy >= t && !run.flags[key]) {
+      run.flags[key] = 'granted'
+      run.dinars += MERCY_DINAR_BONUS
+    }
+  }
+}
+
+// DESIGN.md §4.1: a Story Fork is offered once per enemy that carries a
+// story_fork_id, keyed off resolvedForks so re-fighting a repeatable battle
+// Verse doesn't re-trigger it.
+export function forkForEnemy(run: RunState, enemyId: string, content: Content) {
+  const enemy = content.enemies.get(enemyId)
+  if (!enemy?.story_fork_id) return undefined
+  if (run.resolvedForks.includes(enemy.story_fork_id)) return undefined
+  const fork = content.storyForks.get(enemy.story_fork_id)
+  return fork ? { forkId: enemy.story_fork_id, fork } : undefined
+}
+
+export function resolveStoryFork(run: RunState, forkId: string, optionId: string, content: Content): void {
+  const fork = content.storyForks.get(forkId)
+  const option = fork?.options.find((o) => o.id === optionId)
+  if (!fork || !option) throw new Error(`unknown story fork option ${forkId}/${optionId}`)
+
+  run.wonder = Math.max(0, run.wonder + (option.wonderDelta ?? 0))
+  run.mercy = Math.max(0, run.mercy + (option.mercyDelta ?? 0))
+  run.hp = Math.max(0, Math.min(run.maxHp, run.hp + (option.hpDelta ?? 0)))
+  run.dinars = Math.max(0, run.dinars + (option.dinarsDelta ?? 0))
+  if (!run.resolvedForks.includes(forkId)) run.resolvedForks.push(forkId)
+  applyWonderMercyThresholds(run)
+}
+
+// Shared by the Bazaar (paid) and level-up rewards (free) so both offer
+// from the same class-card pool with the same "no curses, no _plus variants"
+// filtering, just seeded differently.
+export function sampleClassCards(run: RunState, content: Content, count: number, salt: string): CardDef[] {
+  const pool = [...content.cards.values()].filter(
+    (c) => c.class === run.classId && c.type !== 'curse' && !c.id.endsWith('_plus'),
+  )
+  const rng = createRng(deriveSeed(run.seed, salt, run.night, run.page, run.level))
+  return rng.shuffle(pool).slice(0, count)
+}
+
+// Coin Djinn (DESIGN.md §3.4): deposit now, withdraw later for interest.
+// Withdrawing always empties the whole balance at once (no partial withdraw)
+// to keep the UI a single button rather than an amount picker.
+export function depositBank(run: RunState, amount: number): EconomyResult {
+  if (amount <= 0 || run.dinars < amount) return { ok: false, error: 'insufficient_dinars' }
+  run.dinars -= amount
+  run.bankedDinars += amount
+  return { ok: true }
+}
+
+export function withdrawBank(run: RunState): { dinars: number } {
+  const payout = Math.round(run.bankedDinars * (1 + BANK_INTEREST_RATE))
+  run.dinars += payout
+  run.bankedDinars = 0
+  return { dinars: payout }
+}
+
+// The Sealed Jar (DESIGN.md §3.4's Pandora's Box): risk/reward, deterministic
+// per visit — either a blessing or a curse card, never both.
+export function resolveSealedJar(run: RunState, content: Content): { blessingId: string } | { curseCardId: string } {
+  const rng = createRng(deriveSeed(run.seed, 'sealed_jar', run.night, run.page))
+  const goodOutcome = rng.next() < 0.5
+
+  if (goodOutcome) {
+    const available = [...content.blessings.values()].filter((b) => !run.blessings.includes(b.id))
+    if (available.length > 0) {
+      const blessing = rng.pick(available)
+      run.blessings.push(blessing.id)
+      return { blessingId: blessing.id }
+    }
+  }
+  const curseCardId = rng.pick(SEALED_JAR_CURSE_CARD_IDS)
+  run.deck.push(curseCardId)
+  return { curseCardId }
 }
 
 export function blessingEffects(run: RunState, content: Content): EffectInstance[] {

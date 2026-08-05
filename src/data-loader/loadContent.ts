@@ -1,5 +1,13 @@
-import type { BlessingDef, CardDef, Content, EffectDef, EnemyDef, VerseDef } from '../engine/types'
-import { ValidationError, validateBlessing, validateCard, validateEffect, validateEnemy, validateVerse } from './validate'
+import type { BlessingDef, CardDef, Content, EffectDef, EnemyDef, StoryForkDef, VerseDef } from '../engine/types'
+import {
+  ValidationError,
+  validateBlessing,
+  validateCard,
+  validateEffect,
+  validateEnemy,
+  validateStoryFork,
+  validateVerse,
+} from './validate'
 
 interface JsonModule {
   default: unknown
@@ -10,6 +18,7 @@ const enemyModules = import.meta.glob('/data/enemies/**/*.json', { eager: true }
 const effectModules = import.meta.glob('/data/effects/**/*.json', { eager: true }) as Record<string, JsonModule>
 const verseModules = import.meta.glob('/data/verses/**/*.json', { eager: true }) as Record<string, JsonModule>
 const blessingModules = import.meta.glob('/data/blessings/**/*.json', { eager: true }) as Record<string, JsonModule>
+const storyForkModules = import.meta.glob('/data/story_forks/**/*.json', { eager: true }) as Record<string, JsonModule>
 
 function loadArray<T>(
   modules: Record<string, JsonModule>,
@@ -47,7 +56,7 @@ function collectEffectRefs(rawOps: unknown[] | undefined): string[] {
 // Exported separately from loadContent so tests can exercise it against
 // hand-built Content maps without going through import.meta.glob.
 export function validateCrossReferences(content: Content): void {
-  const { cards, enemies, effects, verses, blessings } = content
+  const { cards, enemies, effects, verses, blessings, storyForks } = content
 
   for (const enemy of enemies.values()) {
     for (const cardId of enemy.deck) {
@@ -57,6 +66,9 @@ export function validateCrossReferences(content: Content): void {
     }
     if (enemy.gimmick && !effects.has(enemy.gimmick)) {
       throw new ValidationError(`enemy "${enemy.id}": gimmick references unknown effect "${enemy.gimmick}"`)
+    }
+    if (enemy.story_fork_id && !storyForks.has(enemy.story_fork_id)) {
+      throw new ValidationError(`enemy "${enemy.id}": story_fork_id references unknown story fork "${enemy.story_fork_id}"`)
     }
   }
 
@@ -99,8 +111,9 @@ export function loadContent(): Content {
   const enemies = loadArray<EnemyDef>(enemyModules, validateEnemy, (e) => e.id)
   const verses = loadArray<VerseDef>(verseModules, validateVerse, (v) => v.id)
   const blessings = loadArray<BlessingDef>(blessingModules, validateBlessing, (b) => b.id)
+  const storyForks = loadArray<StoryForkDef>(storyForkModules, validateStoryFork, (f) => f.id)
 
-  const content: Content = { cards, enemies, effects, verses, blessings }
+  const content: Content = { cards, enemies, effects, verses, blessings, storyForks }
   validateCrossReferences(content)
   return content
 }

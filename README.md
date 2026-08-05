@@ -34,33 +34,42 @@ Other scripts:
 
 ## Where things stand
 
-**Night I is playable start to finish.** Load the game, navigate the map, fight your
-way through Night I's enemies, and reach the boss gate.
+**Night I → Night II is playable start to finish.** Load the game, navigate the map,
+fight your way through Night I's enemies, beat the boss to advance to Night II, and
+keep going until Night II's boss (currently the run's ending).
 
 - **Battle engine** — turn-based combat: AP/mana, draw/discard/exhaust, damage types
   and resistances, buffs/debuffs, counters, win/loss.
 - **Map (Verse) system** — the 3-face-up-cards loop from *Night of the Full Moon*:
   page counter, "Turn the Page" reshuffle, all node kinds (battle, shop, upgrade,
-  remove, blessing, chest, event, boss).
-- **Working economy** — the Bazaar (buy cards), the Calligrapher (upgrade cards), the
-  House of Forgetting (remove cards), and the Jinni of the Lamp (blessings), all
-  actually spending/earning dinars.
-- **Leveling** — 12 Night I enemies (levels 1–12) plus a boss (The Whale That Was an
-  Island, level 15). You gain XP per kill, level up roughly every 2 fights, and your
-  max HP grows with you. The map only ever offers a fight within one level of your
-  own, so it should never throw something unfair at you.
+  remove, blessing, chest, event, bank, boss).
+- **Working economy** — the Bazaar, the Calligrapher, the House of Forgetting, the
+  Jinni of the Lamp, the Coin Djinn (deposit dinars, withdraw later with interest),
+  and the Sealed Jar (risk/reward: a blessing or a curse card).
+- **Leveling** — 12 Night I enemies (levels 1–12) + The Whale That Was an Island
+  (level 15), and 10 Night II enemies (levels 8–17) + The Roc (level 20). XP per
+  kill, level up roughly every 2 fights, max HP grows with you, and a free card pick
+  on level-up. The map only offers a fight within one level of your own.
+- **The Telling** — 3 Story Forks (narrative choices tied to specific enemies) with
+  Wonder/Mercy stats that grant threshold bonuses (+max HP, +dinars).
+- **Persistence** — your run (map progress, deck, level, dinars, etc.) survives
+  closing the tab. Mid-battle state doesn't — closing mid-fight just restarts that
+  one fight.
 - **Combat feel** — slash/hit animations, a decorative enemy hand of cards, and
-  narration barks (Scheherazade narrating to the King, in period voice).
+  narration barks (the King asking questions, Scheherazade narrating the answer —
+  not Scheherazade addressing Sinbad directly).
 - **Art** — most of it is still placeholder (see [`assets/MANIFEST.md`](./assets/MANIFEST.md)
   for exactly what's real vs. generated placeholder text). A handful of real
-  backgrounds/keyart/class portraits are wired in already.
+  backgrounds/keyart/class portraits are wired in already; everything else falls
+  back to a placehold.co placeholder image rather than a blank box.
 
-**Not yet built:** level-up card rewards, Blessings beyond the Jinni's fixed pool,
-Story Forks, Wonder/Mercy thresholds, Night II onward, and localStorage persistence
-(closing the tab currently loses your run).
+**Not yet built:** Night III onward, the Hidden Night IV secret-chain unlocks (Night
+II's Locked Diary/Eccentric Seeds/VIP Card verses are flavor-only stubs right now),
+the boss's "battlefield sinks in phases" gimmick, mid-battle persistence.
 
 See the "Project status" section at the top of [`CLAUDE.md`](./CLAUDE.md) for the
-most current, actively-maintained snapshot of what's done and what's next.
+most current, actively-maintained snapshot of what's done and what's next — including
+a balance-tuning pass and the specific numbers changed.
 
 ## Feedback
 

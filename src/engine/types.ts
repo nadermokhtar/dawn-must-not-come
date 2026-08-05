@@ -181,10 +181,26 @@ export interface BlessingDef {
   art_ref?: string
 }
 
+export interface StoryForkOption {
+  id: string
+  label: string
+  wonderDelta?: number
+  mercyDelta?: number
+  hpDelta?: number
+  dinarsDelta?: number
+}
+
+export interface StoryForkDef {
+  id: string
+  narration: string
+  options: StoryForkOption[]
+}
+
 export interface Content {
   cards: Map<string, CardDef>
   enemies: Map<string, EnemyDef>
   effects: Map<string, EffectDef>
   verses: Map<string, VerseDef>
   blessings: Map<string, BlessingDef>
+  storyForks: Map<string, StoryForkDef>
 }
