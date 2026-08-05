@@ -80,6 +80,14 @@ export function showMapHelp(): void {
 
 const BATTLE_TUTORIAL_FLAG = 'battle-intro'
 
+// Read-only check for battle.ts to capture "is this the tutorial battle?" at
+// mount time, before maybeShowBattleTutorial (below) marks the flag seen —
+// drives in-fight coaching tips that should only ever fire once, on the
+// player's actual first fight, not just the pre-fight explainer dialog.
+export function isFirstEverBattle(): boolean {
+  return !hasSeen(BATTLE_TUTORIAL_FLAG)
+}
+
 // One-time (per profile) explainer for the battle screen — shown before the
 // player's first-ever fight starts. Mechanics-focused rather than narration:
 // this exists because "the art is interesting but I don't know what to do"

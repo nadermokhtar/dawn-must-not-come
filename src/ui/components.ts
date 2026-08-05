@@ -205,6 +205,7 @@ export function ceremonyDialog(
     const closeBtn = document.createElement('button')
     closeBtn.className = 'ceremony-close'
     closeBtn.textContent = '✕'
+    closeBtn.title = 'Close'
     onTap(closeBtn, close)
     panel.appendChild(closeBtn)
   }

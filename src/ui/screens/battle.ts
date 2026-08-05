@@ -7,7 +7,7 @@ import { createCardElement, showCardZoom } from '../cardView'
 import { createArtElement } from '../artUrl'
 import { onHold, onTap } from '../touch'
 import { statBar, statusBadge, iconBadge, armorBadge, hourglassStat, bottomSheet, ceremonyDialog, flashMessage } from '../components'
-import { maybeShowBattleTutorial, showBattleHelp } from '../onboarding'
+import { isFirstEverBattle, maybeShowBattleTutorial, showBattleHelp } from '../onboarding'
 
 const LOG_CAP = 100
 const ENEMY_HAND_SIZE = 3
@@ -112,6 +112,14 @@ function describeEvent(ev: BattleEvent, content: Content, enemyName: string): st
 export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions): () => void {
   const content = loadContent()
 
+  // Captured once, before maybeShowBattleTutorial (called after begin(),
+  // below) marks the flag seen — drives the in-fight coaching tips further
+  // down so they only ever fire during the player's actual first fight, not
+  // just show a one-time dialog and then leave them to figure out the rest.
+  const isTutorialBattle = isFirstEverBattle()
+  let coachedSelect = false
+  let coachedPlay = false
+
   let state: BattleState
   let selectedUid: number | null = null
   let logEntries: string[] = []
@@ -144,11 +152,16 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
 
   function renderNarrationPanel(): void {
     narrationPanel.classList.toggle('expanded', narrationExpanded)
+    narrationPanel.title = narrationExpanded ? 'Tap to collapse' : 'Tap to read the full line'
     narrationPanel.innerHTML = ''
     const text = document.createElement('p')
     text.className = 'narration-text'
     text.textContent = [dialogueText, recentText].filter(Boolean).join('  ')
     narrationPanel.appendChild(text)
+    const hint = document.createElement('span')
+    hint.className = 'narration-expand-hint'
+    hint.textContent = narrationExpanded ? '▴' : '▾'
+    narrationPanel.appendChild(hint)
   }
 
   function describeRecent(text: string): void {
@@ -308,10 +321,18 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
         render()
       } else {
         applyAndRender(res.events)
+        if (isTutorialBattle && !coachedPlay) {
+          coachedPlay = true
+          flashMessage(hudBar, 'Well played — keep going, then tap End Turn when you\'re out of AP or Mana.', 2400)
+        }
       }
     } else {
       selectedUid = inst.uid
       render()
+      if (isTutorialBattle && !coachedSelect) {
+        coachedSelect = true
+        flashMessage(cardEl, 'Tap it again to play it', 2000)
+      }
     }
   }
 

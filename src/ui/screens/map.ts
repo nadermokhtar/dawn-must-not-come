@@ -75,7 +75,12 @@ export function mountMapScreen(root: HTMLElement, run: RunState, content: Conten
     restartBtn.className = 'help-btn'
     restartBtn.textContent = '↻'
     restartBtn.title = 'Restart the run'
-    onTap(restartBtn, handlers.onRestart)
+    // title is invisible on touch (no hover) — flash the same explanation so
+    // the icon isn't a mystery symbol before the confirm dialog opens.
+    onTap(restartBtn, () => {
+      flashMessage(restartBtn, 'Restart the run')
+      handlers.onRestart()
+    })
     headerBtns.appendChild(restartBtn)
     const helpBtn = document.createElement('button')
     helpBtn.className = 'help-btn'
