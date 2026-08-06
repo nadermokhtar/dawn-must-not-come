@@ -5,8 +5,9 @@ Layout per DESIGN.md §9.5 / pack Part 0.5. Filenames are the `art_ref` targets 
 game data. Originals remain in ~/Downloads.
 
 ## Vertical-slice ship checkpoint (pack Part 5, step 6)
-Needs: anchors ✓ · frames (3/4) · classes ✓ · Night I enemies (6/6 by roster) ·
-backgrounds (6/6 masters ✓, 4 need art_ref wiring) · UI kit (6/14, no transparency yet)
+Needs: anchors ✓ · frames (3/4) · classes ✓ · **Night I enemies 13/13 ✓ (all art_ref
+resolved)** · Night II enemies (3/16 beyond pack-2) · backgrounds (6/6 masters ✓, 4
+need art_ref wiring) · UI kit (6/14, no transparency yet)
 
 ## anchors/ — 2/2 (never shipped in builds)
 | File | Status |
@@ -46,17 +47,35 @@ All 10 pack enemies now filed, with filenames matching each enemy's actual
 `art_ref` field in `data/enemies/*.json` (which has since diverged from the
 pack's generic numbering — e.g. 2.2/2.8 are wired as `snake_charmers_serpent.png`
 / `diamond_valley_serpent.png`, matching the enemy's own id, not `serpent.png`/
-`diamond_serpent.png`). **Not covered by the pack at all** — the game's enemy
-roster has since grown well beyond these 10 (see `data/enemies/night1.json`
-and `night2.json`): angry_pelican, customs_officer, pearl_diver,
-pickpocket_of_the_souk, rat_of_the_hold, ships_cook, sleepless_watchman,
-stray_ghul_pup, superstitious_sailor (Night I); ape_of_the_black_isle,
+`diamond_serpent.png`).
+
+### Beyond the pack — Night I (13/13 ✓, roster complete)
+The game's enemy roster grew well past the original 10; these 9 aren't in
+PROMPT_PACK.md at all (custom-prompted 2026-08-05, matching each enemy's
+`data/enemies/night1.json` entry):
+
+| File | Subject |
+|---|---|
+| rat_of_the_hold.png | Mangy bilge rat, rope + coins + stolen cookie |
+| customs_officer.png | Corrupt official, wax-seal stamp + ledger |
+| pickpocket_of_the_souk.png | Hooded thief mid-swipe at a coin purse |
+| angry_pelican.png | Furious pelican, fish in beak, harbor post |
+| pearl_diver.png | Wet free-diver, net bag of pearl oysters, dive knife |
+| ships_cook.png | Burly cook, cleaver + ladle, onion/fish necklace |
+| sleepless_watchman.png | Gaunt hollow-eyed guard, halberd + lantern |
+| stray_ghul_pup.png | Small green ghoul-pup, bat ears, feral crouch |
+| superstitious_sailor.png | Nervous sailor draped in charms, warding gesture |
+
+**Night I enemy roster is now 100% art-complete (13/13).**
+
+### Beyond the pack — Night II (3/16, still mostly placeholder)
+Still resolve to the placehold.co fallback: ape_of_the_black_isle,
 cannibal_scout, cyclopean_shepherds_ram, drowned_sailor, living_figurehead,
-merchant_of_dubious_meat, storm_sprite (Night II) all still resolve to the
-placehold.co fallback. **Possible match found, not filed:** a "grumpy patchwork
-ogre" illustration in the intake batch could fit `merchant_of_dubious_meat.png`
-(a large, unkempt figure) but doesn't match any pack-2 description precisely —
-needs a call on whether it's a good fit before filing.
+merchant_of_dubious_meat, storm_sprite. **Possible match found, not filed:** a
+"grumpy patchwork ogre" illustration from the earlier 2026-08-05 batch could
+fit `merchant_of_dubious_meat.png` (a large, unkempt figure) but doesn't match
+any pack-2 description precisely — needs a call on whether it's a good fit
+before filing.
 
 ## frames/ — 3/4 (pack 1.2)
 | File | Rarity tier |
