@@ -64,7 +64,7 @@ inside frame `<div>`, or both drawn to `<canvas>`).
   /backgrounds  bg_title.png, bg_codex.png, bg_night1.png,
                 bg_night2.png, bg_night3.png, bg_night4.png
   /ui           (see Part 4)
-  /keyart       scheherazade_king.png
+  /keyart       shahrazad_king.png
 ```
 
 ### Sizes & formats
@@ -162,10 +162,10 @@ frame — do not regenerate from text):
 > holding a glowing ornate brass astrolabe, three tiny star-lights orbiting his
 > head, knowing trickster grin. [+ MASTER STYLE BLOCK]
 
-### 1.7 👑 KEY ART — Scheherazade & the King (wide, for title/story)
+### 1.7 👑 KEY ART — Shahrazad & the King (wide, for title/story)
 
 > Match the attached image's art style exactly for the characters. Scene: elegant
-> storyteller queen Scheherazade seated on floor cushions in a moonlit palace
+> storyteller queen Shahrazad seated on floor cushions in a moonlit palace
 > chamber, one hand raised mid-tale with smooth glowing gold story-threads flowing
 > from her fingers forming a tiny ship and a tiny sea monster in the air, brooding
 > King Shahryar leaning forward from a shadowed throne, listening, arched window

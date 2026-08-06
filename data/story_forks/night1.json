@@ -1,7 +1,7 @@
 [
   {
     "id": "fork_dockhand_mercy",
-    "narration": "\"And when the dockhand lay beaten at his feet,\" Scheherazade paused, \"what did Sinbad do, O King?\"",
+    "narration": "\"And when the dockhand lay beaten at his feet,\" Shahrazad paused, \"what did Sinbad do, O King?\"",
     "options": [
       { "id": "spare", "label": "He spared him, and helped him to his feet.", "mercyDelta": 2 },
       { "id": "rob", "label": "He took the man's purse and walked on.", "dinarsDelta": 15 },
@@ -10,7 +10,7 @@
   },
   {
     "id": "fork_serpent_bravery",
-    "narration": "\"The charmer begged for her serpent's life,\" said Scheherazade. \"What did Sinbad say to her, O King?\"",
+    "narration": "\"The charmer begged for her serpent's life,\" said Shahrazad. \"What did Sinbad say to her, O King?\"",
     "options": [
       { "id": "free_it", "label": "He let the serpent go free.", "mercyDelta": 2, "hpDelta": -2 },
       { "id": "sell_it", "label": "He sold it to a passing merchant.", "dinarsDelta": 15 },
@@ -19,7 +19,7 @@
   },
   {
     "id": "fork_cargo_greed",
-    "narration": "\"Alhamdulillah [praise be to God],\" Scheherazade said, \"the chest-with-teeth stilled at last. What did Sinbad do with its hoard, O King?\"",
+    "narration": "\"Alhamdulillah [praise be to God],\" Shahrazad said, \"the chest-with-teeth stilled at last. What did Sinbad do with its hoard, O King?\"",
     "options": [
       { "id": "share_it", "label": "He gave half to the dockworkers it had cheated.", "mercyDelta": 2 },
       { "id": "keep_it", "label": "He kept every coin for himself.", "dinarsDelta": 25, "wonderDelta": 1 },

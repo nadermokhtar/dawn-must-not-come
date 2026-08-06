@@ -1,7 +1,7 @@
 # Dawn Must Not Come
 
 A single-player, storybook deckbuilding roguelike — *Night of the Full Moon* mechanics,
-re-themed as Scheherazade telling the voyages of Sinbad to King Shahryar. Web-based,
+re-themed as Shahrazad telling the voyages of Sinbad to King Shahryar. Web-based,
 mobile-first, runs fully client-side (no backend, no account, saves to your browser).
 
 The full design document lives in [`DESIGN.md`](./DESIGN.md).
@@ -56,8 +56,8 @@ keep going until Night II's boss (currently the run's ending).
   closing the tab. Mid-battle state doesn't — closing mid-fight just restarts that
   one fight.
 - **Combat feel** — slash/hit animations, a decorative enemy hand of cards, and
-  narration barks (the King asking questions, Scheherazade narrating the answer —
-  not Scheherazade addressing Sinbad directly).
+  narration barks (the King asking questions, Shahrazad narrating the answer —
+  not Shahrazad addressing Sinbad directly).
 - **Art** — most of it is still placeholder (see [`assets/MANIFEST.md`](./assets/MANIFEST.md)
   for exactly what's real vs. generated placeholder text). A handful of real
   backgrounds/keyart/class portraits are wired in already; everything else falls

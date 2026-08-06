@@ -3,25 +3,75 @@ import { onTap } from './touch'
 import { hasSeen, markSeen } from '../run/persistence'
 import type { RunState } from '../engine/run'
 
-// DESIGN.md §8.5: every telling opens with the basmala — shown at the start
-// of every new run (not just the player's first ever), since it's narrative
-// framing ("Scheherazade begins the tale anew"), not a one-time tutorial.
-export function showBasmalaIntro(onContinue: () => void): void {
-  ceremonyDialog({ title: 'Bismillah', portraitLabel: 'Scheherazade', ribbonColor: 'var(--gold)' }, (body, close) => {
-    const p = document.createElement('p')
-    p.className = 'sheet-narration'
-    p.textContent =
-      'Bismillah ar-Rahman ar-Rahim [In the name of God, the Most Gracious, the Most Merciful] — and so Scheherazade began the tale of Sinbad, that the King might spare her one more dawn.'
-    body.appendChild(p)
+interface DialogueLine {
+  speaker: 'Shahryar' | 'Shahrazad'
+  text: string
+}
 
-    const btn = document.createElement('button')
-    btn.className = 'ceremony-continue-btn'
-    btn.textContent = 'Begin the Telling'
-    onTap(btn, () => {
-      close()
-      onContinue()
-    })
-    body.appendChild(btn)
+// DESIGN.md §8.5: every telling opens with this frame-story exchange — shown
+// at the start of every new run (not just the player's first ever), since
+// it's narrative framing ("Shahrazad begins the tale anew"), not a one-time
+// tutorial. Ends with the basmala folded into Shahrazad's final line, right
+// as she actually begins speaking the tale, rather than as a separate beat.
+const OPENING_DIALOGUE: DialogueLine[] = [
+  { speaker: 'Shahryar', text: 'You linger again tonight, Shahrazad. The hour is late, and still you do not sleep.' },
+  { speaker: 'Shahrazad', text: 'Sleep is for those with nothing left to owe, my lord. I have a debt unpaid — one more night, one more tale.' },
+  { speaker: 'Shahryar', text: 'You speak of debt as though stories were coin. What could a tale possibly purchase?' },
+  { speaker: 'Shahrazad', text: 'Time, my lord. And perhaps, if the telling is true enough, a little mercy besides.' },
+  { speaker: 'Shahryar', text: 'Then tell me — whose voyage do you carry with you this evening?' },
+  {
+    speaker: 'Shahrazad',
+    text: "A merchant of Baghdad, my lord, who was not content to count his father's gold and call it a life. He wanted to know what lay past the edge of the map — and the sea, in her way, agreed to teach him.",
+  },
+  { speaker: 'Shahryar', text: 'A dangerous teacher.' },
+  { speaker: 'Shahrazad', text: 'The only honest kind. She does not flatter a man who does not deserve to float.' },
+  { speaker: 'Shahryar', text: 'And his name?' },
+  {
+    speaker: 'Shahrazad',
+    text: 'Sinbad, my lord. Though by the time the tide is done with him, he will answer to a great many other names — fool, survivor, captive, king. The sea does not ask a man who he was before she found him. Only who he becomes after.',
+  },
+  { speaker: 'Shahryar', text: 'Then begin, Shahrazad. Let the water take him.' },
+  {
+    speaker: 'Shahrazad',
+    text: 'As my lord commands. Bismillah ar-Rahman ar-Rahim [In the name of God, the Most Gracious, the Most Merciful]. It is told — and Allah knows best — that in the days of the Caliph Harun al-Rashid, there lived in the city of Baghdad a man of middling fortune and immoderate curiosity, who looked upon the harbor each morning and felt, in his chest, a tide of his own...',
+  },
+]
+
+export function showBasmalaIntro(onContinue: () => void): void {
+  let index = 0
+
+  ceremonyDialog({ title: 'A Thousand and One Tides', portraitLabel: 'Shahrazad', ribbonColor: 'var(--gold)' }, (body, close) => {
+    function render(): void {
+      body.innerHTML = ''
+      const line = OPENING_DIALOGUE[index]!
+
+      const speaker = document.createElement('p')
+      speaker.className = 'dialogue-speaker'
+      speaker.textContent = line.speaker === 'Shahryar' ? 'King Shahryar' : 'Shahrazad'
+      body.appendChild(speaker)
+
+      const p = document.createElement('p')
+      p.className = 'sheet-narration'
+      p.textContent = line.text
+      body.appendChild(p)
+
+      const isLast = index === OPENING_DIALOGUE.length - 1
+      const btn = document.createElement('button')
+      btn.className = 'ceremony-continue-btn'
+      btn.textContent = isLast ? 'Begin the Telling' : 'Continue'
+      onTap(btn, () => {
+        if (isLast) {
+          close()
+          onContinue()
+        } else {
+          index += 1
+          render()
+        }
+      })
+      body.appendChild(btn)
+    }
+
+    render()
   })
 }
 
@@ -67,7 +117,7 @@ export function maybeShowMapTutorial(onContinue: () => void): void {
   ceremonyDialog({ title: 'The Manuscript', portraitLabel: 'The King', ribbonColor: 'var(--gold)' }, (body, close) => {
     const p = document.createElement('p')
     p.className = 'sheet-narration'
-    p.textContent = '"And what befalls him next?" the King asked, and Scheherazade turned the page to show three paths.'
+    p.textContent = '"And what befalls him next?" the King asked, and Shahrazad turned the page to show three paths.'
     body.appendChild(p)
 
     body.appendChild(
@@ -119,7 +169,7 @@ export function maybeShowBattleTutorial(onContinue: () => void): void {
   ceremonyDialog({ title: 'How to Fight', portraitLabel: 'Sinbad', portraitRef: 'classes/sinbad.png', ribbonColor: 'var(--coral)' }, (body, close) => {
     const p = document.createElement('p')
     p.className = 'sheet-narration'
-    p.textContent = '"Steady your hand," Scheherazade said. "The tale turns on what Sinbad plays next."'
+    p.textContent = '"Steady your hand," Shahrazad said. "The tale turns on what Sinbad plays next."'
     body.appendChild(p)
 
     body.appendChild(

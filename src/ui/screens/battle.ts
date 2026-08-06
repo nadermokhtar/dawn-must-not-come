@@ -181,9 +181,9 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
     renderNarrationPanel()
   }
 
-  // The frame story is Scheherazade narrating Sinbad's voyage to King
+  // The frame story is Shahrazad narrating Sinbad's voyage to King
   // Shahryar (DESIGN.md §2) — so dialogue here is the King prompting with a
-  // question and Scheherazade answering in narration, never Scheherazade
+  // question and Shahrazad answering in narration, never Shahrazad
   // addressing Sinbad directly (that reads as her shouting orders at him).
   function barkExchange(kingLine: string, narrationLine: string): void {
     if (barkTimeoutId !== undefined) clearTimeout(barkTimeoutId)
@@ -243,7 +243,7 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
       lowHpBarked = true
       barkExchange(
         `"Does he yet live?" the King asked, leaning forward.`,
-        `"Barely," Scheherazade said. "Ya Allah [O God], Sinbad's strength was failing him."`,
+        `"Barely," Shahrazad said. "Ya Allah [O God], Sinbad's strength was failing him."`,
       )
     }
   }
@@ -289,7 +289,7 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
     const enemyDef = content.enemies.get(opts.enemyId)!
     barkExchange(
       `"What creature bars his way now?" the King asked.`,
-      `"${enemyDef.tier === 'boss' ? 'A terror' : 'A trial'}," Scheherazade said, "for Sinbad had come upon ${enemyDef.name}."`,
+      `"${enemyDef.tier === 'boss' ? 'A terror' : 'A trial'}," Shahrazad said, "for Sinbad had come upon ${enemyDef.name}."`,
     )
     applyAndRender(result.events)
   }

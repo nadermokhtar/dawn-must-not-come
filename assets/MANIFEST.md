@@ -118,7 +118,7 @@ no console errors, harbor scene visible behind the Night I enemy portrait.
 ## keyart/ — 1/1 ✓ (pack 1.7)
 | File | Subject |
 |---|---|
-| scheherazade_king.png | Scheherazade + King Shahryar, 16:9 (2752×1536) |
+| shahrazad_king.png | Shahrazad + King Shahryar, 16:9 (2752×1536) |
 
 ## ui/ — 6/14 filed, **0/6 background-removed** (pack Part 4)
 | File | Subject | Transparency |

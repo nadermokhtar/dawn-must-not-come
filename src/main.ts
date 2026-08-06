@@ -187,7 +187,7 @@ function showEndScreen(kind: 'night_cleared' | 'defeated'): void {
     showTitleCard({
       title: 'Night Cleared',
       kingLine: '&ldquo;And does the voyage end there?&rdquo; the King asked.',
-      message: '&ldquo;Inshallah [God willing],&rdquo; said Scheherazade, &ldquo;we will continue the story tomorrow.&rdquo;',
+      message: '&ldquo;Inshallah [God willing],&rdquo; said Shahrazad, &ldquo;we will continue the story tomorrow.&rdquo;',
       buttonLabel: 'Begin a New Telling',
       onButton: startNewRun,
     })
@@ -195,7 +195,7 @@ function showEndScreen(kind: 'night_cleared' | 'defeated'): void {
     showTitleCard({
       title: 'Sinbad Falls',
       kingLine: '&ldquo;Does the story end so?&rdquo; the King demanded, frowning.',
-      message: '&ldquo;Astaghfirullah [I seek God&rsquo;s forgiveness],&rdquo; Scheherazade whispered, &ldquo;the tale ends here &mdash; for tonight.&rdquo;',
+      message: '&ldquo;Astaghfirullah [I seek God&rsquo;s forgiveness],&rdquo; Shahrazad whispered, &ldquo;the tale ends here &mdash; for tonight.&rdquo;',
       buttonLabel: 'Begin a New Telling',
       onButton: startNewRun,
     })
@@ -205,7 +205,7 @@ function showEndScreen(kind: 'night_cleared' | 'defeated'): void {
 function showNightTransition(nextNight: number): void {
   showTitleCard({
     title: 'Night Survived',
-    kingLine: '&ldquo;And does the tale continue, Scheherazade?&rdquo; the King asked.',
+    kingLine: '&ldquo;And does the tale continue, Shahrazad?&rdquo; the King asked.',
     message: '&ldquo;Inshallah [God willing],&rdquo; she said, &ldquo;there is more still to tell.&rdquo;',
     buttonLabel: `Begin Night ${nextNight}`,
     onButton: showMap,

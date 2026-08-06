@@ -2,7 +2,7 @@
 
 ## What this is
 **Dawn Must Not Come** — a single-player, storybook deckbuilding roguelike (Night of the
-Full Moon mechanics, re-themed as Scheherazade telling the voyages of Sinbad). The full
+Full Moon mechanics, re-themed as Shahrazad telling the voyages of Sinbad). The full
 design document is **`DESIGN.md`** in this folder — it is the source of truth for
 mechanics, content, art direction, and data schemas. Read it before implementing anything.
 
@@ -61,11 +61,14 @@ mechanics, content, art direction, and data schemas. Read it before implementing
   title ambience, dawn-approaching warning, and Night-survived stinger. Mix it as
   respectful diegetic soundscape, never as a failure sting.
 - **Narration language conventions** (DESIGN.md §8.5), enforced in narration data:
-  - Run start opens with the basmala: *"Bismillah ar-Rahman ar-Rahim [In the name of
-    God, the Most Gracious, the Most Merciful] — and so Scheherazade began the tale..."*
-  - Chapter clear closes with: *"'Inshallah [God willing],' said Scheherazade, 'we
+  - Run start opens with a tap-to-continue frame-story exchange between King
+    Shahryar and Shahrazad ("A Thousand and One Tides," `OPENING_DIALOGUE` in
+    `src/ui/onboarding.ts`), ending with the basmala folded into her final line:
+    *"...Bismillah ar-Rahman ar-Rahim [In the name of God, the Most Gracious,
+    the Most Merciful]. It is told — and Allah knows best..."*
+  - Chapter clear closes with: *"'Inshallah [God willing],' said Shahrazad, 'we
     will continue the story tomorrow.'"*
-  - Scheherazade's voice uses natural Islamic expressions (wallahi [I swear by God],
+  - Shahrazad's voice uses natural Islamic expressions (wallahi [I swear by God],
     mashallah [what God has willed], alhamdulillah [praise be to God], ya Allah
     [O God], astaghfirullah [I seek God's forgiveness]) where a storyteller genuinely
     would — flavor, not filler, always transliterated respectfully.
@@ -86,7 +89,7 @@ mechanics, content, art direction, and data schemas. Read it before implementing
   ending the run (`applyBattleReward` checks whether further-night content exists);
   clearing Night II's boss (The Roc) is the current terminal ending. Battle screen
   has combat feedback (slash/hit animations, a decorative enemy hand strip,
-  Scheherazade/King dialogue barks) and missing art falls back to placehold.co
+  Shahrazad/King dialogue barks) and missing art falls back to placehold.co
   (Playfair Display) instead of a plain CSS box.
 - **Balance pass (2026-08-04):** a live bot-driven playthrough surfaced two real
   issues, both fixed: (1) `sampleClassCards`'s card-pool filter incorrectly treated

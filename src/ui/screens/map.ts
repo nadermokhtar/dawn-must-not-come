@@ -67,7 +67,7 @@ const ACTION_LABEL: Record<VerseKind, string> = {
 }
 
 export function mountMapScreen(root: HTMLElement, run: RunState, content: Content, handlers: MapScreenHandlers): () => void {
-  let narration = '"The tale continues," said Scheherazade, "though the King grows restless for what comes next."'
+  let narration = '"The tale continues," said Shahrazad, "though the King grows restless for what comes next."'
   let options: VerseDef[] = []
   let highlightedVerseId: string | null = null
 
@@ -156,7 +156,7 @@ export function mountMapScreen(root: HTMLElement, run: RunState, content: Conten
 
   function renderNarration(): void {
     mapNarration.innerHTML = ''
-    mapNarration.appendChild(createArtElement('keyart/scheherazade_king.png', 'Scheherazade and the King', 'narration-portrait'))
+    mapNarration.appendChild(createArtElement('keyart/shahrazad_king.png', 'Shahrazad and the King', 'narration-portrait'))
     const text = document.createElement('div')
     text.className = 'narration-text'
     text.textContent = narration

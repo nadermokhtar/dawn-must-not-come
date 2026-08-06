@@ -4,7 +4,7 @@
     "kind": "battle",
     "night": [2],
     "name": "Roc Hatchling",
-    "narration": "\"A young roc, still downy about the neck, mistook the ship's mast for its mother's eyrie,\" said Scheherazade, \"and did not take kindly to correction.\"",
+    "narration": "\"A young roc, still downy about the neck, mistook the ship's mast for its mother's eyrie,\" said Shahrazad, \"and did not take kindly to correction.\"",
     "enemyPool": ["roc_hatchling"],
     "weight": 3
   },
@@ -13,7 +13,7 @@
     "kind": "battle",
     "night": [2],
     "name": "Drowned Sailor",
-    "narration": "\"Ya Allah [O God],\" breathed Scheherazade, \"a sailor long lost to the deep rose dripping from the shallows, his eyes gone the color of the tide.\"",
+    "narration": "\"Ya Allah [O God],\" breathed Shahrazad, \"a sailor long lost to the deep rose dripping from the shallows, his eyes gone the color of the tide.\"",
     "enemyPool": ["drowned_sailor"],
     "weight": 3
   },
@@ -22,7 +22,7 @@
     "kind": "battle",
     "night": [2],
     "name": "Storm Sprite",
-    "narration": "\"A sprite spun down out of a clear sky,\" said Scheherazade, \"crackling with a storm that hadn't been forecast to anyone but itself.\"",
+    "narration": "\"A sprite spun down out of a clear sky,\" said Shahrazad, \"crackling with a storm that hadn't been forecast to anyone but itself.\"",
     "enemyPool": ["storm_sprite"],
     "weight": 3
   },
@@ -31,7 +31,7 @@
     "kind": "battle",
     "night": [2],
     "name": "Cyclopean Shepherd's Ram",
-    "narration": "\"The shepherd was one-eyed and enormous, but it was his ram that came first,\" said Scheherazade, \"horns lowered, unimpressed by any story it hadn't already heard.\"",
+    "narration": "\"The shepherd was one-eyed and enormous, but it was his ram that came first,\" said Shahrazad, \"horns lowered, unimpressed by any story it hadn't already heard.\"",
     "enemyPool": ["cyclopean_shepherds_ram"],
     "weight": 3
   },
@@ -40,7 +40,7 @@
     "kind": "battle",
     "night": [2],
     "name": "Living Figurehead",
-    "narration": "\"Astaghfirullah [I seek God's forgiveness],\" said Scheherazade, \"the carved woman on the derelict's prow opened her wooden eyes and tore herself free of the hull.\"",
+    "narration": "\"Astaghfirullah [I seek God's forgiveness],\" said Shahrazad, \"the carved woman on the derelict's prow opened her wooden eyes and tore herself free of the hull.\"",
     "enemyPool": ["living_figurehead"],
     "weight": 3
   },
@@ -49,7 +49,7 @@
     "kind": "battle",
     "night": [2],
     "name": "Merchant of Dubious Meat",
-    "narration": "\"A merchant on the shoreline sold skewers of a meat no one could name,\" said Scheherazade, \"and grew violent when Sinbad declined to buy.\"",
+    "narration": "\"A merchant on the shoreline sold skewers of a meat no one could name,\" said Shahrazad, \"and grew violent when Sinbad declined to buy.\"",
     "enemyPool": ["merchant_of_dubious_meat"],
     "weight": 3
   },
@@ -58,7 +58,7 @@
     "kind": "battle",
     "night": [2],
     "name": "Cannibal Scout",
-    "narration": "\"A scout crept from the tree line, paint on his face and a hunger in his eyes,\" said Scheherazade, \"of a kind Sinbad did not care to understand.\"",
+    "narration": "\"A scout crept from the tree line, paint on his face and a hunger in his eyes,\" said Shahrazad, \"of a kind Sinbad did not care to understand.\"",
     "enemyPool": ["cannibal_scout"],
     "weight": 3
   },
@@ -67,7 +67,7 @@
     "kind": "battle",
     "night": [2],
     "name": "Diamond-Valley Serpent",
-    "narration": "\"Mashallah [what God has willed],\" whispered Scheherazade, \"a serpent coiled among stones that glittered like a fistful of stars, and guarded them as jealously as its own venom.\"",
+    "narration": "\"Mashallah [what God has willed],\" whispered Shahrazad, \"a serpent coiled among stones that glittered like a fistful of stars, and guarded them as jealously as its own venom.\"",
     "enemyPool": ["diamond_valley_serpent"],
     "weight": 3
   },
@@ -76,7 +76,7 @@
     "kind": "battle",
     "night": [2],
     "name": "Siren of the Shoals",
-    "narration": "\"A voice rose from the shoals sweeter than any promise his crew had ever made him,\" said Scheherazade, \"and every man who turned toward it forgot, for a moment, that sirens have claws.\"",
+    "narration": "\"A voice rose from the shoals sweeter than any promise his crew had ever made him,\" said Shahrazad, \"and every man who turned toward it forgot, for a moment, that sirens have claws.\"",
     "enemyPool": ["siren_of_the_shoals"],
     "weight": 3
   },
@@ -85,7 +85,7 @@
     "kind": "battle",
     "night": [2],
     "name": "Ape of the Black Isle",
-    "narration": "\"Something vast moved among the black rocks of the isle,\" said Scheherazade, \"and when it stood, it stood taller than the mast.\"",
+    "narration": "\"Something vast moved among the black rocks of the isle,\" said Shahrazad, \"and when it stood, it stood taller than the mast.\"",
     "enemyPool": ["ape_of_the_black_isle"],
     "weight": 3
   },
@@ -94,7 +94,7 @@
     "kind": "boss",
     "night": [2],
     "name": "The Roc",
-    "narration": "\"Mashallah [what God has willed],\" said Scheherazade, \"the shadow that fell over the boat was no cloud — it was the Roc itself, mother of hatchlings, wings wide enough to blot out the moon.\"",
+    "narration": "\"Mashallah [what God has willed],\" said Shahrazad, \"the shadow that fell over the boat was no cloud — it was the Roc itself, mother of hatchlings, wings wide enough to blot out the moon.\"",
     "enemyPool": ["the_roc"]
   },
   {
@@ -102,7 +102,7 @@
     "kind": "bank",
     "night": [2],
     "name": "The Coin Djinn",
-    "narration": "\"Alhamdulillah [praise be to God],\" said Scheherazade, \"a small djinn shaped like a squirrel scurried up with cheeks full of dinars, offering to hold Sinbad's coin safe — and return it with interest, when the telling was done.\"",
+    "narration": "\"Alhamdulillah [praise be to God],\" said Shahrazad, \"a small djinn shaped like a squirrel scurried up with cheeks full of dinars, offering to hold Sinbad's coin safe — and return it with interest, when the telling was done.\"",
     "mustCrossOut": true,
     "weight": 1
   },
@@ -111,7 +111,7 @@
     "kind": "chest",
     "night": [2],
     "name": "Locked Diary",
-    "narration": "\"A diary lay half-buried in the sand, its clasp sealed shut by something more than rust,\" said Scheherazade, \"and whatever secret it kept, it was not ready yet to be told.\"",
+    "narration": "\"A diary lay half-buried in the sand, its clasp sealed shut by something more than rust,\" said Shahrazad, \"and whatever secret it kept, it was not ready yet to be told.\"",
     "mustCrossOut": true,
     "weight": 1
   },
@@ -120,7 +120,7 @@
     "kind": "chest",
     "night": [2],
     "name": "Eccentric Seeds",
-    "narration": "\"An old woman at the water's edge pressed a handful of strange seeds into Sinbad's palm,\" said Scheherazade, \"and vanished before he could ask what they'd grow into.\"",
+    "narration": "\"An old woman at the water's edge pressed a handful of strange seeds into Sinbad's palm,\" said Shahrazad, \"and vanished before he could ask what they'd grow into.\"",
     "mustCrossOut": true,
     "weight": 1
   },
@@ -129,7 +129,7 @@
     "kind": "chest",
     "night": [2],
     "name": "VIP Card",
-    "narration": "\"A gilded card appeared in Sinbad's pocket, though no hand had put it there,\" said Scheherazade, \"an invitation, it seemed, to somewhere he had not yet been asked.\"",
+    "narration": "\"A gilded card appeared in Sinbad's pocket, though no hand had put it there,\" said Shahrazad, \"an invitation, it seemed, to somewhere he had not yet been asked.\"",
     "mustCrossOut": true,
     "weight": 1
   }
