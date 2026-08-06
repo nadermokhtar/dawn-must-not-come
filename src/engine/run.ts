@@ -8,6 +8,7 @@ interface ProgressionClass {
   mana: number
   mana_max: number
   hand_size: number
+  draw_per_turn: number
   dinars: number
   starting_deck: string[]
 }
@@ -58,6 +59,7 @@ export interface RunState {
   mana: number
   manaMax: number
   handSize: number
+  drawPerTurn: number
   dinars: number
   wonder: number
   mercy: number
@@ -97,6 +99,7 @@ export function createRun(classId: string, seed: number): RunState {
     mana: cls.mana,
     manaMax: cls.mana_max,
     handSize: cls.hand_size,
+    drawPerTurn: cls.draw_per_turn,
     dinars: cls.dinars,
     wonder: 0,
     mercy: 0,
@@ -370,7 +373,7 @@ export function resolveStoryFork(run: RunState, forkId: string, optionId: string
 // filtering, just seeded differently.
 export function sampleClassCards(run: RunState, content: Content, count: number, salt: string): CardDef[] {
   const pool = [...content.cards.values()].filter(
-    (c) => c.class === run.classId && c.type !== 'curse' && !c.id.endsWith('_plus'),
+    (c) => c.class === run.classId && c.type !== 'affliction' && !c.id.endsWith('_plus'),
   )
   const rng = createRng(deriveSeed(run.seed, salt, run.night, run.page, run.level))
   return rng.shuffle(pool).slice(0, count)

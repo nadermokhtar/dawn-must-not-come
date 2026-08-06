@@ -21,6 +21,7 @@ function makeState(overrides: Partial<{ playerEffects: BattleState['player']['ef
       exhaust: [],
       counters: [],
       handSize: 5,
+      drawBase: 3,
     },
     enemy: {
       hp: 20,

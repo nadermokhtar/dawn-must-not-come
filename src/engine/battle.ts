@@ -15,6 +15,7 @@ export interface PlayerStats {
   mana: number
   manaMax: number
   handSize: number
+  drawPerTurn: number
 }
 
 export interface StartBattleArgs {
@@ -57,6 +58,7 @@ export function startBattle(args: StartBattleArgs): BattleResult {
     exhaust: [],
     counters: [],
     handSize: args.playerStats.handSize,
+    drawBase: args.playerStats.drawPerTurn,
   }
 
   const enemy: EnemyState = {
@@ -186,8 +188,10 @@ function beginPlayerTurn(state: BattleState, content: Content, rng: Rng, emit: E
   checkWinLoss(state, emit)
   if (isBattleOver(state)) return
 
-  const need = state.player.handSize - state.player.hand.length
-  if (need > 0) drawCards(state, need, rng, emit)
+  // Flat draw, not "fill up to handSize" — DESIGN.md §3.2: high card turnover
+  // is the point, not a resource to hoard. handSize still matters (it caps
+  // what carries over via the end-of-turn discard in discardDownToHandSize).
+  drawCards(state, state.player.drawBase, rng, emit)
 }
 
 function resolveEnemyTurn(state: BattleState, content: Content, rng: Rng, emit: Emit): void {
@@ -223,7 +227,7 @@ function resolveEnemyTurn(state: BattleState, content: Content, rng: Rng, emit: 
   checkWinLoss(state, emit)
 }
 
-function discardDownToHandSize(state: BattleState, emit: Emit): void {
+export function discardDownToHandSize(state: BattleState, emit: Emit): void {
   while (state.player.hand.length > state.player.handSize) {
     const card = state.player.hand.shift()!
     state.player.discard.push(card)

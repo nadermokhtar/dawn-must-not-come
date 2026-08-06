@@ -10,7 +10,7 @@ function runScript(seed: number): BattleEvent[] {
   // shuffle into an indistinguishable sequence regardless of seed).
   const deck = Array.from({ length: 15 }, (_, i) => (i % 2 === 0 ? 'test_attack' : 'test_attack_costly'))
   const result = startBattle({
-    playerStats: { hp: 30, apBase: 2, mana: 0, manaMax: 2, handSize: 5 },
+    playerStats: { hp: 30, apBase: 2, mana: 0, manaMax: 2, handSize: 5, drawPerTurn: 3 },
     deck,
     enemyId: 'test_enemy',
     content,

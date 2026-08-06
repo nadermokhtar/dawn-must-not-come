@@ -109,7 +109,8 @@ mechanics, content, art direction, and data schemas. Read it before implementing
   art/text borrowed). Cards now render full anatomy — cost badge (gold=AP,
   blue=mana, stacked badges for the one mixed-cost card), type-colored name
   banner + bottom ribbon (attack=red, spell=blue, equipment=teal, counter=gold,
-  curse=copper-green, item=tan; tokens in `tokens.css`, never per-card), arched
+  affliction=copper-green [renamed from "curse" 2026-08-05, see below], item=tan;
+  tokens in `tokens.css`, never per-card), arched
   art window, upgrade stars, and an ability-text box that shrinks 12px→10px then
   clamps with ellipsis (full text on tap-hold zoom). Added `cost_type` (`ap` /
   `mana` / `mixed`) to the card schema (DESIGN.md §9.1) and migrated all existing

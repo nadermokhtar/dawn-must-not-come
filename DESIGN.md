@@ -56,10 +56,20 @@ the King's verdict.
 
 ### 3.2 Battle
 - 1v1, turn-based. Player side vs. monster side. Player goes first (rare ambush enemies excepted).
-- **Draw:** both sides draw at start of each turn (draw count scales with level + Blessings).
-- **Action Points (AP):** spent to play Action cards. Recover to base at end of turn.
-- **Mana:** spent to play Spell cards. Persistent resource across turns.
-- **No per-turn play limit** other than AP/mana/hand — combo chains are the fun.
+- **Draw:** both sides start a battle with 3 cards and draw 3 new cards every turn by
+  default — a flat per-turn draw, not "fill hand up to a cap." Afflictions can reduce it;
+  cards, items, or Blessings (and level-up rewards) can raise it. Applies to the enemy too
+  (not yet implemented — the enemy currently has no hand/draw-pile of its own, just a
+  cursor over its move deck; see `src/engine/enemyAI.ts`/`EnemyState`). A high, fixed
+  draw count keeps card turnover high rather than gating play on resource accumulation.
+- **Cost is fixed per card type, not per-card:** Attack, Counter, and Equipment cards
+  cost nothing to play — they're gated by draw/hand turnover alone. Spell cards cost
+  Mana only, never AP. Affliction cards (the enemy-inflicted junk cards formerly called
+  "curses") cost AP only — AP's main role is now the tax an Affliction charges you to
+  deal with it, not a cost on your own kit. Item cards keep their existing AP cost.
+- **Action Points (AP):** recovers to base at the start of each turn.
+- **Mana:** persistent resource across turns, spent only on Spells.
+- **No per-turn play limit** other than draw/hand — combo chains are the fun.
 - **Max hand size:** end-of-turn discard down to cap. Cap grows with level-ups.
 - **Counter cards:** set face-down, trigger on enemy action (keep NotFM's counter system).
 - **Equipment slots:** equipment auto-equips at battle start; overflow shuffles into deck.
@@ -456,7 +466,7 @@ these expressions mean, in Scheherazade's teaching voice, never as a footnote du
   "id": "sinbad_cutlass_strike",
   "class": "sinbad",
   "name": "Cutlass Strike",
-  "type": "attack",            // attack | spell | counter | equipment | curse | item
+  "type": "attack",            // attack | spell | counter | equipment | affliction | item
   "cost": { "ap": 1, "mana": 0 },
   "cost_type": "ap",           // ap | mana | mixed — drives the battle UI's cost-badge
                                 // color (gold for ap, blue for mana, both for mixed)

@@ -44,7 +44,7 @@ const content = makeFixtureContent({
       damage: { amount: 8, dtype: 'steel' },
       rarity: 'common',
     },
-    { id: 'test_curse', type: 'curse', class: 'sinbad', name: 'Test Curse', cost: { ap: 0, mana: 0 }, cost_type: 'ap' },
+    { id: 'test_curse', type: 'affliction', class: 'sinbad', name: 'Test Curse', cost: { ap: 0, mana: 0 }, cost_type: 'ap' },
     // No `class` — mirrors a real enemy move card. Must never appear in a
     // player-facing sample (this is exactly the bug the strict class filter
     // in sampleClassCards fixes: a live playthrough surfaced enemy moves
@@ -369,13 +369,13 @@ describe('Wonder/Mercy thresholds', () => {
 })
 
 describe('sampleClassCards', () => {
-  it('is deterministic and excludes curses, _plus variants, and class-less (enemy-only) cards', () => {
+  it('is deterministic and excludes afflictions, _plus variants, and class-less (enemy-only) cards', () => {
     const run = baseRun()
     const pool = sampleClassCards(run, content, 100, 'test')
     const a = sampleClassCards(run, content, 3, 'test')
     const b = sampleClassCards(run, content, 3, 'test')
     expect(a.map((c) => c.id)).toEqual(b.map((c) => c.id))
-    expect(pool.some((c) => c.type === 'curse')).toBe(false)
+    expect(pool.some((c) => c.type === 'affliction')).toBe(false)
     expect(pool.some((c) => c.id.endsWith('_plus'))).toBe(false)
     expect(pool.some((c) => c.id === 'test_enemy_move')).toBe(false)
     expect(pool.every((c) => c.class === run.classId)).toBe(true)

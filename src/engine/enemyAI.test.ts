@@ -23,6 +23,7 @@ function makeState(enemyId: string): BattleState {
       exhaust: [],
       counters: [],
       handSize: 5,
+      drawBase: 3,
     },
     enemy: {
       hp: 20,
@@ -68,7 +69,7 @@ describe('enemyAI', () => {
   it('lets an enemy with first_move act before the player\'s first turn', () => {
     const content = makeFixtureContent()
     const result = startBattle({
-      playerStats: { hp: 30, apBase: 2, mana: 0, manaMax: 2, handSize: 5 },
+      playerStats: { hp: 30, apBase: 2, mana: 0, manaMax: 2, handSize: 5, drawPerTurn: 3 },
       deck: ['test_attack'],
       enemyId: 'test_enemy_first_move',
       content,

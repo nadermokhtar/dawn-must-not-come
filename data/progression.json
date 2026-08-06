@@ -6,6 +6,7 @@
       "mana": 0,
       "mana_max": 2,
       "hand_size": 5,
+      "draw_per_turn": 3,
       "dinars": 30,
       "starting_deck": [
         "sinbad_cutlass_strike",

@@ -97,6 +97,7 @@ function showBattle(enemyId: string): void {
       mana: run.mana,
       manaMax: run.manaMax,
       handSize: run.handSize,
+      drawPerTurn: run.drawPerTurn,
     },
     playerLevel: run.level,
     playerXp: run.xp,

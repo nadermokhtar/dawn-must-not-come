@@ -7,7 +7,7 @@ const TYPE_LABEL: Record<CardType, string> = {
   spell: 'Spell',
   counter: 'Counter',
   equipment: 'Equip',
-  curse: 'Curse',
+  affliction: 'Affliction',
   item: 'Item',
 }
 
@@ -16,7 +16,7 @@ const TYPE_COLOR_VAR: Record<CardType, string> = {
   spell: 'var(--card-spell)',
   counter: 'var(--card-counter)',
   equipment: 'var(--card-equipment)',
-  curse: 'var(--card-curse)',
+  affliction: 'var(--card-affliction)',
   item: 'var(--card-item)',
 }
 

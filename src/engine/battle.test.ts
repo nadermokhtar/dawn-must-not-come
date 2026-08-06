@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { startBattle, playCard, endTurn } from './battle'
+import { startBattle, playCard, endTurn, discardDownToHandSize } from './battle'
 import { drawCards } from './deck'
 import { createRng } from './rng'
 import type { BattleState } from './types'
@@ -23,6 +23,7 @@ function makeState(overrides: Partial<BattleState> = {}): BattleState {
       exhaust: [],
       counters: [],
       handSize: 5,
+      drawBase: 3,
     },
     enemy: {
       hp: 1000,
@@ -42,17 +43,17 @@ function makeState(overrides: Partial<BattleState> = {}): BattleState {
 }
 
 describe('battle', () => {
-  it('starts a battle by drawing to hand size with AP at base', () => {
+  it('starts a battle by drawing drawPerTurn cards with AP at base', () => {
     const content = makeFixtureContent()
     const deck = Array.from({ length: 12 }, () => 'test_attack')
     const result = startBattle({
-      playerStats: { hp: 30, apBase: 2, mana: 0, manaMax: 2, handSize: 5 },
+      playerStats: { hp: 30, apBase: 2, mana: 0, manaMax: 2, handSize: 5, drawPerTurn: 3 },
       deck,
       enemyId: 'test_enemy',
       content,
       seed: 1,
     })
-    expect(result.state.player.hand).toHaveLength(5)
+    expect(result.state.player.hand).toHaveLength(3)
     expect(result.state.player.ap).toBe(2)
   })
 
@@ -102,7 +103,6 @@ describe('battle', () => {
   })
 
   it('discards down to hand size at end of turn, oldest drawn first', () => {
-    const content = makeFixtureContent()
     const state = makeState()
     state.player.handSize = 3
     state.player.hand = [
@@ -113,7 +113,11 @@ describe('battle', () => {
       { uid: 5, cardId: 'test_attack' },
     ]
 
-    endTurn(state, content)
+    // Tested directly (not via the full endTurn()) so the very next turn's
+    // flat drawBase draw — which now always fires, independent of hand size
+    // — can't reshuffle these discards back into the draw pile before the
+    // assertion runs.
+    discardDownToHandSize(state, () => {})
 
     expect(state.player.discard.map((c) => c.uid)).toEqual([1, 2])
     expect(state.player.hand.map((c) => c.uid)).toEqual([3, 4, 5])

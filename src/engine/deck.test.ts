@@ -24,6 +24,7 @@ function makeState(): BattleState {
       exhaust: [{ uid: 1, cardId: 'test_attack' }, { uid: 2, cardId: 'test_attack' }],
       counters: [],
       handSize: 5,
+      drawBase: 3,
     },
     enemy: {
       hp: 1000,
@@ -93,7 +94,7 @@ describe('pile-count conservation', () => {
       'test_attack',
     ]
     const result = startBattle({
-      playerStats: { hp: 100, apBase: 3, mana: 2, manaMax: 2, handSize: 5 },
+      playerStats: { hp: 100, apBase: 3, mana: 2, manaMax: 2, handSize: 5, drawPerTurn: 3 },
       deck,
       enemyId: 'test_enemy_lowhp', // won't actually die; hp bumped below
       content,

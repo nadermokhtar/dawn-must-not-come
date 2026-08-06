@@ -25,6 +25,7 @@ function makeState(): BattleState {
       exhaust: [],
       counters: [],
       handSize: 5,
+      drawBase: 3,
     },
     enemy: {
       hp: 20,
@@ -147,7 +148,7 @@ describe('effects', () => {
   it('auto-applies an enemy gimmick as a battle_start effect', () => {
     const content = makeFixtureContent()
     const result = startBattle({
-      playerStats: { hp: 30, apBase: 2, mana: 0, manaMax: 2, handSize: 5 },
+      playerStats: { hp: 30, apBase: 2, mana: 0, manaMax: 2, handSize: 5, drawPerTurn: 3 },
       deck: ['test_attack'],
       enemyId: 'test_enemy_gimmick',
       content,

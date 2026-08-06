@@ -31,6 +31,10 @@ export interface PlayerState extends CombatantState {
   exhaust: CardInstance[]
   counters: CardInstance[]
   handSize: number
+  // Flat cards drawn at the start of every turn (DESIGN.md §3.2) — decoupled
+  // from handSize, which only caps how much carries over via end-of-turn
+  // discard. Afflictions can reduce this; cards/items/Blessings can raise it.
+  drawBase: number
 }
 
 export interface EnemyState extends CombatantState {

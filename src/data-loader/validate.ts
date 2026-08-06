@@ -2,7 +2,7 @@ import type { BlessingDef, CardDef, EffectDef, EnemyDef, StoryForkDef, VerseDef 
 
 export class ValidationError extends Error {}
 
-const CARD_TYPES = ['attack', 'spell', 'counter', 'equipment', 'curse', 'item']
+const CARD_TYPES = ['attack', 'spell', 'counter', 'equipment', 'affliction', 'item']
 const COST_TYPES = ['ap', 'mana', 'mixed']
 const DTYPES = ['steel', 'true_strike', 'ifrit_flame', 'tide', 'storm', 'serpent_venom']
 const EFFECT_KINDS = ['buff', 'debuff', 'neutral']
