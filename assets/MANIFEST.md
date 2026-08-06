@@ -6,8 +6,8 @@ game data. Originals remain in ~/Downloads.
 
 ## Vertical-slice ship checkpoint (pack Part 5, step 6)
 Needs: anchors ✓ · frames (3/4) · classes ✓ · **Night I enemies 13/13 ✓ (all art_ref
-resolved)** · Night II enemies (3/16 beyond pack-2) · backgrounds (6/6 masters ✓, 4
-need art_ref wiring) · UI kit (6/14, no transparency yet)
+resolved)** · Night II enemies (3/16 beyond pack-2) · **backgrounds 6/6 ✓ wired
+(2026-08-05)** · UI kit (6/14, no transparency yet)
 
 ## anchors/ — 2/2 (never shipped in builds)
 | File | Status |
@@ -90,11 +90,11 @@ edit or epic can be a lighter edit of it. Not present in the 2026-08-05 intake
 batch either — the "Ornate Certificate Border Template" files in that batch were
 duplicates of frame_common/frame_rare/frame_starred, not a 4th variant.
 
-## backgrounds/ — 6/6 masters ✓, 2/6 wired to art_ref (pack 3.1–3.6)
+## backgrounds/ — 6/6 masters ✓, 6/6 wired ✓ (pack 3.1–3.6)
 | File | Subject |
 |---|---|
-| bg_title.png / **bg_title.jpg** | Palace chamber, glowing book (3.1) |
-| bg_codex.png / **bg_codex.jpg** | Open manuscript for map screen (3.2) |
+| bg_title.png / **bg_title.jpg** | Palace chamber, glowing book (3.1) — wired in `src/main.ts` `showTitleCard()` |
+| bg_codex.png / **bg_codex.jpg** | Open manuscript for map screen (3.2) — wired via `.map-screen` in `src/styles/map.css` |
 | bg_night1.png / **bg_night1.jpg** | Basra harbor — dhows, bazaar arcades, minaret (3.3) — **was the slice-blocking gap** |
 | bg_night2.png / **bg_night2.jpg** | Uncharted Sea — lone dhow, dragon-shaped island, roc silhouette crossing the moon (3.4) |
 | bg_night3.png / **bg_night3.jpg** | The Old Man and the Deep — jungle river, skulls and oars among roots (3.5) |
@@ -103,10 +103,16 @@ duplicates of frame_common/frame_rare/frame_starred, not a 4th variant.
 PNGs are ~7–11MB masters (1536×2752). **The game must load the .jpg versions**
 (1600px, all 197–338KB — under the pack's 400KB mobile spec).
 
-**Not yet wired:** no Verse/night data currently sets `art_ref` to
-`backgrounds/bg_night1.jpg` etc. — someone needs to add that wiring (likely in
-`data/verses/*.json` or wherever Night backgrounds are selected) with full
-context of how the map/battle screens pick a background per Night.
+**Wired (2026-08-05):** `bg_night1-4.jpg` are the battle-screen background, not
+the map's — the map always shows `bg_codex.jpg` (the manuscript-page look, per
+3.2) regardless of Night. `mountBattleScreen` (`src/ui/screens/battle.ts`)
+looks up `content.enemies.get(opts.enemyId)?.night` and sets `.battle-screen`'s
+inline `background-image` to `backgrounds/bg_night{N}.jpg` via `assetUrl()`,
+mirroring the same gradient-overlay convention as `.map-screen`. Purely
+data-driven — Night III/IV content will pick up `bg_night3`/`bg_night4`
+automatically once those enemies exist, no further code changes needed.
+Verified headlessly (Playwright, 390×844): style resolves to the correct file,
+no console errors, harbor scene visible behind the Night I enemy portrait.
 
 ## keyart/ — 1/1 ✓ (pack 1.7)
 | File | Subject |

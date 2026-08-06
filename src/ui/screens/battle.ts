@@ -4,7 +4,7 @@ import { pileCounts } from '../../engine/deck'
 import type { BattleState, CardInstance, Content, EffectInstance } from '../../engine/types'
 import type { BattleEvent } from '../../engine/events'
 import { createCardElement, showCardZoom } from '../cardView'
-import { createArtElement } from '../artUrl'
+import { createArtElement, assetUrl } from '../artUrl'
 import { onHold, onTap } from '../touch'
 import { statBar, statusBadge, iconBadge, armorBadge, hourglassStat, bottomSheet, ceremonyDialog, flashMessage } from '../components'
 import { isFirstEverBattle, maybeShowBattleTutorial, showBattleHelp } from '../onboarding'
@@ -111,6 +111,7 @@ function describeEvent(ev: BattleEvent, content: Content, enemyName: string): st
 
 export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions): () => void {
   const content = loadContent()
+  const battleNight = content.enemies.get(opts.enemyId)?.night
 
   // Captured once, before maybeShowBattleTutorial (called after begin(),
   // below) marks the flag seen — drives the in-fight coaching tips further
@@ -130,8 +131,12 @@ export function mountBattleScreen(root: HTMLElement, opts: BattleScreenOptions):
   let recentText = ''
   let narrationExpanded = false
 
+  const battleBg = battleNight
+    ? `background-image:linear-gradient(rgba(16,26,60,0.6),rgba(16,26,60,0.8)),url('${assetUrl(`backgrounds/bg_night${battleNight}.jpg`)}');background-size:cover;background-position:center;`
+    : ''
+
   root.innerHTML = `
-    <div class="battle-screen" style="display:flex;flex-direction:column;height:100%;overflow:hidden;">
+    <div class="battle-screen" style="display:flex;flex-direction:column;height:100%;overflow:hidden;${battleBg}">
       <div id="enemyZone" class="enemy-zone"></div>
       <div id="enemyArmorStrip" class="enemy-armor-strip"></div>
       <div id="narrationPanel" class="narration-panel"></div>
