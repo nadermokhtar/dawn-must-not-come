@@ -9,8 +9,8 @@
     "resist": [],
     "weak": [],
     "deck": ["dockhand_bottle_swing", "dockhand_hiccup", "dockhand_bottle_swing", "dockhand_wild_haymaker"],
-    "ai": { "mode": "sequential" },
-    "first_move": false,
+    "ai": { "mode": "sequential", "moves_per_turn": 2 },
+    "first_move": true,
     "art_ref": "enemies/dockhand.png"
   },
   {
@@ -37,8 +37,8 @@
     "resist": ["steel"],
     "weak": [],
     "deck": ["customs_officer_baton_strike", "customs_officer_shakedown", "customs_officer_baton_strike", "customs_officer_confiscation"],
-    "ai": { "mode": "sequential" },
-    "first_move": false,
+    "ai": { "mode": "sequential", "moves_per_turn": 2 },
+    "first_move": true,
     "art_ref": "enemies/customs_officer.png"
   },
   {
@@ -66,7 +66,7 @@
     "weak": [],
     "deck": ["angry_pelican_wing_buffet", "angry_pelican_dive_peck", "angry_pelican_wing_buffet"],
     "ai": { "mode": "sequential" },
-    "first_move": false,
+    "first_move": true,
     "art_ref": "enemies/angry_pelican.png"
   },
   {
@@ -79,8 +79,8 @@
     "resist": ["tide"],
     "weak": [],
     "deck": ["pearl_diver_undertow_grab", "pearl_diver_shell_fling", "pearl_diver_undertow_grab"],
-    "ai": { "mode": "sequential" },
-    "first_move": false,
+    "ai": { "mode": "sequential", "moves_per_turn": 2 },
+    "first_move": true,
     "art_ref": "enemies/pearl_diver.png"
   },
   {
@@ -93,8 +93,8 @@
     "resist": [],
     "weak": [],
     "deck": ["ships_cook_pan_sear", "ships_cook_ladle_smack", "ships_cook_pan_sear"],
-    "ai": { "mode": "sequential" },
-    "first_move": false,
+    "ai": { "mode": "sequential", "moves_per_turn": 2 },
+    "first_move": true,
     "art_ref": "enemies/ships_cook.png"
   },
   {
@@ -107,8 +107,8 @@
     "resist": ["steel"],
     "weak": [],
     "deck": ["sleepless_watchman_halberd_sweep", "sleepless_watchman_thrust", "sleepless_watchman_brace", "sleepless_watchman_halberd_sweep"],
-    "ai": { "mode": "sequential" },
-    "first_move": false,
+    "ai": { "mode": "sequential", "moves_per_turn": 2 },
+    "first_move": true,
     "art_ref": "enemies/sleepless_watchman.png"
   },
   {
@@ -136,7 +136,7 @@
     "weak": [],
     "deck": ["snake_charmers_serpent_strike", "snake_charmers_serpent_coil", "snake_charmers_serpent_strike"],
     "ai": { "mode": "sequential" },
-    "first_move": false,
+    "first_move": true,
     "art_ref": "enemies/snake_charmers_serpent.png"
   },
   {
@@ -149,8 +149,8 @@
     "resist": [],
     "weak": [],
     "deck": ["superstitious_sailor_marlinspike_swing", "superstitious_sailor_lucky_charm_bash", "superstitious_sailor_evil_eye_ward", "superstitious_sailor_marlinspike_swing"],
-    "ai": { "mode": "sequential" },
-    "first_move": false,
+    "ai": { "mode": "sequential", "moves_per_turn": 2 },
+    "first_move": true,
     "art_ref": "enemies/superstitious_sailor.png"
   },
   {
@@ -163,8 +163,8 @@
     "resist": ["steel"],
     "weak": ["ifrit_flame"],
     "deck": ["cargo_mimic_bite", "cargo_mimic_slam_lid", "cargo_mimic_bite", "cargo_mimic_splinter_spray"],
-    "ai": { "mode": "sequential" },
-    "first_move": false,
+    "ai": { "mode": "sequential", "moves_per_turn": 2 },
+    "first_move": true,
     "art_ref": "enemies/cargo_mimic.png"
   },
   {
@@ -177,8 +177,8 @@
     "resist": [],
     "weak": ["ifrit_flame"],
     "deck": ["whale_crushing_wave", "whale_rolling_breach", "whale_barnacled_hide_slam", "whale_crushing_wave", "whale_tail_sweep", "whale_rolling_breach"],
-    "ai": { "mode": "sequential" },
-    "first_move": false,
+    "ai": { "mode": "sequential", "moves_per_turn": 2 },
+    "first_move": true,
     "art_ref": "enemies/whale_island.png"
   }
 ]

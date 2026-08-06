@@ -183,6 +183,34 @@ mechanics, content, art direction, and data schemas. Read it before implementing
   is just an easy win, never a fairness problem, so there's no reason to
   exclude it. Added a regression test (`run.test.ts`) proving an over-leveled
   player still sees a lower-level battle Verse.
+- **Balance pass (2026-08-05):** the card-economy rebalance (attacks/equipment
+  now 0 AP/0 mana) made every Night I fight trivial — a bot-driven simulation
+  (`startBattle`/`playCard`/`endTurn` run headlessly via `vite-node`, greedy
+  hand-dump strategy, 15 seeds per enemy) showed 100% win rate against all 13
+  Night I enemies including the boss, with 8/13 minor enemies dying in under
+  one player turn (0–3% player HP lost) — they never got to act. Root cause:
+  every enemy in the game had `first_move: false` and no `ai.moves_per_turn`
+  (both fields existed in the schema/engine already, just unused), so with
+  attacks now free and unlimited-per-turn, the player's opening draw
+  one-shot most of the roster before the enemy's `sequential` AI fired even
+  once. Fixed by giving enemies the same "no limit, moves stack" turn
+  structure the player already has: `first_move: true` on every Night I/II
+  enemy above the lowest tier (the trivial early fodder — Ghul-pup, Pickpocket,
+  Rat — stays `false` on purpose), plus `ai.moves_per_turn` scaled by level
+  (1 early → 2 mid → 3 late minors → bosses at 2). Re-verified with the same
+  bot harness, this time scaling the simulated player's HP by
+  `HP_PER_LEVEL * enemyLevel` (a floor approximation of "fought at an
+  appropriate level," deck still capped at the 10-card starter as a
+  pessimistic baseline): the full roster now lands in an 11–89% avg-HP-lost,
+  93–100% win-rate band that climbs smoothly with enemy level, and both Night
+  bosses (Whale, Roc) are genuinely risky (33%/0% win rate for a
+  no-defensive-play bot with zero level-up rewards or Blessings) rather than
+  either a free win or an instant, un-loseable wipe. Two earlier tuning
+  attempts were walked back before landing here: a flat per-hit damage bump
+  compounded badly when stacked with `moves_per_turn` on the same enemies
+  (near-100% HP loss / 0% win rate on tanky minors); it was reverted in favor
+  of `moves_per_turn` alone as the single scaling lever, matching how the
+  player's own turn output scales (more cards played, not bigger cards).
 - **Next milestone:** phone testing/feedback on all of the above, Night III
   content, the Hidden Night IV unlock chains (now has an exact 3-step
   reference shape from DESIGN.md §3.7 — Locked Diary / VIP Card / Eccentric

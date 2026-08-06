@@ -9,8 +9,8 @@
     "resist": [],
     "weak": [],
     "deck": ["roc_hatchling_wing_gust", "roc_hatchling_talon_snatch", "roc_hatchling_wing_gust", "roc_hatchling_screech"],
-    "ai": { "mode": "sequential" },
-    "first_move": false,
+    "ai": { "mode": "sequential", "moves_per_turn": 2 },
+    "first_move": true,
     "art_ref": "enemies/roc_hatchling.png"
   },
   {
@@ -23,8 +23,8 @@
     "resist": ["tide"],
     "weak": ["ifrit_flame"],
     "deck": ["drowned_sailor_bloated_grasp", "drowned_sailor_undertow_pull", "drowned_sailor_waterlogged_lurch", "drowned_sailor_undertow_pull"],
-    "ai": { "mode": "sequential" },
-    "first_move": false,
+    "ai": { "mode": "sequential", "moves_per_turn": 2 },
+    "first_move": true,
     "art_ref": "enemies/drowned_sailor.png"
   },
   {
@@ -37,8 +37,8 @@
     "resist": ["storm"],
     "weak": ["steel"],
     "deck": ["storm_sprite_lightning_jab", "storm_sprite_thunderclap", "storm_sprite_gale_dash", "storm_sprite_lightning_jab"],
-    "ai": { "mode": "sequential" },
-    "first_move": false,
+    "ai": { "mode": "sequential", "moves_per_turn": 2 },
+    "first_move": true,
     "art_ref": "enemies/storm_sprite.png"
   },
   {
@@ -51,8 +51,8 @@
     "resist": ["steel"],
     "weak": ["true_strike"],
     "deck": ["cyclopean_shepherds_ram_headlong_charge", "cyclopean_shepherds_ram_hoof_stomp", "cyclopean_shepherds_ram_headlong_charge", "cyclopean_shepherds_ram_horn_gore"],
-    "ai": { "mode": "sequential" },
-    "first_move": false,
+    "ai": { "mode": "sequential", "moves_per_turn": 2 },
+    "first_move": true,
     "art_ref": "enemies/cyclopean_shepherds_ram.png"
   },
   {
@@ -65,8 +65,8 @@
     "resist": [],
     "weak": [],
     "deck": ["living_figurehead_splintered_backhand", "living_figurehead_prow_ram", "living_figurehead_creaking_brace", "living_figurehead_splintered_backhand"],
-    "ai": { "mode": "sequential" },
-    "first_move": false,
+    "ai": { "mode": "sequential", "moves_per_turn": 2 },
+    "first_move": true,
     "art_ref": "enemies/living_figurehead.png"
   },
   {
@@ -79,8 +79,8 @@
     "resist": [],
     "weak": [],
     "deck": ["merchant_of_dubious_meat_spoiled_skewer", "merchant_of_dubious_meat_cleaver_swing", "merchant_of_dubious_meat_spoiled_skewer", "merchant_of_dubious_meat_haggle"],
-    "ai": { "mode": "sequential" },
-    "first_move": false,
+    "ai": { "mode": "sequential", "moves_per_turn": 2 },
+    "first_move": true,
     "art_ref": "enemies/merchant_of_dubious_meat.png"
   },
   {
@@ -93,8 +93,8 @@
     "resist": [],
     "weak": [],
     "deck": ["cannibal_scout_bone_dagger", "cannibal_scout_ambush_strike", "cannibal_scout_bone_dagger", "cannibal_scout_warpaint_howl"],
-    "ai": { "mode": "sequential" },
-    "first_move": false,
+    "ai": { "mode": "sequential", "moves_per_turn": 3 },
+    "first_move": true,
     "art_ref": "enemies/cannibal_scout.png"
   },
   {
@@ -107,8 +107,8 @@
     "resist": ["serpent_venom"],
     "weak": ["ifrit_flame"],
     "deck": ["diamond_valley_serpent_venomous_bite", "diamond_valley_serpent_coiling_crush", "diamond_valley_serpent_venomous_bite", "diamond_valley_serpent_diamond_scale_flash"],
-    "ai": { "mode": "sequential" },
-    "first_move": false,
+    "ai": { "mode": "sequential", "moves_per_turn": 3 },
+    "first_move": true,
     "art_ref": "enemies/diamond_valley_serpent.png"
   },
   {
@@ -121,8 +121,8 @@
     "resist": ["tide"],
     "weak": ["true_strike"],
     "deck": ["siren_of_the_shoals_enchanting_song", "siren_of_the_shoals_coral_claw_rake", "siren_of_the_shoals_riptide_lash", "siren_of_the_shoals_coral_claw_rake"],
-    "ai": { "mode": "sequential" },
-    "first_move": false,
+    "ai": { "mode": "sequential", "moves_per_turn": 3 },
+    "first_move": true,
     "art_ref": "enemies/siren_of_the_shoals.png"
   },
   {
@@ -135,8 +135,8 @@
     "resist": [],
     "weak": [],
     "deck": ["ape_of_the_black_isle_boulder_throw", "ape_of_the_black_isle_double_fist_slam", "ape_of_the_black_isle_boulder_throw", "ape_of_the_black_isle_chest_beat"],
-    "ai": { "mode": "sequential" },
-    "first_move": false,
+    "ai": { "mode": "sequential", "moves_per_turn": 3 },
+    "first_move": true,
     "art_ref": "enemies/ape_of_the_black_isle.png"
   },
   {
@@ -149,8 +149,8 @@
     "resist": ["storm"],
     "weak": ["true_strike"],
     "deck": ["roc_wind_buffet", "roc_talon_rake", "roc_aerial_dive", "roc_wind_buffet", "roc_skyborne_shriek", "roc_talon_rake"],
-    "ai": { "mode": "sequential" },
-    "first_move": false,
+    "ai": { "mode": "sequential", "moves_per_turn": 2 },
+    "first_move": true,
     "art_ref": "enemies/roc.png"
   }
 ]
