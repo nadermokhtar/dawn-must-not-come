@@ -88,7 +88,8 @@ before filing.
 duplicate of the gem frame; per the pack, epic and starred can share the gem
 edit or epic can be a lighter edit of it. Not present in the 2026-08-05 intake
 batch either — the "Ornate Certificate Border Template" files in that batch were
-duplicates of frame_common/frame_rare/frame_starred, not a 4th variant.
+duplicates of frame_common/frame_rare/frame_starred, not a 4th variant. Ready
+prompt below.
 
 ## backgrounds/ — 6/6 masters ✓, 6/6 wired ✓ (pack 3.1–3.6)
 | File | Subject |
@@ -138,6 +139,8 @@ remove.bg, rembg with a real model) or manual touch-up.
 
 **Still missing entirely:** icon_hp, icon_dinar, medallion_wonder,
 medallion_mercy, btn_end_turn, icon_deck, icon_discard, icon_settings.
+Ready-to-paste prompts for all 8 (+ frame_epic) are in the chat where this
+manifest entry was written — ask Claude Code to regenerate them if lost.
 
 **Not filed — decorative/unclear purpose, found in the 2026-08-05 batch:**
 two wide "ornate frame template" card-layout illustrations (Huntress and
