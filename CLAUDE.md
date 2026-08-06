@@ -170,6 +170,19 @@ mechanics, content, art direction, and data schemas. Read it before implementing
     basmala → map-tutorial → tooltip-toast → restart-confirm → battle →
     battle-tutorial → AP-tooltip chain. No console errors in any pass. Still
     not verified on a physical phone.
+- **Fixed a real soft-lock (2026-08-05):** a phone playtester got permanently
+  stuck at Night II, page 30/34, level 18 — the map showed only the "Turn the
+  Page" reshuffle Verse, which never advances the page, so there was no way
+  forward. Root cause: `isVerseLevelEligible` (`src/engine/run.ts`) gated
+  battle Verses to `[player level, player level + headroom]` — a *lower*
+  bound as well as an upper one. Night II's enemy roster caps around level 17,
+  so once the player hit level 18 every battle Verse in the Night became
+  ineligible, and by page 30 all the `mustCrossOut` economy Verses (Bazaar,
+  Blessing, chests, etc.) had already been used up too — nothing left but the
+  reshuffle. Fixed by dropping the lower bound: being over-leveled for a fight
+  is just an easy win, never a fairness problem, so there's no reason to
+  exclude it. Added a regression test (`run.test.ts`) proving an over-leveled
+  player still sees a lower-level battle Verse.
 - **Next milestone:** phone testing/feedback on all of the above, Night III
   content, the Hidden Night IV unlock chains (now has an exact 3-step
   reference shape from DESIGN.md §3.7 — Locked Diary / VIP Card / Eccentric

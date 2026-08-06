@@ -138,15 +138,23 @@ function bossVerseFor(run: RunState, content: Content): VerseDef | undefined {
   return undefined
 }
 
-// Fairness gate: a battle Verse only offers a fight the player is ready for
-// — its enemy must be within [run.level, run.level + headroom]. Non-battle
-// Verses and enemies with no level assigned are always eligible.
+// Fairness gate: a battle Verse only offers a fight the player isn't
+// under-leveled for — its enemy must be at most run.level + headroom. Only an
+// upper bound: a lower bound (enemy.level >= run.level) used to be here too,
+// but a Night's enemy roster is finite while player level keeps climbing on
+// every kill, so once the player out-leveled a Night's whole roster (a real
+// case hit at Night II, page 30/34, level 18 vs. a level <=17 cap), every
+// battle Verse vanished from the pool — a permanent soft-lock, since the only
+// thing left eligible was the reshuffle Verse, which never advances the page.
+// Being over-leveled for a fight is just an easy win, never a fairness
+// problem, so there's no reason to exclude it. Non-battle Verses and enemies
+// with no level assigned are always eligible.
 function isVerseLevelEligible(verse: VerseDef, run: RunState, content: Content): boolean {
   if (verse.kind !== 'battle' || !verse.enemyPool) return true
   return verse.enemyPool.every((id) => {
     const level = content.enemies.get(id)?.level
     if (level === undefined) return true
-    return level >= run.level && level <= run.level + LEVEL_GATE_HEADROOM
+    return level <= run.level + LEVEL_GATE_HEADROOM
   })
 }
 

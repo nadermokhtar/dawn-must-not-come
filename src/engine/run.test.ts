@@ -289,7 +289,8 @@ describe('grantXp / leveling', () => {
 })
 
 describe('level-gated battle verses', () => {
-  it('only offers battles within [level, level + 1]', () => {
+  it('excludes battles above level + headroom, but never below it', () => {
+    // Under-leveled: the level-3 fight is still too hard to offer.
     const lowLevelRun = baseRun({ level: 1 })
     let sawEligible = false
     for (let page = 0; page < 10; page++) {
@@ -299,16 +300,26 @@ describe('level-gated battle verses', () => {
       expect(options.some((v) => v.id === 'verse_battle_lvl3')).toBe(false)
     }
     expect(sawEligible).toBe(true)
+  })
 
-    const higherLevelRun = baseRun({ level: 3 })
-    sawEligible = false
-    for (let page = 0; page < 10; page++) {
-      higherLevelRun.page = page
-      const options = rollVerseOptions(higherLevelRun, content)
-      if (options.some((v) => v.id === 'verse_battle_lvl3')) sawEligible = true
-      expect(options.some((v) => v.id === 'verse_battle_lvl1')).toBe(false)
+  // Regression test for a real soft-lock: Night II, page 30/34, level 18 vs.
+  // an enemy roster capped at level <=17 — every battle Verse vanished from
+  // the pool (the old gate excluded fights below the player's level too),
+  // leaving only the reshuffle Verse, which never advances the page. A
+  // higher-level player must still be able to see (and beat) a lower-level
+  // fight — being over-leveled is never a fairness problem.
+  it('still offers a lower-level battle to an over-leveled player', () => {
+    const overLeveledRun = baseRun({ level: 10 })
+    let sawLvl1 = false
+    let sawLvl3 = false
+    for (let page = 0; page < 20; page++) {
+      overLeveledRun.page = page
+      const options = rollVerseOptions(overLeveledRun, content)
+      if (options.some((v) => v.id === 'verse_battle_lvl1')) sawLvl1 = true
+      if (options.some((v) => v.id === 'verse_battle_lvl3')) sawLvl3 = true
     }
-    expect(sawEligible).toBe(true)
+    expect(sawLvl1).toBe(true)
+    expect(sawLvl3).toBe(true)
   })
 })
 
