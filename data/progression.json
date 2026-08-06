@@ -3,7 +3,7 @@
     "sinbad": {
       "hp": 30,
       "ap_base": 2,
-      "mana": 0,
+      "mana": 1,
       "mana_max": 2,
       "hand_size": 5,
       "draw_per_turn": 3,
@@ -13,12 +13,12 @@
         "sinbad_cutlass_strike",
         "sinbad_cutlass_strike",
         "sinbad_cutlass_strike",
-        "sinbad_raise_shield",
+        "sinbad_boarding_action",
+        "sinbad_boarding_action",
+        "sinbad_parry",
         "sinbad_raise_shield",
         "sinbad_rigging_grab",
-        "sinbad_rigging_grab",
-        "sinbad_captains_rally",
-        "sinbad_boarding_action"
+        "sinbad_captains_rally"
       ]
     }
   },

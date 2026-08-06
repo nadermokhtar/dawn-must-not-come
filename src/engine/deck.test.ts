@@ -61,7 +61,10 @@ describe('exhaust pile', () => {
 })
 
 describe('starter deck composition', () => {
-  it('matches the documented 4/2/2/1/1 Sinbad starting deck', () => {
+  // Rebalanced 2026-08-05: the original 4/2/2/1/1 deck put 5 of 10 cards
+  // (all Spells) behind Mana with 0 starting Mana — half the deck was
+  // unplayable turn 1. Now only 3 of 10 are Spells, and starting Mana is 1.
+  it('matches the documented 4/2/1/1/1/1 Sinbad starting deck', () => {
     const deck: string[] = progression.classes.sinbad.starting_deck
     expect(deck).toHaveLength(10)
 
@@ -70,10 +73,11 @@ describe('starter deck composition', () => {
 
     expect(counts).toEqual({
       sinbad_cutlass_strike: 4,
-      sinbad_raise_shield: 2,
-      sinbad_rigging_grab: 2,
+      sinbad_boarding_action: 2,
+      sinbad_parry: 1,
+      sinbad_raise_shield: 1,
+      sinbad_rigging_grab: 1,
       sinbad_captains_rally: 1,
-      sinbad_boarding_action: 1,
     })
   })
 })

@@ -67,6 +67,13 @@ the King's verdict.
   Mana only, never AP. Affliction cards (the enemy-inflicted junk cards formerly called
   "curses") cost AP only — AP's main role is now the tax an Affliction charges you to
   deal with it, not a cost on your own kit. Item cards keep their existing AP cost.
+  **One deliberate exception:** `sinbad_full_sail` (a Spell that grants +1 Mana) costs
+  AP, not Mana — a Mana-cost bootstrap card would be a no-op (spend 1 Mana to gain 1
+  Mana), defeating its entire purpose as the deck's AP→Mana converter, paired with
+  Battle Cry's Mana→AP+draw in the other direction. Starting Mana was also raised from
+  0 to 1 (progression.json) and the Sinbad starting deck rebalanced from 5 Spells / 10
+  cards down to 3 (plus a free Counter added), after a real bug: 0 starting Mana + a
+  Spell-heavy starter meant half the deck was unplayable until Mana somehow accumulated.
 - **Action Points (AP):** recovers to base at the start of each turn.
 - **Mana:** persistent resource across turns, spent only on Spells.
 - **No per-turn play limit** other than draw/hand — combo chains are the fun.
